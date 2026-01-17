@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Concerts — TicketVault</title>
+  <link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+  <div class="container">
+    <div class="nav">
+      <a class="brand" href="index.html"><span class="brand-badge"></span><span>TicketVault</span></a>
+      <div class="navlinks">
+        <a href="concerts.html">Concerts</a>
+        <a href="sports.html">Sports</a>
+        <a href="ticket.html">Featured Ticket</a>
+      </div>
+    </div>
+
+    <section class="hero">
+      <h1>Concert tickets</h1>
+      <p>Hand-picked listings with clear details. Click a card to view the ticket page.</p>
+    </section>
+
+    <section class="grid">
+      <a class="card" href="ticket.html">
+        <div class="img" style="background-image:url('https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&w=1200&q=60');"></div>
+        <div class="content">
+          <span class="tag">🎤 Pop / Live</span>
+          <h3>Live Concert — Paris</h3>
+          <p class="meta">Mar 20, 2026 • General Admission • €50</p>
+        </div>
+      </a>
+
+      <a class="card" href="ticket.html">
+        <div class="img" style="background-image:url('https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=1200&q=60');"></div>
+        <div class="content">
+          <span class="tag">🎸 Rock</span>
+          <h3>Rock Night — Lyon</h3>
+          <p class="meta">Apr 12, 2026 • Seated • €65</p>
+        </div>
+      </a>
+
+      <a class="card" href="ticket.html">
+        <div class="img" style="background-image:url('https://images.unsplash.com/photo-1464375117522-1311dd7f0b0a?auto=format&fit=crop&w=1200&q=60');"></div>
+        <div class="content">
+          <span class="tag">🎧 EDM</span>
+          <h3>DJ Set — Marseille</h3>
+          <p class="meta">May 03, 2026 • Standing • €40</p>
+        </div>
+      </a>
+    </section>
+
+    <div class="footer">Back to <a href="index.html">Home</a>.</div>
+  </div>
+</body>
+</html>

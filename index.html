@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TicketVault — Verified Tickets</title>
+  <link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+  <div class="container">
+    <div class="nav">
+      <a class="brand" href="index.html">
+        <span class="brand-badge"></span>
+        <span>TicketVault</span>
+      </a>
+      <div class="navlinks">
+        <a href="concerts.html">Concerts</a>
+        <a href="sports.html">Sports</a>
+        <a href="ticket.html">Featured Ticket</a>
+      </div>
+    </div>
+
+    <section class="hero">
+      <h1>One place for your next great night.</h1>
+      <p>
+        Curated tickets for concerts and sports — clean design, clear info,
+        and a fast checkout experience.
+      </p>
+      <div class="cta-row">
+        <a class="btn primary" href="concerts.html">Browse Concerts</a>
+        <a class="btn" href="sports.html">Browse Sports</a>
+      </div>
+    </section>
+
+    <section class="grid">
+      <a class="card" href="concerts.html">
+        <div class="img" style="background-image:url('https://images.unsplash.com/photo-1501386761578-eac5c94b800a?auto=format&fit=crop&w=1200&q=60');"></div>
+        <div class="content">
+          <span class="tag">🎵 Concerts</span>
+          <h3>Live shows, real energy</h3>
+          <p class="meta">Discover upcoming gigs and headline nights.</p>
+        </div>
+      </a>
+
+      <a class="card" href="sports.html">
+        <div class="img" style="background-image:url('https://images.unsplash.com/photo-1521412644187-c49fa049e84d?auto=format&fit=crop&w=1200&q=60');"></div>
+        <div class="content">
+          <span class="tag">🏟️ Sports</span>
+          <h3>Big games, best seats</h3>
+          <p class="meta">Football, basketball, tennis and more.</p>
+        </div>
+      </a>
+
+      <a class="card" href="ticket.html">
+        <div class="img" style="background-image:url('https://images.unsplash.com/photo-1521334726092-b509a19597c1?auto=format&fit=crop&w=1200&q=60');"></div>
+        <div class="content">
+          <span class="tag">✨ Featured</span>
+          <h3>Ticket of the week</h3>
+          <p class="meta">A clean detail page ready for Stripe.</p>
+        </div>
+      </a>
+    </section>
+
+    <div class="footer">
+      © <span id="y"></span> TicketVault — Personal ticket sales. Not affiliated with event organizers.
+    </div>
+  </div>
+
+  <script>
+    document.getElementById("y").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
