@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sports - TicketHub</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo">TicketHub</div>
+            <ul class="nav-links">
+                <li><a href="index.html" data-fr="Accueil" data-en="Home">Accueil</a></li>
+                <li><a href="concerts.html" data-fr="Concerts" data-en="Concerts">Concerts</a></li>
+                <li><a href="sports.html" data-fr="Sports" data-en="Sports">Sports</a></li>
+                <li>
+                    <select id="language-selector" onchange="changeLanguage(this.value)">
+                        <option value="fr">🇫🇷 FR</option>
+                        <option value="en">🇬🇧 EN</option>
+                    </select>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Contact Buttons -->
+    <div class="contact-buttons">
+        <a href="https://wa.me/33612345678" target="_blank" class="contact-btn whatsapp-btn" title="WhatsApp">
+            💬
+        </a>
+        <a href="mailto:contact@tickethub.com" class="contact-btn email-btn" title="Email">
+            ✉️
+        </a>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>⚽ <span data-fr="Sports" data-en="Sports">Sports</span></h1>
+            <p data-fr="Football, Rugby, Tennis - Vivez les plus grands moments sportifs en direct" data-en="Football, Rugby, Tennis - Experience the greatest sports moments live">Football, Rugby, Tennis - Vivez les plus grands moments sportifs en direct</p>
+        </div>
+    </section>
+
+    <!-- Events Section -->
+    <section class="events-section" style="margin-top: 4rem;">
+        <div class="section-header">
+            <h2 data-fr="Tous les Événements Sportifs" data-en="All Sports Events">Tous les Événements Sportifs</h2>
+        </div>
+        <div class="events-grid" id="sports-grid">
+            <!-- Events will be dynamically loaded here -->
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>TicketHub</h3>
+                <p data-fr="Votre marketplace de confiance pour la revente de tickets premium." data-en="Your trusted marketplace for premium ticket resale.">Votre marketplace de confiance pour la revente de tickets premium.</p>
+            </div>
+            <div class="footer-section">
+                <h3 data-fr="Navigation" data-en="Navigation">Navigation</h3>
+                <a href="index.html" data-fr="Accueil" data-en="Home">Accueil</a>
+                <a href="concerts.html" data-fr="Concerts" data-en="Concerts">Concerts</a>
+                <a href="sports.html" data-fr="Sports" data-en="Sports">Sports</a>
+            </div>
+            <div class="footer-section">
+                <h3 data-fr="Informations" data-en="Information">Informations</h3>
+                <a href="#" data-fr="À propos" data-en="About">À propos</a>
+                <a href="#" data-fr="Contact" data-en="Contact">Contact</a>
+                <a href="#" data-fr="CGV" data-en="Terms">CGV</a>
+            </div>
+            <div class="footer-section">
+                <h3 data-fr="Suivez-nous" data-en="Follow us">Suivez-nous</h3>
+                <a href="#">Instagram</a>
+                <a href="#">Twitter</a>
+                <a href="#">Facebook</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p data-fr="&copy; 2026 TicketHub. Tous droits réservés." data-en="&copy; 2026 TicketHub. All rights reserved.">&copy; 2026 TicketHub. Tous droits réservés.</p>
+        </div>
+    </footer>
+
+    <script src="language.js"></script>
+    <script src="events-data.js"></script>
+    <script>
+        const sportsGrid = document.getElementById('sports-grid');
+        const sports = getEventsByCategory('sports');
+
+        sports.forEach(sport => {
+            const card = createEventCard(sport);
+            sportsGrid.appendChild(card);
+        });
+
+        function createEventCard(event) {
+            const card = document.createElement('a');
+            card.href = `event.html?id=${event.id}`;
+            card.className = 'event-card';
+
+            const dateObj = new Date(event.date);
+            const formattedDate = dateObj.toLocaleDateString(currentLanguage === 'fr' ? 'fr-FR' : 'en-GB', { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+
+            // For sports events, show league if available
+            const eventTitle = event.league ? `${event.name}` : event.name;
+            const subtitle = event.league ? `<div class="event-detail">
+                <span class="event-detail-icon">🏆</span>
+                <span>${event.league}</span>
+            </div>` : '';
+
+            card.innerHTML = `
+                <div class="event-image-container">
+                    <img src="${event.image}" alt="${event.name}" class="event-image">
+                    <div class="event-badge">${t('from')} ${event.minPrice}€</div>
+                </div>
+                <div class="event-info">
+                    <h3 class="event-name">${eventTitle}</h3>
+                    <div class="event-details">
+                        ${subtitle}
+                        <div class="event-detail">
+                            <span class="event-detail-icon">📍</span>
+                            <span>${event.venue}, ${event.city}</span>
+                        </div>
+                        <div class="event-detail">
+                            <span class="event-detail-icon">📅</span>
+                            <span>${formattedDate}</span>
+                        </div>
+                        <div class="event-detail">
+                            <span class="event-detail-icon">🕐</span>
+                            <span>${event.time}</span>
+                        </div>
+                    </div>
+                    <div class="event-footer">
+                        <div class="price-info">
+                            <span class="price-label">${t('from')}</span>
+                            <span class="price-amount">${event.minPrice}€</span>
+                        </div>
+                        <button class="btn-view">${t('view')}</button>
+                    </div>
+                </div>
+            `;
+
+            return card;
+        }
+    </script>
+</body>
+</html>
