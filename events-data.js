@@ -8,7 +8,7 @@ const eventsData = {
       city: 'Paris',
       date: '2026-03-15',
       time: '20:00',
-      image: 'https://ibb.co/b5553MKF?w=800&q=80',
+      image: 'drake.webp',
       minPrice: 89,
       tickets: [
         { section: 'Carré Or', row: 'A', seats: '12-13', price: 350 },
