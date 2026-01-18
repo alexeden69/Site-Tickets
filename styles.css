@@ -22,3 +22,44 @@
 .bubble-btn.secondary{
   background:#0f172a;
 }
+/* ===== Floating Contact Bubble ===== */
+.contact-bubble{
+  position: fixed !important;
+  right: 20px;
+  bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  z-index: 999999;
+}
+
+/* Base button */
+.bubble-btn{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 140px;
+  padding: 14px 16px;
+  border-radius: 999px;
+  font-weight: 900;
+  text-decoration: none;
+  color: #fff;
+  box-shadow: 0 12px 30px rgba(0,0,0,.25);
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+
+.bubble-btn:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 16px 40px rgba(0,0,0,.28);
+}
+
+/* WhatsApp */
+.bubble-btn.whatsapp{
+  background: #25D366;
+}
+
+/* Email */
+.bubble-btn.email{
+  background: #111827;
+}
+
