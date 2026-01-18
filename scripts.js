@@ -1,19 +1,34 @@
-// CLEAN dropdown toggle: add/remove "open" class (safer than toggling style display)
+/* ========= NAV DROPDOWNS (FINAL) ========= */
 document.querySelectorAll("[data-dd]").forEach(dd => {
   const btn = dd.querySelector(".tm-dd__btn");
   const menu = dd.querySelector(".tm-dd__menu");
   if (!btn || !menu) return;
 
-  btn.addEventListener("click", e => {
+  btn.addEventListener("click", (e) => {
     e.stopPropagation();
-    // Close other menus first
+
+    // Close other open menus
     document.querySelectorAll(".tm-dd__menu.open").forEach(m => {
       if (m !== menu) m.classList.remove("open");
     });
+
     // Toggle this menu
     menu.classList.toggle("open");
   });
 });
+
+// Close menus when clicking outside
+document.addEventListener("click", () => {
+  document.querySelectorAll(".tm-dd__menu.open").forEach(m => m.classList.remove("open"));
+});
+
+// Close menus on Escape
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") {
+    document.querySelectorAll(".tm-dd__menu.open").forEach(m => m.classList.remove("open"));
+  }
+});
+
 
 // Close menus when clicking elsewhere or on escape
 document.addEventListener("click", () => {
