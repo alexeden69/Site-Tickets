@@ -114,6 +114,45 @@ h3{margin:6px 0 8px}
 .contact-icon.whatsapp{ background:#25D366; }
 .contact-icon.email{ background:#111827; }
 
+/* ===== Dropdown menu: items on one line ===== */
+.tm-dd__menu{
+  display: flex;            /* align items in a row */
+  gap: 12px;                /* espace entre les liens */
+  align-items: center;
+  white-space: nowrap;      /* empêche le wrap */
+  padding: 8px 12px;
+  min-width: 160px;
+  max-width: calc(100vw - 40px);
+  overflow-x: auto;         /* permet scroll horizontal sur petits écrans */
+  -webkit-overflow-scrolling: touch;
+}
+
+/* styles des liens à l'intérieur */
+.tm-dd__menu a{
+  display: inline-block;
+  padding: 6px 8px;
+  border-radius: 8px;
+  color: #0f172a;
+  text-decoration: none;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* amélioration visuelle : ombre et fond pour le menu */
+.tm-dd__menu{
+  background: #fff;
+  box-shadow: 0 10px 30px rgba(6,24,64,.06);
+}
+
+/* petite amélioration : masquer scrollbar sur desktop si tu veux */
+.tm-dd__menu::-webkit-scrollbar{ height:6px; }
+.tm-dd__menu::-webkit-scrollbar-thumb{ background: rgba(0,0,0,0.12); border-radius:6px; }
+
+/* Pour mobile : augmenter la zone cliquable si besoin */
+@media (max-width:640px){
+  .tm-dd__menu a{ padding: 8px 10px; font-size:14px; }
+}
+
 
 
 
