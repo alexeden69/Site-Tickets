@@ -8,7 +8,7 @@ const eventsData = {
       city: 'Paris',
       date: '2026-03-15',
       time: '20:00',
-      image: 'https://www.britannica.com/biography/Drake?w=800&q=80',
+      image: 'https://s.yimg.com/ny/api/res/1.2/vtyf3c_OzBXGSHut8NbsVg--/YXBwaWQ9aGlnaGxhbmRlcjt3PTE0MDA7aD0xOTcyO2NmPXdlYnA-/https://media.zenfs.com/en/buzzfeed_articles_778/3fb41b44fb3eaab2c3642768f13aca81?w=800&q=80',
       minPrice: 89,
       tickets: [
         { section: 'Carré Or', row: 'A', seats: '12-13', price: 350 },
