@@ -45,3 +45,26 @@
     });
   }
 })();
+// Mobile dropdown toggle
+document.querySelectorAll("[data-dd]").forEach((dd) => {
+  const btn = dd.querySelector(".tm-dd__btn");
+  const menu = dd.querySelector(".tm-dd__menu");
+
+  btn.addEventListener("click", () => {
+    const isOpen = menu.style.display === "block";
+
+    // close others
+    document.querySelectorAll(".tm-dd__menu").forEach((m) => (m.style.display = "none"));
+
+    // toggle current
+    menu.style.display = isOpen ? "none" : "block";
+  });
+});
+
+// Close dropdowns when clicking outside
+document.addEventListener("click", (e) => {
+  const inside = e.target.closest("[data-dd]");
+  if (!inside) {
+    document.querySelectorAll(".tm-dd__menu").forEach((m) => (m.style.display = "none"));
+  }
+});
