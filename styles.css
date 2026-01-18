@@ -78,46 +78,43 @@ h3{margin:6px 0 8px}
   .hero h1{font-size:28px}
 }
 
-/* ===== Floating Contact Bubble ===== */
 .contact-bubble{
-  position: fixed !important;
-  right: 20px;
-  bottom: 20px;
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
   display: flex;
   flex-direction: column;
   gap: 12px;
   z-index: 999999;
 }
 
-/* Base button */
-.bubble-btn{
+.contact-icon{
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 140px;
-  padding: 14px 16px;
-  border-radius: 999px;
-  font-weight: 900;
-  text-decoration: none;
   color: #fff;
+  text-decoration: none;
   box-shadow: 0 12px 30px rgba(0,0,0,.25);
   transition: transform .15s ease, box-shadow .15s ease;
 }
 
-.bubble-btn:hover{
-  transform: translateY(-2px);
-  box-shadow: 0 16px 40px rgba(0,0,0,.28);
+.contact-icon svg{
+  width: 28px;
+  height: 28px;
 }
 
-/* WhatsApp */
-.bubble-btn.whatsapp{
-  background: #25D366;
+.contact-icon:hover{
+  transform: translateY(-3px);
+  box-shadow: 0 18px 42px rgba(0,0,0,.3);
 }
 
-/* Email */
-.bubble-btn.email{
-  background: #111827;
-}
+.contact-icon.whatsapp{ background:#25D366; }
+.contact-icon.email{ background:#111827; }
+
+
 
 
 
