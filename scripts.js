@@ -24,13 +24,14 @@ document.addEventListener("DOMContentLoaded", () => {
   bubble.className = "contact-bubble";
 
   bubble.innerHTML = `
-    <a class="bubble-btn" href="https://wa.me/447000000000" target="_blank" rel="noreferrer">
+    <a class="bubble-btn whatsapp" href="https://wa.me/447000000000" target="_blank" rel="noreferrer">
       WhatsApp
     </a>
-    <a class="bubble-btn secondary" href="mailto:support@yourdomain.com">
+    <a class="bubble-btn email" href="mailto:support@yourdomain.com">
       Email
     </a>
   `;
 
   document.body.appendChild(bubble);
 });
+
