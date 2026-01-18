@@ -153,6 +153,53 @@ h3{margin:6px 0 8px}
   .tm-dd__menu a{ padding: 8px 10px; font-size:14px; }
 }
 
+/* Fix dropdown layout + prevent overlap */
+.tm-nav { display: flex; gap: 18px; align-items: center; }
+
+/* Ensure each drop container is the positioning context */
+.tm-dd { position: relative; display: inline-block; }
+
+/* Menu: row layout, single line, non-wrapping, and correct sizing */
+.tm-dd__menu{
+  position: absolute;
+  top: 48px;                    /* place it below the header button */
+  left: 0;
+  display: flex;                /* keep items inline */
+  gap: 12px;
+  align-items: center;
+  white-space: nowrap;          /* prevent wrap */
+  padding: 10px 14px;
+  min-width: 160px;
+  max-width: calc(100vw - 40px);
+  overflow-x: auto;             /* allow horizontal scroll on small screens */
+  -webkit-overflow-scrolling: touch;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 12px 30px rgba(6,24,64,0.06);
+  z-index: 1200;                /* ensure it sits above other menus */
+}
+
+/* make each link look like a pill but keep them inline */
+.tm-dd__menu a{
+  display: inline-block;
+  padding: 8px 10px;
+  border-radius: 8px;
+  color: #0f172a;
+  text-decoration: none;
+  font-weight: 700;
+  white-space: nowrap;
+  background: transparent;
+}
+
+/* small UX: show subtle hover background so items are readable */
+.tm-dd__menu a:hover{ background: rgba(30,91,255,0.06); }
+
+/* On very small screens, reduce gaps and padding */
+@media (max-width: 520px){
+  .tm-dd__menu{ gap:8px; padding:8px 10px; min-width: 120px; }
+  .tm-dd__menu a{ padding:7px 8px; font-size:14px; }
+}
+
 
 
 
