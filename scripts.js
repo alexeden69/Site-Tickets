@@ -1,4 +1,4 @@
-/* ========= NAV DROPDOWNS (mobile) ========= */
+// CLEAN dropdown toggle: add/remove "open" class (safer than toggling style display)
 document.querySelectorAll("[data-dd]").forEach(dd => {
   const btn = dd.querySelector(".tm-dd__btn");
   const menu = dd.querySelector(".tm-dd__menu");
@@ -6,15 +6,25 @@ document.querySelectorAll("[data-dd]").forEach(dd => {
 
   btn.addEventListener("click", e => {
     e.stopPropagation();
-    const open = menu.style.display === "block";
-    document.querySelectorAll(".tm-dd__menu").forEach(m => m.style.display = "none");
-    menu.style.display = open ? "none" : "block";
+    // Close other menus first
+    document.querySelectorAll(".tm-dd__menu.open").forEach(m => {
+      if (m !== menu) m.classList.remove("open");
+    });
+    // Toggle this menu
+    menu.classList.toggle("open");
   });
 });
 
+// Close menus when clicking elsewhere or on escape
 document.addEventListener("click", () => {
-  document.querySelectorAll(".tm-dd__menu").forEach(m => m.style.display = "none");
+  document.querySelectorAll(".tm-dd__menu.open").forEach(m => m.classList.remove("open"));
 });
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") {
+    document.querySelectorAll(".tm-dd__menu.open").forEach(m => m.classList.remove("open"));
+  }
+});
+
 
 
 /* ========= FLOATING CONTACT ICONS ========= */
