@@ -425,6 +425,22 @@ function renderEventPage() {
     </div>
   `;
 }
+// ===== Contact Bubble (WhatsApp + Email) =====
+(function () {
+  const bubble = document.createElement("div");
+  bubble.className = "contact-bubble";
+
+  bubble.innerHTML = `
+    <a class="bubble-btn" href="https://wa.me/447000000000" target="_blank" rel="noreferrer">
+      WhatsApp
+    </a>
+    <a class="bubble-btn secondary" href="mailto:support@yourdomain.com">
+      Email
+    </a>
+  `;
+
+  document.body.appendChild(bubble);
+})();
 
 document.addEventListener("DOMContentLoaded", () => {
   renderConcertsList();
