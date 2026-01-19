@@ -10,7 +10,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- Navigation -->
     <nav>
         <div class="nav-container">
             <div class="logo">TicketHub</div>
@@ -33,17 +32,11 @@
         </div>
     </nav>
 
-    <!-- Contact Buttons -->
     <div class="contact-buttons">
-        <a href="https://wa.me/33612345678" target="_blank" class="contact-btn whatsapp-btn" title="WhatsApp">
-            💬
-        </a>
-        <a href="mailto:contact@tickethub.com" class="contact-btn email-btn" title="Email">
-            ✉️
-        </a>
+        <a href="https://wa.me/33612345678" target="_blank" class="contact-btn whatsapp-btn" title="WhatsApp">💬</a>
+        <a href="mailto:contact@tickethub.com" class="contact-btn email-btn" title="Email">✉️</a>
     </div>
 
-    <!-- Hero Section -->
     <section class="hero">
         <div class="hero-content">
             <h1 data-fr="Vos Événements, Nos Meilleurs Prix" data-en="Your Events, Our Best Prices">Vos Événements, Nos Meilleurs Prix</h1>
@@ -51,18 +44,14 @@
         </div>
     </section>
 
-    <!-- Trending Section -->
     <section class="trending-section">
         <h2 class="trending-title">
             <span class="trending-icon">🔥</span>
             <span data-fr="Dernières Places" data-en="Last Tickets">Dernières Places</span>
         </h2>
-        <div class="trending-grid" id="trending-grid">
-            <!-- Trending events will be loaded here -->
-        </div>
+        <div class="trending-grid" id="trending-grid"></div>
     </section>
 
-    <!-- Categories -->
     <section class="categories">
         <div class="category-grid">
             <a href="concerts.html" class="category-card">
@@ -74,7 +63,6 @@
                     <span class="category-count" id="concerts-count">0 événements</span>
                 </div>
             </a>
-
             <a href="sports.html" class="category-card">
                 <img src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=600&q=80" alt="Sports" class="category-image">
                 <div class="category-content">
@@ -87,26 +75,20 @@
         </div>
     </section>
 
-    <!-- Popular Events Section -->
     <section class="events-section">
         <div class="section-header">
             <h2 data-fr="Événements Populaires" data-en="Popular Events">Événements Populaires</h2>
         </div>
-        <div class="events-grid" id="popular-events">
-            <!-- Events will be dynamically loaded here -->
-        </div>
+        <div class="events-grid" id="popular-events"></div>
     </section>
 
-    <!-- Testimonials Section -->
     <section class="testimonials-section">
         <div class="testimonials-header">
             <h2 data-fr="Ce Que Disent Nos Clients" data-en="What Our Customers Say">Ce Que Disent Nos Clients</h2>
             <p data-fr="Des milliers de clients satisfaits à travers le monde" data-en="Thousands of satisfied customers worldwide">Des milliers de clients satisfaits à travers le monde</p>
         </div>
         <div class="testimonials-carousel">
-            <div class="testimonials-track" id="testimonials-track">
-                <!-- Testimonials will be loaded here -->
-            </div>
+            <div class="testimonials-track" id="testimonials-track"></div>
         </div>
         <div class="carousel-nav">
             <button class="carousel-btn" onclick="scrollTestimonials('left')">←</button>
@@ -115,24 +97,19 @@
         <div class="carousel-dots" id="carousel-dots"></div>
     </section>
 
-    <!-- FAQ Section -->
     <section class="faq-section">
         <div class="faq-header">
             <h2 data-fr="Questions Fréquentes" data-en="Frequently Asked Questions">Questions Fréquentes</h2>
             <p data-fr="Tout ce que vous devez savoir" data-en="Everything you need to know">Tout ce que vous devez savoir</p>
         </div>
-        <div class="faq-list" id="faq-list">
-            <!-- FAQ items will be loaded here -->
-        </div>
+        <div class="faq-list" id="faq-list"></div>
     </section>
 
-    <!-- Footer -->
     <footer>
         <div class="footer-content" style="max-width: 1000px; padding-bottom: 0;">
             <div class="footer-contact-form">
                 <h3 data-fr="Laissez-nous un Avis ou une Question" data-en="Leave us a Review or Question">Laissez-nous un Avis ou une Question</h3>
                 <p data-fr="Votre retour est important pour nous !" data-en="Your feedback is important to us!">Votre retour est important pour nous !</p>
-                
                 <form id="contact-form" onsubmit="handleFormSubmit(event)">
                     <div class="form-row">
                         <div class="form-group">
@@ -144,7 +121,6 @@
                             <input type="email" name="email" required placeholder="votre@email.com">
                         </div>
                     </div>
-
                     <div class="form-group" style="margin-bottom: 1.5rem;">
                         <label data-fr="Type de message" data-en="Message type">Type de message</label>
                         <div class="form-type-selector">
@@ -153,7 +129,6 @@
                         </div>
                         <input type="hidden" name="type" value="review">
                     </div>
-
                     <div id="rating-section" class="form-group" style="margin-bottom: 1.5rem;">
                         <label data-fr="Votre note" data-en="Your rating">Votre note</label>
                         <div class="star-rating">
@@ -165,17 +140,14 @@
                         </div>
                         <input type="hidden" name="rating" value="5">
                     </div>
-
                     <div class="form-group" style="margin-bottom: 1.5rem;">
                         <label data-fr="Votre message" data-en="Your message">Votre message</label>
                         <textarea name="message" required placeholder="Partagez votre expérience ou posez votre question..."></textarea>
                     </div>
-
                     <button type="submit" class="submit-btn" data-fr="Envoyer" data-en="Send">Envoyer</button>
                 </form>
             </div>
         </div>
-
         <div class="footer-content">
             <div class="footer-section">
                 <h3>TicketHub</h3>
@@ -209,217 +181,64 @@
     <script src="language.js"></script>
     <script src="sheets-loader.js"></script>
     <script>
-        // Wait for Google Sheets data to load
-        document.addEventListener('eventsLoaded', function() {
+        document.addEventListener('eventsLoaded', async function(e) {
             console.log('✅ Events loaded! Initializing page...');
-            initializePage();
+            await initializePage(e.detail);
         });
 
-        function initializePage() {
-            // Testimonials Data
+        async function initializePage(eventsData) {
             const testimonials = [
-                {
-                    name: 'Hans M.',
-                    location: currentLanguage === 'fr' ? 'Berlin, Allemagne' : 'Berlin, Germany',
-                    avatar: 'H',
-                    rating: 5,
-                    text: currentLanguage === 'fr' 
-                        ? "J'ai pu assister à la finale de Roland Garros grâce à TicketHub ! Transaction rapide et billets authentiques. Service au top, je recommande vivement !"
-                        : "I was able to attend the Roland Garros final thanks to TicketHub! Fast transaction and authentic tickets. Top service, highly recommend!",
-                    event: 'Roland Garros'
-                },
-                {
-                    name: 'Karim T.',
-                    location: 'Marseille, France',
-                    avatar: 'K',
-                    rating: 5,
-                    text: currentLanguage === 'fr'
-                        ? "Merci pour les places pour Jul ! Très sérieux et réactif, billets reçus instantanément. Excellent rapport qualité-prix, je reviendrai sans hésiter."
-                        : "Thanks for the Jul tickets! Very serious and responsive, tickets received instantly. Excellent value for money, I'll be back for sure.",
-                    event: 'Jul Concert'
-                },
-                {
-                    name: 'Sophie L.',
-                    location: currentLanguage === 'fr' ? 'Londres, Royaume-Uni' : 'London, UK',
-                    avatar: 'S',
-                    rating: 5,
-                    text: currentLanguage === 'fr'
-                        ? "Places VIP pour Drake à un prix imbattable ! Communication parfaite, vendeur de confiance. Concert incroyable, merci TicketHub !"
-                        : "VIP seats for Drake at an unbeatable price! Perfect communication, trusted seller. Amazing concert, thank you TicketHub!",
-                    event: 'Drake'
-                },
-                {
-                    name: 'Julie R.',
-                    location: 'Lyon, France',
-                    avatar: 'J',
-                    rating: 5,
-                    text: currentLanguage === 'fr'
-                        ? "Bruno Mars était extraordinaire ! Transaction sans problème, billets reçus en quelques minutes. Service impeccable, je recommande à 100% !"
-                        : "Bruno Mars was extraordinary! Transaction without problems, tickets received in minutes. Impeccable service, I recommend 100%!",
-                    event: 'Bruno Mars'
-                },
-                {
-                    name: 'Youssef A.',
-                    location: currentLanguage === 'fr' ? 'Casablanca, Maroc' : 'Casablanca, Morocco',
-                    avatar: 'Y',
-                    rating: 5,
-                    text: currentLanguage === 'fr'
-                        ? "Quelle fierté de voir le Maroc en finale de la CAN ! Merci TicketHub pour ces places, tout s'est passé parfaitement. Vendeur sérieux et professionnel."
-                        : "What a pride to see Morocco in the CAN final! Thank you TicketHub for these seats, everything went perfectly. Serious and professional seller.",
-                    event: 'CAN Maroc vs Sénégal'
-                },
-                {
-                    name: 'Carlos G.',
-                    location: currentLanguage === 'fr' ? 'Mexico, Mexique' : 'Mexico City, Mexico',
-                    avatar: 'C',
-                    rating: 5,
-                    text: currentLanguage === 'fr'
-                        ? "Merci infiniment pour les billets de la Coupe du Monde ! Impossible de trouver des places ailleurs. Transaction rapide, billets authentiques. ¡Muchas gracias!"
-                        : "Thank you so much for the World Cup tickets! Impossible to find seats elsewhere. Fast transaction, authentic tickets. ¡Muchas gracias!",
-                    event: 'World Cup USA'
-                }
+                { name: 'Hans M.', location: currentLanguage === 'fr' ? 'Berlin, Allemagne' : 'Berlin, Germany', avatar: 'H', rating: 5, text: currentLanguage === 'fr' ? "J'ai pu assister à la finale de Roland Garros grâce à TicketHub ! Transaction rapide et billets authentiques. Service au top, je recommande vivement !" : "I was able to attend the Roland Garros final thanks to TicketHub! Fast transaction and authentic tickets. Top service, highly recommend!", event: 'Roland Garros' },
+                { name: 'Karim T.', location: 'Marseille, France', avatar: 'K', rating: 5, text: currentLanguage === 'fr' ? "Merci pour les places pour Jul ! Très sérieux et réactif, billets reçus instantanément. Excellent rapport qualité-prix, je reviendrai sans hésiter." : "Thanks for the Jul tickets! Very serious and responsive, tickets received instantly. Excellent value for money, I'll be back for sure.", event: 'Jul Concert' },
+                { name: 'Sophie L.', location: currentLanguage === 'fr' ? 'Londres, Royaume-Uni' : 'London, UK', avatar: 'S', rating: 5, text: currentLanguage === 'fr' ? "Places VIP pour Drake à un prix imbattable ! Communication parfaite, vendeur de confiance. Concert incroyable, merci TicketHub !" : "VIP seats for Drake at an unbeatable price! Perfect communication, trusted seller. Amazing concert, thank you TicketHub!", event: 'Drake' },
+                { name: 'Julie R.', location: 'Lyon, France', avatar: 'J', rating: 5, text: currentLanguage === 'fr' ? "Bruno Mars était extraordinaire ! Transaction sans problème, billets reçus en quelques minutes. Service impeccable, je recommande à 100% !" : "Bruno Mars was extraordinary! Transaction without problems, tickets received in minutes. Impeccable service, I recommend 100%!", event: 'Bruno Mars' },
+                { name: 'Youssef A.', location: currentLanguage === 'fr' ? 'Casablanca, Maroc' : 'Casablanca, Morocco', avatar: 'Y', rating: 5, text: currentLanguage === 'fr' ? "Quelle fierté de voir le Maroc en finale de la CAN ! Merci TicketHub pour ces places, tout s'est passé parfaitement. Vendeur sérieux et professionnel." : "What a pride to see Morocco in the CAN final! Thank you TicketHub for these seats, everything went perfectly. Serious and professional seller.", event: 'CAN Maroc vs Sénégal' },
+                { name: 'Carlos G.', location: currentLanguage === 'fr' ? 'Mexico, Mexique' : 'Mexico City, Mexico', avatar: 'C', rating: 5, text: currentLanguage === 'fr' ? "Merci infiniment pour les billets de la Coupe du Monde ! Impossible de trouver des places ailleurs. Transaction rapide, billets authentiques. ¡Muchas gracias!" : "Thank you so much for the World Cup tickets! Impossible to find seats elsewhere. Fast transaction, authentic tickets. ¡Muchas gracias!", event: 'World Cup USA' }
             ];
 
-            // FAQ Data
             const faqData = [
-                {
-                    question: {
-                        fr: "Comment acheter des billets sur TicketHub ?",
-                        en: "How do I buy tickets on TicketHub?"
-                    },
-                    answer: {
-                        fr: "Parcourez nos événements, sélectionnez vos places, puis procédez au paiement sécurisé. Vous recevrez vos billets par email immédiatement après la confirmation.",
-                        en: "Browse our events, select your seats, then proceed to secure payment. You will receive your tickets by email immediately after confirmation."
-                    }
-                },
-                {
-                    question: {
-                        fr: "Les billets sont-ils authentiques et garantis ?",
-                        en: "Are the tickets authentic and guaranteed?"
-                    },
-                    answer: {
-                        fr: "Oui, tous nos billets sont 100% authentiques et garantis. Nous vérifions chaque billet avant la mise en vente. Si un problème survient, nous vous remboursons intégralement.",
-                        en: "Yes, all our tickets are 100% authentic and guaranteed. We verify each ticket before listing. If a problem occurs, we offer a full refund."
-                    }
-                },
-                {
-                    question: {
-                        fr: "Quels sont les modes de paiement acceptés ?",
-                        en: "What payment methods are accepted?"
-                    },
-                    answer: {
-                        fr: "Nous acceptons les cartes bancaires (Visa, Mastercard, American Express), PayPal, Apple Pay et Google Pay. Tous les paiements sont sécurisés et cryptés.",
-                        en: "We accept credit cards (Visa, Mastercard, American Express), PayPal, Apple Pay and Google Pay. All payments are secure and encrypted."
-                    }
-                },
-                {
-                    question: {
-                        fr: "Comment vais-je recevoir mes billets ?",
-                        en: "How will I receive my tickets?"
-                    },
-                    answer: {
-                        fr: "Vos billets vous seront envoyés par email au format PDF ou via une application mobile dédiée, selon l'événement. Vous pourrez les présenter directement depuis votre smartphone.",
-                        en: "Your tickets will be sent to you by email in PDF format or via a dedicated mobile app, depending on the event. You can present them directly from your smartphone."
-                    }
-                },
-                {
-                    question: {
-                        fr: "Puis-je revendre mes billets si je ne peux plus assister à l'événement ?",
-                        en: "Can I resell my tickets if I can no longer attend the event?"
-                    },
-                    answer: {
-                        fr: "Oui, vous pouvez revendre vos billets sur notre plateforme. Contactez notre service client qui vous guidera dans le processus de revente sécurisée.",
-                        en: "Yes, you can resell your tickets on our platform. Contact our customer service who will guide you through the secure resale process."
-                    }
-                },
-                {
-                    question: {
-                        fr: "Quelle est votre politique de remboursement ?",
-                        en: "What is your refund policy?"
-                    },
-                    answer: {
-                        fr: "Si un événement est annulé, vous serez remboursé intégralement. Pour les autres cas, contactez notre service client dans les 24h suivant l'achat pour étudier votre demande.",
-                        en: "If an event is cancelled, you will be fully refunded. For other cases, contact our customer service within 24 hours of purchase to review your request."
-                    }
-                },
-                {
-                    question: {
-                        fr: "Les prix incluent-ils les frais de service ?",
-                        en: "Do prices include service fees?"
-                    },
-                    answer: {
-                        fr: "Les prix affichés sont les prix finaux, frais de service inclus. Aucun frais supplémentaire ne sera ajouté lors du paiement.",
-                        en: "Displayed prices are final prices, including service fees. No additional fees will be added at checkout."
-                    }
-                },
-                {
-                    question: {
-                        fr: "Mes informations personnelles sont-elles sécurisées ?",
-                        en: "Is my personal information secure?"
-                    },
-                    answer: {
-                        fr: "Absolument. Nous utilisons un cryptage SSL de niveau bancaire pour protéger toutes vos données. Vos informations ne sont jamais partagées avec des tiers sans votre consentement.",
-                        en: "Absolutely. We use bank-level SSL encryption to protect all your data. Your information is never shared with third parties without your consent."
-                    }
-                }
+                { question: { fr: "Comment acheter des billets sur TicketHub ?", en: "How do I buy tickets on TicketHub?" }, answer: { fr: "Parcourez nos événements, sélectionnez vos places, puis procédez au paiement sécurisé. Vous recevrez vos billets par email immédiatement après la confirmation.", en: "Browse our events, select your seats, then proceed to secure payment. You will receive your tickets by email immediately after confirmation." } },
+                { question: { fr: "Les billets sont-ils authentiques et garantis ?", en: "Are the tickets authentic and guaranteed?" }, answer: { fr: "Oui, tous nos billets sont 100% authentiques et garantis. Nous vérifions chaque billet avant la mise en vente. Si un problème survient, nous vous remboursons intégralement.", en: "Yes, all our tickets are 100% authentic and guaranteed. We verify each ticket before listing. If a problem occurs, we offer a full refund." } },
+                { question: { fr: "Quels sont les modes de paiement acceptés ?", en: "What payment methods are accepted?" }, answer: { fr: "Nous acceptons les cartes bancaires (Visa, Mastercard, American Express), PayPal, Apple Pay et Google Pay. Tous les paiements sont sécurisés et cryptés.", en: "We accept credit cards (Visa, Mastercard, American Express), PayPal, Apple Pay and Google Pay. All payments are secure and encrypted." } },
+                { question: { fr: "Comment vais-je recevoir mes billets ?", en: "How will I receive my tickets?" }, answer: { fr: "Vos billets vous seront envoyés par email au format PDF ou via une application mobile dédiée, selon l'événement. Vous pourrez les présenter directement depuis votre smartphone.", en: "Your tickets will be sent to you by email in PDF format or via a dedicated mobile app, depending on the event. You can present them directly from your smartphone." } },
+                { question: { fr: "Puis-je revendre mes billets si je ne peux plus assister à l'événement ?", en: "Can I resell my tickets if I can no longer attend the event?" }, answer: { fr: "Oui, vous pouvez revendre vos billets sur notre plateforme. Contactez notre service client qui vous guidera dans le processus de revente sécurisée.", en: "Yes, you can resell your tickets on our platform. Contact our customer service who will guide you through the secure resale process." } },
+                { question: { fr: "Quelle est votre politique de remboursement ?", en: "What is your refund policy?" }, answer: { fr: "Si un événement est annulé, vous serez remboursé intégralement. Pour les autres cas, contactez notre service client dans les 24h suivant l'achat pour étudier votre demande.", en: "If an event is cancelled, you will be fully refunded. For other cases, contact our customer service within 24 hours of purchase to review your request." } },
+                { question: { fr: "Les prix incluent-ils les frais de service ?", en: "Do prices include service fees?" }, answer: { fr: "Les prix affichés sont les prix finaux, frais de service inclus. Aucun frais supplémentaire ne sera ajouté lors du paiement.", en: "Displayed prices are final prices, including service fees. No additional fees will be added at checkout." } },
+                { question: { fr: "Mes informations personnelles sont-elles sécurisées ?", en: "Is my personal information secure?" }, answer: { fr: "Absolument. Nous utilisons un cryptage SSL de niveau bancaire pour protéger toutes vos données. Vos informations ne sont jamais partagées avec des tiers sans votre consentement.", en: "Absolutely. We use bank-level SSL encryption to protect all your data. Your information is never shared with third parties without your consent." } }
             ];
 
-            // ✅ APRÈS - Version corrigée
-// Load Trending Events
-const trendingGrid = document.getElementById('trending-grid');
-const trendingEvents = await getTrendingEvents(); // Utiliser la fonction dédiée
+            const trendingGrid = document.getElementById('trending-grid');
+            const trendingEvents = await getTrendingEvents();
+            trendingEvents.forEach(event => {
+                const card = createTrendingCard(event);
+                trendingGrid.appendChild(card);
+            });
 
-trendingEvents.forEach(event => {
-    const card = createTrendingCard(event);
-    trendingGrid.appendChild(card);
-});
+            document.getElementById('concerts-count').textContent = `${eventsData.concerts.length} ${t('events')}`;
+            document.getElementById('sports-count').textContent = `${eventsData.sports.length} ${t('events')}`;
 
-// Update category counts
-document.getElementById('concerts-count').textContent = `${eventsData.concerts.length} ${t('events')}`;
-document.getElementById('sports-count').textContent = `${eventsData.sports.length} ${t('events')}`;
+            const popularEventsContainer = document.getElementById('popular-events');
+            const allEventsData = await getAllEvents();
+            const allEventsArray = [...allEventsData.concerts, ...allEventsData.sports];
+            const popularEvents = allEventsArray.filter(e => !e.trending).slice(0, 6);
+            popularEvents.forEach(event => {
+                const eventCard = createEventCard(event);
+                popularEventsContainer.appendChild(eventCard);
+            });
 
-// Display popular events
-const popularEventsContainer = document.getElementById('popular-events');
-const allEventsData = await getAllEvents(); // Ajouter await
-const allEventsArray = [...allEventsData.concerts, ...allEventsData.sports]; // Convertir en tableau
-const popularEvents = allEventsArray.filter(e => !e.trending).slice(0, 6);
-
-popularEvents.forEach(event => {
-    const eventCard = createEventCard(event);
-    popularEventsContainer.appendChild(eventCard);
-});
-
-            // Load Testimonials
             const testimonialsTrack = document.getElementById('testimonials-track');
             testimonials.forEach((testimonial, index) => {
                 const card = document.createElement('div');
                 card.className = 'testimonial-card';
                 card.style.animationDelay = `${index * 0.1}s`;
-
                 const stars = '⭐'.repeat(testimonial.rating);
-
-                card.innerHTML = `
-                    <div class="testimonial-header">
-                        <div class="testimonial-avatar">${testimonial.avatar}</div>
-                        <div class="testimonial-info">
-                            <h4>${testimonial.name}</h4>
-                            <div class="testimonial-location">${testimonial.location}</div>
-                        </div>
-                    </div>
-                    <div class="testimonial-stars">${stars}</div>
-                    <p class="testimonial-text">${testimonial.text}</p>
-                    <div class="testimonial-event">${testimonial.event}</div>
-                `;
-
+                card.innerHTML = `<div class="testimonial-header"><div class="testimonial-avatar">${testimonial.avatar}</div><div class="testimonial-info"><h4>${testimonial.name}</h4><div class="testimonial-location">${testimonial.location}</div></div></div><div class="testimonial-stars">${stars}</div><p class="testimonial-text">${testimonial.text}</p><div class="testimonial-event">${testimonial.event}</div>`;
                 testimonialsTrack.appendChild(card);
             });
 
-            // Testimonials Carousel
             let currentTestimonial = 0;
             const testimonialCards = document.querySelectorAll('.testimonial-card');
             const dotsContainer = document.getElementById('carousel-dots');
-
-            // Create dots
             for (let i = 0; i < Math.ceil(testimonialCards.length / 3); i++) {
                 const dot = document.createElement('div');
                 dot.className = 'carousel-dot';
@@ -446,42 +265,26 @@ popularEvents.forEach(event => {
             function updateTestimonialsPosition() {
                 const track = document.getElementById('testimonials-track');
                 track.style.transform = `translateX(-${currentTestimonial * 100}%)`;
-                
                 document.querySelectorAll('.carousel-dot').forEach((dot, index) => {
                     dot.classList.toggle('active', index === currentTestimonial);
                 });
             }
 
-            // Load FAQ
             const faqList = document.getElementById('faq-list');
             faqData.forEach((faq, index) => {
                 const item = document.createElement('div');
                 item.className = 'faq-item';
                 item.style.animationDelay = `${index * 0.1}s`;
-
-                item.innerHTML = `
-                    <div class="faq-question" onclick="toggleFAQ(this)">
-                        <h3>${faq.question[currentLanguage]}</h3>
-                        <span class="faq-icon">▼</span>
-                    </div>
-                    <div class="faq-answer">
-                        <p>${faq.answer[currentLanguage]}</p>
-                    </div>
-                `;
-
+                item.innerHTML = `<div class="faq-question" onclick="toggleFAQ(this)"><h3>${faq.question[currentLanguage]}</h3><span class="faq-icon">▼</span></div><div class="faq-answer"><p>${faq.answer[currentLanguage]}</p></div>`;
                 faqList.appendChild(item);
             });
 
             window.toggleFAQ = function(element) {
                 const faqItem = element.parentElement;
                 const wasActive = faqItem.classList.contains('active');
-                
-                // Close all FAQ items
                 document.querySelectorAll('.faq-item').forEach(item => {
                     item.classList.remove('active');
                 });
-                
-                // Open clicked item if it wasn't active
                 if (!wasActive) {
                     faqItem.classList.add('active');
                 }
@@ -492,49 +295,10 @@ popularEvents.forEach(event => {
             const card = document.createElement('a');
             card.href = `event.html?id=${event.id}`;
             card.className = 'event-card';
-
-            const dateObj = new Date(event.date);
-            const formattedDate = dateObj.toLocaleDateString(currentLanguage === 'fr' ? 'fr-FR' : 'en-GB', { 
-                weekday: 'long', 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric' 
-            });
-
+            const minPrice = Math.min(...event.tickets.map(t => t.price));
+            const formattedDate = formatEventDate(event.date);
             const lastTicketsText = currentLanguage === 'fr' ? '🔥 Dernières places' : '🔥 Last tickets';
-
-            card.innerHTML = `
-                <div class="event-image-container">
-                    <div class="trending-badge">${lastTicketsText}</div>
-                    <img src="${event.image}" alt="${event.name}" class="event-image">
-                    <div class="event-badge">${t('from')} ${event.minPrice}€</div>
-                </div>
-                <div class="event-info">
-                    <h3 class="event-name">${event.name}</h3>
-                    <div class="event-details">
-                        <div class="event-detail">
-                            <span class="event-detail-icon">📍</span>
-                            <span>${event.venue}, ${event.city}</span>
-                        </div>
-                        <div class="event-detail">
-                            <span class="event-detail-icon">📅</span>
-                            <span>${formattedDate}</span>
-                        </div>
-                        <div class="event-detail">
-                            <span class="event-detail-icon">🕐</span>
-                            <span>${event.time}</span>
-                        </div>
-                    </div>
-                    <div class="event-footer">
-                        <div class="price-info">
-                            <span class="price-label">${t('from')}</span>
-                            <span class="price-amount">${event.minPrice}€</span>
-                        </div>
-                        <button class="btn-view">${t('view')}</button>
-                    </div>
-                </div>
-            `;
-
+            card.innerHTML = `<div class="event-image-container"><div class="trending-badge">${lastTicketsText}</div><img src="${event.image}" alt="${event.name}" class="event-image"><div class="event-badge">${t('from')} ${minPrice}€</div></div><div class="event-info"><h3 class="event-name">${event.name}</h3><div class="event-details"><div class="event-detail"><span class="event-detail-icon">📍</span><span>${event.location}</span></div><div class="event-detail"><span class="event-detail-icon">📅</span><span>${formattedDate}</span></div></div><div class="event-footer"><div class="price-info"><span class="price-label">${t('from')}</span><span class="price-amount">${minPrice}€</span></div><button class="btn-view">${t('view')}</button></div></div>`;
             return card;
         }
 
@@ -542,56 +306,16 @@ popularEvents.forEach(event => {
             const card = document.createElement('a');
             card.href = `event.html?id=${event.id}`;
             card.className = 'event-card';
-
-            const dateObj = new Date(event.date);
-            const formattedDate = dateObj.toLocaleDateString(currentLanguage === 'fr' ? 'fr-FR' : 'en-GB', { 
-                weekday: 'long', 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric' 
-            });
-
-            card.innerHTML = `
-                <div class="event-image-container">
-                    <img src="${event.image}" alt="${event.name}" class="event-image">
-                    <div class="event-badge">${t('from')} ${event.minPrice}€</div>
-                </div>
-                <div class="event-info">
-                    <h3 class="event-name">${event.name}</h3>
-                    <div class="event-details">
-                        <div class="event-detail">
-                            <span class="event-detail-icon">📍</span>
-                            <span>${event.venue}, ${event.city}</span>
-                        </div>
-                        <div class="event-detail">
-                            <span class="event-detail-icon">📅</span>
-                            <span>${formattedDate}</span>
-                        </div>
-                        <div class="event-detail">
-                            <span class="event-detail-icon">🕐</span>
-                            <span>${event.time}</span>
-                        </div>
-                    </div>
-                    <div class="event-footer">
-                        <div class="price-info">
-                            <span class="price-label">${t('from')}</span>
-                            <span class="price-amount">${event.minPrice}€</span>
-                        </div>
-                        <button class="btn-view">${t('view')}</button>
-                    </div>
-                </div>
-            `;
-
+            const minPrice = Math.min(...event.tickets.map(t => t.price));
+            const formattedDate = formatEventDate(event.date);
+            card.innerHTML = `<div class="event-image-container"><img src="${event.image}" alt="${event.name}" class="event-image"><div class="event-badge">${t('from')} ${minPrice}€</div></div><div class="event-info"><h3 class="event-name">${event.name}</h3><div class="event-details"><div class="event-detail"><span class="event-detail-icon">📍</span><span>${event.location}</span></div><div class="event-detail"><span class="event-detail-icon">📅</span><span>${formattedDate}</span></div></div><div class="event-footer"><div class="price-info"><span class="price-label">${t('from')}</span><span class="price-amount">${minPrice}€</span></div><button class="btn-view">${t('view')}</button></div></div>`;
             return card;
         }
 
-        // Contact Form Functions
         let currentRating = 5;
-        
         window.setRating = function(rating) {
             currentRating = rating;
             document.querySelector('input[name="rating"]').value = rating;
-            
             const stars = document.querySelectorAll('.star');
             stars.forEach((star, index) => {
                 if (index < rating) {
@@ -610,8 +334,6 @@ popularEvents.forEach(event => {
             });
             element.classList.add('active');
             document.querySelector('input[name="type"]').value = type;
-            
-            // Show/hide rating section based on type
             const ratingSection = document.getElementById('rating-section');
             if (type === 'review') {
                 ratingSection.style.display = 'block';
@@ -622,7 +344,6 @@ popularEvents.forEach(event => {
         
         window.handleFormSubmit = function(event) {
             event.preventDefault();
-            
             const formData = new FormData(event.target);
             const data = {
                 name: formData.get('name'),
@@ -631,21 +352,15 @@ popularEvents.forEach(event => {
                 rating: formData.get('rating'),
                 message: formData.get('message')
             };
-            
-            // Simulate form submission
             const messageText = currentLanguage === 'fr' 
                 ? `Merci ${data.name} !\n\nVotre ${data.type === 'review' ? 'avis' : 'question'} a bien été envoyé.\nNous vous répondrons à ${data.email} dans les plus brefs délais.`
                 : `Thank you ${data.name}!\n\nYour ${data.type === 'review' ? 'review' : 'question'} has been sent.\nWe will reply to ${data.email} as soon as possible.`;
-            
             alert(messageText);
             event.target.reset();
-            setRating(5); // Reset to 5 stars
+            setRating(5);
         }
         
-        // Initialize rating to 5 stars on load
-        setTimeout(() => {
-            setRating(5);
-        }, 100);
+        setTimeout(() => { setRating(5); }, 100);
     </script>
 </body>
 </html>
