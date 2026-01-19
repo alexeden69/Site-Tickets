@@ -784,68 +784,6 @@ body.dark-mode footer {
   gap: 2rem;
 }
 
-/* Badge "Dernières places" - CORRECTION */
-.trending-badge {
-  position: absolute;
-  top: 1rem;
-  left: 1rem;
-  background: linear-gradient(135deg, #ff3d00 0%, #ff6b00 100%);
-  color: white;
-  padding: 0.6rem 1.2rem;
-  border-radius: 30px;
-  font-weight: 700;
-  font-size: 0.9rem;
-  box-shadow: 0 4px 20px rgba(255, 61, 0, 0.6);
-  z-index: 3;
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  animation: pulseGlow 2s infinite;
-}
-
-/* Animation pour rendre le badge plus visible */
-@keyframes pulseGlow {
-  0%, 100% {
-    box-shadow: 0 4px 20px rgba(255, 61, 0, 0.6);
-    transform: scale(1);
-  }
-  50% {
-    box-shadow: 0 6px 30px rgba(255, 61, 0, 0.8);
-    transform: scale(1.05);
-  }
-}
-
-/* S'assurer que le badge du prix ne chevauche pas */
-.event-badge {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  background: var(--gradient-1);
-  color: white;
-  padding: 0.5rem 1rem;
-  border-radius: 30px;
-  font-weight: 700;
-  font-size: 0.85rem;
-  box-shadow: 0 4px 15px rgba(255, 0, 110, 0.3);
-  z-index: 2;
-}
-
-/* Conteneur d'image pour s'assurer du positionnement */
-.event-image-container {
-  position: relative;
-  overflow: hidden;
-  height: 220px;
-  background: var(--border);
-}
-
-/* Responsive pour petits écrans */
-@media (max-width: 480px) {
-  .trending-badge {
-    padding: 0.5rem 1rem;
-    font-size: 0.85rem;
-  }
-}
-
 /* Testimonials Section */
 .testimonials-section {
   max-width: 1400px;
