@@ -8,8 +8,8 @@ const CONFIG = {
     
     // Emails
     EMAIL: {
-        support: 'contact@tickethub.com',
-        admin: 'admin@tickethub.com'  // TON EMAIL pour recevoir les alertes
+        support: 'alexeden69@gmail.com',
+        admin: 'alexeden69@gmail.com'  // TON EMAIL pour recevoir les alertes
     },
     
     // WhatsApp (format international sans +)
