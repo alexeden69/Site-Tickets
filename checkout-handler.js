@@ -159,7 +159,7 @@ class Order {
         <div class="content">
             <p>Bonjour <strong>${this.customer.firstName} ${this.customer.lastName}</strong>,</p>
             
-            <p>Merci pour votre demande ! Voici un récapitulatif :</p>
+            <p>Merci pour votre commande ! Voici un récapitulatif de votre commande :</p>
             
             <div class="order-box">
                 <h2 style="margin-top: 0; color: #ff006e;">📋 Votre demande</h2>
@@ -202,7 +202,7 @@ class Order {
             
             <div class="highlight-box">
                 <h3 style="margin-top: 0; color: #1976D2;">📞 Prochaines étapes</h3>
-                <p><strong>Nous vous contactons sous 24h maximum</strong> pour :</p>
+                <p><strong>Nous vous contactons sous 24h maximum pour finaliser votre commande</strong> pour :</p>
                 <ul>
                     <li>✅ Confirmer la disponibilité des billets</li>
                     <li>✅ Vous communiquer le prix final</li>
