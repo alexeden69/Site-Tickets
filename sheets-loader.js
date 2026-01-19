@@ -1,6 +1,6 @@
 // sheets-loader.js - Adapté pour votre structure de données
 
-const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTvCQIYzDcNpyFv5Ky0reWleWjeDlz2iPA4kTWzZsKSzOrFUfevS7_AkDvvFF1H3PGIKmhM8RqoUtM-/pub?gid=0&single=true&output=csv'; // Remplacez par votre URL Google Sheets CSV
+const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTvCQIYzDcNpyFv5Ky0reWleWjeDlz2iPA4kTWzZsKSzOrFUfevS7_AkDvvFF1H3PGIKmhM8RqoUtM-/pub?gid=0&single=true&output=csv';
 
 /**
  * Parse les données CSV
@@ -175,10 +175,63 @@ function formatPrice(price) {
     return price;
 }
 
+/**
+ * Variable globale pour stocker les événements chargés
+ */
+let cachedEvents = null;
+
+/**
+ * Récupère tous les événements (depuis le cache ou charge depuis Sheets)
+ */
+async function getAllEvents() {
+    if (cachedEvents) {
+        return cachedEvents;
+    }
+    
+    cachedEvents = await loadEventsFromSheet();
+    return cachedEvents;
+}
+
+/**
+ * Récupère les événements d'une catégorie spécifique
+ */
+async function getEventsByCategory(category) {
+    const events = await getAllEvents();
+    return events[category] || [];
+}
+
+/**
+ * Récupère un événement spécifique par son ID
+ */
+async function getEventById(eventId) {
+    const events = await getAllEvents();
+    
+    // Chercher dans les concerts
+    let event = events.concerts.find(e => e.id === eventId);
+    if (event) return event;
+    
+    // Chercher dans les sports
+    event = events.sports.find(e => e.id === eventId);
+    return event;
+}
+
+/**
+ * Récupère les événements trending
+ */
+async function getTrendingEvents() {
+    const events = await getAllEvents();
+    const allEvents = [...events.concerts, ...events.sports];
+    return allEvents.filter(e => e.trending);
+}
+
 // Export des fonctions si vous utilisez des modules
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
         loadEventsFromSheet,
+        getAllEvents,
+        getEventsByCategory,
+        getEventById,
+        getTrendingEvents,
         formatEventDate,
         formatPrice
     };
@@ -188,6 +241,7 @@ if (typeof module !== 'undefined' && module.exports) {
 document.addEventListener('DOMContentLoaded', async () => {
     try {
         const events = await loadEventsFromSheet();
+        cachedEvents = events;
         
         // Dispatcher un événement personnalisé avec les données
         const eventLoadedEvent = new CustomEvent('eventsLoaded', { 
