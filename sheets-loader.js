@@ -9,7 +9,7 @@ let eventsData = {
 let dataLoaded = false;
 
 // CONFIGURATION: Replace this URL with your published Google Sheet CSV URL
-const GOOGLE_SHEET_URL = 'YOUR_GOOGLE_SHEET_CSV_URL_HERE';
+const GOOGLE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTvCQIYzDcNpyFv5Ky0reWleWjeDlz2iPA4kTWzZsKSzOrFUfevS7_AkDvvFF1H3PGIKmhM8RqoUtM-/pub?gid=0&single=true&output=tsv';
 
 // Function to parse CSV data
 function parseCSV(csv) {
