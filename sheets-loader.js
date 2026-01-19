@@ -1,279 +1,211 @@
-// Google Sheets Loader
-// This file loads event data from a published Google Sheet
+// sheets-loader.js - Adapté pour votre structure de données
 
-let eventsData = {
-  concerts: [],
-  sports: []
-};
+const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTvCQIYzDcNpyFv5Ky0reWleWjeDlz2iPA4kTWzZsKSzOrFUfevS7_AkDvvFF1H3PGIKmhM8RqoUtM-/pub?gid=0&single=true&output=csv'; // Remplacez par votre URL Google Sheets CSV
 
-let dataLoaded = false;
-
-// CONFIGURATION: Replace this URL with your published Google Sheet CSV URL
-const GOOGLE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTvCQIYzDcNpyFv5Ky0reWleWjeDlz2iPA4kTWzZsKSzOrFUfevS7_AkDvvFF1H3PGIKmhM8RqoUtM-/pub?gid=0&single=true&output=tsv';
-
-// Function to parse CSV data
-function parseCSV(csv) {
-  const lines = csv.split('\n');
-  const headers = lines[0].split(',').map(h => h.trim());
-  const data = [];
-
-  for (let i = 1; i < lines.length; i++) {
-    if (!lines[i].trim()) continue;
+/**
+ * Parse les données CSV
+ */
+function parseCSV(text) {
+    const lines = text.trim().split('\n');
+    const headers = lines[0].split(',').map(h => h.trim());
+    const data = [];
     
-    const values = lines[i].split(',').map(v => v.trim().replace(/^"|"$/g, ''));
-    const row = {};
+    for (let i = 1; i < lines.length; i++) {
+        const values = lines[i].split(',');
+        const row = {};
+        headers.forEach((header, index) => {
+            row[header] = values[index] ? values[index].trim() : '';
+        });
+        data.push(row);
+    }
     
-    headers.forEach((header, index) => {
-      row[header] = values[index] || '';
+    return data;
+}
+
+/**
+ * Groupe les tickets par événement
+ */
+function groupTicketsByEvent(tickets) {
+    const events = { concerts: [], sports: [] };
+    const eventMap = new Map();
+    
+    tickets.forEach((ticket, index) => {
+        const lineNum = index + 2;
+        
+        // Validation des champs obligatoires
+        if (!ticket.event_id) {
+            console.error(`❌ Ligne ${lineNum}: event_id est vide ou manquant`);
+            return;
+        }
+        
+        if (!ticket.event_name) {
+            console.error(`❌ Ligne ${lineNum}: event_name est vide ou manquant`);
+            return;
+        }
+        
+        // Déterminer la catégorie
+        const category = ticket.category ? ticket.category.toLowerCase() : 'concerts';
+        
+        // Créer l'identifiant unique de l'événement
+        const eventKey = ticket.event_id;
+        
+        // Si l'événement n'existe pas encore, le créer
+        if (!eventMap.has(eventKey)) {
+            // Combiner date et heure
+            let eventDateTime = ticket.date || '';
+            if (ticket.time) {
+                eventDateTime += ` ${ticket.time}`;
+            }
+            
+            // Combiner venue et city pour location
+            let location = '';
+            if (ticket.venue && ticket.city) {
+                location = `${ticket.venue}, ${ticket.city}`;
+            } else if (ticket.venue) {
+                location = ticket.venue;
+            } else if (ticket.city) {
+                location = ticket.city;
+            }
+            
+            const event = {
+                id: ticket.event_id,
+                name: ticket.event_name,
+                date: eventDateTime,
+                location: location,
+                image: ticket.image_url || '',
+                category: category,
+                trending: ticket.trending === 'TRUE' || ticket.trending === 'true',
+                tickets: []
+            };
+            
+            eventMap.set(eventKey, event);
+            
+            // Ajouter l'événement à la bonne catégorie
+            if (category === 'sports') {
+                events.sports.push(event);
+            } else {
+                events.concerts.push(event);
+            }
+        }
+        
+        // Ajouter le ticket à l'événement
+        const event = eventMap.get(eventKey);
+        
+        // Créer la description du ticket
+        let ticketDescription = '';
+        if (ticket.section) ticketDescription += `Section ${ticket.section}`;
+        if (ticket.row && ticket.row !== 'TBD') ticketDescription += ` - Rangée ${ticket.row}`;
+        if (ticket.seats && ticket.seats !== 'TBD') ticketDescription += ` - Siège ${ticket.seats}`;
+        
+        event.tickets.push({
+            type: ticket.section || 'Standard',
+            price: parseFloat(ticket.price) || 0,
+            quantity: ticket.seats || 'TBD',
+            description: ticketDescription.trim() || 'Billet standard'
+        });
     });
     
-    data.push(row);
-  }
-  
-  return data;
-}
-
-// Function to group tickets by event
-function groupTicketsByEvent(rows) {
-  const events = {};
-  
-  rows.forEach((row, index) => {
-    // Validation des données obligatoires
-    if (!row.event_id || row.event_id.trim() === '') {
-      console.error(`❌ Ligne ${index + 2}: event_id est vide ou manquant`);
-      return;
-    }
-    
-    if (!row.event_name || row.event_name.trim() === '') {
-      console.error(`❌ Ligne ${index + 2}: event_name est vide ou manquant`);
-      return;
-    }
-    
-    if (!row.category || row.category.trim() === '') {
-      console.error(`❌ Ligne ${index + 2}: category est vide ou manquant (doit être "Concert" ou "Sport")`);
-      return;
-    }
-    
-    if (!row.venue || row.venue.trim() === '') {
-      console.error(`❌ Ligne ${index + 2}: venue est vide ou manquant`);
-      return;
-    }
-    
-    if (!row.city || row.city.trim() === '') {
-      console.error(`❌ Ligne ${index + 2}: city est vide ou manquant`);
-      return;
-    }
-    
-    if (!row.date || row.date.trim() === '') {
-      console.error(`❌ Ligne ${index + 2}: date est vide ou manquant`);
-      return;
-    }
-    
-    if (!row.section || row.section.trim() === '') {
-      console.error(`❌ Ligne ${index + 2}: section est vide ou manquant`);
-      return;
-    }
-    
-    if (!row.price || row.price.trim() === '') {
-      console.error(`❌ Ligne ${index + 2}: price est vide ou manquant`);
-      return;
-    }
-    
-    const eventId = row.event_id.trim();
-    
-    if (!events[eventId]) {
-      events[eventId] = {
-        id: eventId,
-        name: row.event_name.trim(),
-        venue: row.venue.trim(),
-        city: row.city.trim(),
-        date: row.date.trim(),
-        time: row.time ? row.time.trim() : '20:00',
-        image: row.image_url ? row.image_url.trim() : 'https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?w=800&q=80',
-        category: row.category.trim().toLowerCase(),
-        trending: row.trending === 'TRUE' || row.trending === 'true' || row.trending === '1',
-        tickets: []
-      };
-      
-      // Add league for sports events
-      if (row.league && row.league.trim() !== '') {
-        events[eventId].league = row.league.trim();
-      }
-    }
-    
-    // Add ticket to event
-    events[eventId].tickets.push({
-      section: row.section.trim(),
-      row: row.row ? row.row.trim() : 'GA',
-      seats: row.seats ? row.seats.trim() : '1',
-      price: parseInt(row.price)
+    console.log('Events loaded successfully:', {
+        concerts: events.concerts.length,
+        sports: events.sports.length
     });
-  });
-  
-  return events;
+    
+    return events;
 }
 
-// Function to calculate minimum price for each event
-function calculateMinPrices(events) {
-  Object.values(events).forEach(event => {
-    if (event.tickets.length > 0) {
-      event.minPrice = Math.min(...event.tickets.map(t => t.price));
-    }
-  });
-}
-
-// Function to load data from Google Sheets
+/**
+ * Charge les événements depuis Google Sheets
+ */
 async function loadEventsFromSheet() {
-  try {
-    console.log('Loading events from Google Sheets...');
-    
-    const response = await fetch(GOOGLE_SHEET_URL);
-    const csvText = await response.text();
-    
-    const rows = parseCSV(csvText);
-    const events = groupTicketsByEvent(rows);
-    calculateMinPrices(events);
-    
-    // Separate events by category
-    eventsData.concerts = [];
-    eventsData.sports = [];
-    
-    Object.values(events).forEach(event => {
-      if (event.category === 'concert') {
-        eventsData.concerts.push(event);
-      } else if (event.category === 'sport') {
-        eventsData.sports.push(event);
-      }
-    });
-    
-    // Sort by date
-    eventsData.concerts.sort((a, b) => new Date(a.date) - new Date(b.date));
-    eventsData.sports.sort((a, b) => new Date(a.date) - new Date(b.date));
-    
-    dataLoaded = true;
-    console.log('Events loaded successfully:', eventsData);
-    
-    // Trigger custom event to notify that data is loaded
-    document.dispatchEvent(new CustomEvent('eventsLoaded'));
-    
-    return eventsData;
-  } catch (error) {
-    console.error('Error loading events from Google Sheets:', error);
-    
-    // Fallback to static data if Google Sheets fails
-    console.log('Using fallback static data...');
-    loadFallbackData();
-    
-    dataLoaded = true;
-    document.dispatchEvent(new CustomEvent('eventsLoaded'));
-    
-    return eventsData;
-  }
+    try {
+        console.log('🔄 Loading events from Google Sheets...');
+        
+        const response = await fetch(SHEET_CSV_URL);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const csvText = await response.text();
+        const tickets = parseCSV(csvText);
+        
+        console.log(`📊 Parsed ${tickets.length} tickets from CSV`);
+        
+        const events = groupTicketsByEvent(tickets);
+        
+        console.log('Events loaded successfully:', events);
+        
+        return events;
+        
+    } catch (error) {
+        console.error('❌ Error loading events:', error);
+        throw error;
+    }
 }
 
-// Fallback static data (same as events-data.js)
-function loadFallbackData() {
-  eventsData = {
-    concerts: [
-      {
-        id: 'drake-paris-2026',
-        name: 'Drake',
-        venue: 'Accor Arena',
-        city: 'Paris',
-        date: '2026-03-15',
-        time: '20:00',
-        image: 'https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?w=800&q=80',
-        minPrice: 89,
-        trending: true,
-        tickets: [
-          { section: 'Carré Or', row: 'A', seats: '12-13', price: 350 },
-          { section: 'Carré Or', row: 'B', seats: '5-6', price: 320 },
-          { section: 'Gradin Latéral', row: 'K', seats: '18-19-20', price: 150 },
-          { section: 'Gradin Central', row: 'M', seats: '8-9', price: 180 },
-          { section: 'Fosse Debout', row: 'GA', seats: '1', price: 89 }
-        ]
-      },
-      {
-        id: 'bruno-mars-lyon-2026',
-        name: 'Bruno Mars',
-        venue: 'Halle Tony Garnier',
-        city: 'Lyon',
-        date: '2026-04-22',
-        time: '21:00',
-        image: 'https://images.unsplash.com/photo-1501612780327-45045538702b?w=800&q=80',
-        minPrice: 75,
-        trending: true,
-        tickets: [
-          { section: 'VIP', row: 'C', seats: '1-2', price: 450 },
-          { section: 'Parterre', row: 'H', seats: '14-15', price: 220 },
-          { section: 'Balcon', row: 'P', seats: '22-23-24', price: 140 },
-          { section: 'Fosse', row: 'GA', seats: '2', price: 75 }
-        ]
-      }
-    ],
-    sports: [
-      {
-        id: 'psg-marseille-2026',
-        name: 'PSG vs Marseille',
-        league: 'Ligue 1',
-        venue: 'Parc des Princes',
-        city: 'Paris',
-        date: '2026-02-28',
-        time: '21:00',
-        image: 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=800&q=80',
-        minPrice: 120,
-        trending: true,
-        tickets: [
-          { section: 'Tribune Présidentielle', row: 'E', seats: '8-9', price: 650 },
-          { section: 'Tribune Auteuil', row: 'K', seats: '24-25-26', price: 280 },
-          { section: 'Tribune Boulogne', row: 'N', seats: '18-19', price: 220 },
-          { section: 'Virage Supérieur', row: 'T', seats: '45-46-47-48', price: 120 }
-        ]
-      },
-      {
-        id: 'roland-garros-finale-2026',
-        name: 'Roland Garros - Finale Hommes',
-        league: 'Grand Slam',
-        venue: 'Court Philippe-Chatrier',
-        city: 'Paris',
-        date: '2026-06-07',
-        time: '15:00',
-        image: 'https://images.unsplash.com/photo-1554068865-24cecd4e34b8?w=800&q=80',
-        minPrice: 250,
-        trending: true,
-        tickets: [
-          { section: 'Loge VIP', row: 'Box A', seats: '1-2-3-4', price: 1850 },
-          { section: 'Catégorie 1', row: 'F', seats: '18-19', price: 650 },
-          { section: 'Catégorie 2', row: 'N', seats: '24-25-26', price: 420 },
-          { section: 'Catégorie 3', row: 'T', seats: '38-39', price: 250 }
-        ]
-      }
-    ]
-  };
+/**
+ * Formate la date pour l'affichage
+ */
+function formatEventDate(dateString) {
+    if (!dateString) return 'Date à confirmer';
+    
+    try {
+        // Si la date contient déjà l'heure
+        if (dateString.includes(' ')) {
+            const [datePart, timePart] = dateString.split(' ');
+            const [year, month, day] = datePart.split('-');
+            return `${day}/${month}/${year} à ${timePart}`;
+        }
+        
+        // Sinon juste la date
+        const [year, month, day] = dateString.split('-');
+        return `${day}/${month}/${year}`;
+    } catch (error) {
+        return dateString;
+    }
 }
 
-// Helper functions (same as events-data.js)
-function getAllEvents() {
-  return [...eventsData.concerts, ...eventsData.sports];
+/**
+ * Formate le prix pour l'affichage
+ */
+function formatPrice(price) {
+    if (typeof price === 'number') {
+        return `${price}€`;
+    }
+    return price;
 }
 
-function getEventById(id) {
-  const allEvents = getAllEvents();
-  return allEvents.find(event => event.id === id);
+// Export des fonctions si vous utilisez des modules
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = {
+        loadEventsFromSheet,
+        formatEventDate,
+        formatPrice
+    };
 }
 
-function getEventsByCategory(category) {
-  return eventsData[category] || [];
-}
-
-// Auto-load data when script is included
-if (GOOGLE_SHEET_URL !== 'YOUR_GOOGLE_SHEET_CSV_URL_HERE') {
-  loadEventsFromSheet();
-} else {
-  console.warn('⚠️ Google Sheets URL not configured. Using fallback data.');
-  loadFallbackData();
-  dataLoaded = true;
-  setTimeout(() => {
-    document.dispatchEvent(new CustomEvent('eventsLoaded'));
-  }, 100);
-}
+// Chargement automatique au chargement de la page
+document.addEventListener('DOMContentLoaded', async () => {
+    try {
+        const events = await loadEventsFromSheet();
+        
+        // Dispatcher un événement personnalisé avec les données
+        const eventLoadedEvent = new CustomEvent('eventsLoaded', { 
+            detail: events 
+        });
+        document.dispatchEvent(eventLoadedEvent);
+        
+        console.log('✅ Events loaded! Initializing page...');
+        
+    } catch (error) {
+        console.error('Failed to load events on page load:', error);
+        
+        // Afficher un message d'erreur à l'utilisateur
+        const errorMessage = document.createElement('div');
+        errorMessage.style.cssText = 'position: fixed; top: 20px; right: 20px; background: #f44336; color: white; padding: 15px; border-radius: 5px; z-index: 9999;';
+        errorMessage.textContent = '❌ Impossible de charger les événements. Vérifiez votre connexion.';
+        document.body.appendChild(errorMessage);
+        
+        setTimeout(() => errorMessage.remove(), 5000);
+    }
+});
