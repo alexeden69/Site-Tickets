@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">Événement - TicketHub</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo">TicketHub</div>
+            <ul class="nav-links">
+                <li><a href="index.html" data-fr="Accueil" data-en="Home">Accueil</a></li>
+                <li><a href="concerts.html" data-fr="Concerts" data-en="Concerts">Concerts</a></li>
+                <li><a href="sports.html" data-fr="Sports" data-en="Sports">Sports</a></li>
+                <li>
+                    <select id="language-selector" onchange="changeLanguage(this.value)">
+                        <option value="fr">🇫🇷 FR</option>
+                        <option value="en">🇬🇧 EN</option>
+                    </select>
+                </li>
+                <li>
+                    <button class="dark-mode-toggle" onclick="toggleDarkMode()" title="Toggle Dark Mode">
+                        <span id="dark-mode-icon">🌙</span>
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Contact Buttons -->
+    <div class="contact-buttons">
+        <a href="https://wa.me/33612345678?text=Bonjour%2C%20je%20suis%20int%C3%A9ress%C3%A9%20par%20vos%20billets" target="_blank" class="contact-btn whatsapp-btn" title="WhatsApp">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+            </svg>
+        </a>
+        <a href="mailto:contact@tickethub.com?subject=Demande%20d%27information&body=Bonjour%2C%0D%0A%0D%0AJe%20souhaite%20obtenir%20des%20informations%20sur%20vos%20billets." class="contact-btn email-btn" title="Email">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+            </svg>
+        </a>
+    </div>
+
+    <!-- Event Detail Header -->
+    <section class="event-detail-header" id="event-header">
+        <!-- Content will be dynamically loaded -->
+    </section>
+
+    <!-- Tickets Section -->
+    <section class="tickets-section">
+        <div class="tickets-container">
+            <div class="tickets-header">
+                <h2 data-fr="Billets Disponibles" data-en="Available Tickets">Billets Disponibles</h2>
+                <p class="tickets-subtext" data-fr="Sélectionnez vos places" data-en="Select your seats">Sélectionnez vos places</p>
+            </div>
+            <div class="tickets-list" id="tickets-list">
+                <!-- Tickets will be dynamically loaded -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Checkout Modal -->
+    <div class="modal-overlay" id="checkoutModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-title">🎫 Finaliser la commande</h2>
+                <button class="modal-close" onclick="closeCheckoutModal()">×</button>
+            </div>
+            <div class="modal-body" id="modal-body">
+                <!-- Content dynamically loaded -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>TicketHub</h3>
+                <p data-fr="Votre marketplace de confiance pour la revente de tickets premium." data-en="Your trusted marketplace for premium ticket resale.">Votre marketplace de confiance pour la revente de tickets premium.</p>
+            </div>
+            <div class="footer-section">
+                <h3 data-fr="Navigation" data-en="Navigation">Navigation</h3>
+                <a href="index.html" data-fr="Accueil" data-en="Home">Accueil</a>
+                <a href="concerts.html" data-fr="Concerts" data-en="Concerts">Concerts</a>
+                <a href="sports.html" data-fr="Sports" data-en="Sports">Sports</a>
+            </div>
+            <div class="footer-section">
+                <h3 data-fr="Informations" data-en="Information">Informations</h3>
+                <a href="#" data-fr="À propos" data-en="About">À propos</a>
+                <a href="#" data-fr="Contact" data-en="Contact">Contact</a>
+                <a href="#" data-fr="CGV" data-en="Terms">CGV</a>
+            </div>
+            <div class="footer-section">
+                <h3 data-fr="Suivez-nous" data-en="Follow us">Suivez-nous</h3>
+                <a href="#">Instagram</a>
+                <a href="#">Twitter</a>
+                <a href="#">Facebook</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p data-fr="&copy; 2026 TicketHub. Tous droits réservés." data-en="&copy; 2026 TicketHub. All rights reserved.">&copy; 2026 TicketHub. Tous droits réservés.</p>
+        </div>
+    </footer>
+
+    <script src="dark-mode.js"></script>
+    <script src="language.js"></script>
+    <script src="sheets-loader.js"></script>
+    <script src="checkout-handler.js"></script>
+    <script>
+        // Global variables
+        let currentEvent = null;
+        let currentTicket = null;
+        let currentQuantity = 1;
+        let reservationTimer = null;
+
+        // Wait for events to load from Google Sheets
+        document.addEventListener('eventsLoaded', function() {
+            console.log('✅ Events loaded! Loading event details...');
+            loadEventDetails();
+        });
+
+        function loadEventDetails() {
+            // Get event ID from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const eventId = urlParams.get('id');
+
+            // Get event data
+            currentEvent = getEventById(eventId);
+
+            if (!currentEvent) {
+                document.getElementById('event-header').innerHTML = `
+                    <div class="event-detail-content">
+                        <h1>${currentLanguage === 'fr' ? 'Événement non trouvé' : 'Event not found'}</h1>
+                        <p>${currentLanguage === 'fr' ? 'Cet événement n\'existe pas ou a été supprimé.' : 'This event does not exist or has been removed.'}</p>
+                        <a href="index.html" class="btn-view">${currentLanguage === 'fr' ? 'Retour à l\'accueil' : 'Back to home'}</a>
+                    </div>
+                `;
+                return;
+            }
+
+            // Update page title
+            document.title = `${currentEvent.name} - TicketHub`;
+
+            // Format date
+            const dateObj = new Date(currentEvent.date);
+            const formattedDate = dateObj.toLocaleDateString(currentLanguage === 'fr' ? 'fr-FR' : 'en-GB', { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+
+            // Load event header
+            const eventHeader = document.getElementById('event-header');
+            eventHeader.innerHTML = `
+                <div class="event-detail-content">
+                    <img src="${currentEvent.image}" alt="${currentEvent.name}" class="event-detail-image">
+                    <div class="event-detail-info">
+                        <h1>${currentEvent.name}</h1>
+                        ${currentEvent.league ? `<p style="font-size: 1.2rem; opacity: 0.9; margin-bottom: 1rem;">${currentEvent.league}</p>` : ''}
+                        <div class="event-meta">
+                            <div class="meta-item">
+                                <span class="meta-icon">📍</span>
+                                <span>${currentEvent.venue}, ${currentEvent.city}</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-icon">📅</span>
+                                <span>${formattedDate}</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-icon">🕐</span>
+                                <span>${currentEvent.time}</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-icon">💰</span>
+                                <span>${currentLanguage === 'fr' ? 'À partir de' : 'From'} ${currentEvent.minPrice}€</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Load tickets
+            loadTickets(currentEvent.tickets);
+        }
+
+        function loadTickets(tickets) {
+            const ticketsList = document.getElementById('tickets-list');
+            ticketsList.innerHTML = '';
+
+            if (!tickets || tickets.length === 0) {
+                ticketsList.innerHTML = `
+                    <p style="text-align: center; padding: 2rem; color: var(--text-muted);">
+                        ${currentLanguage === 'fr' ? 'Aucun billet disponible pour le moment.' : 'No tickets available at the moment.'}
+                    </p>
+                `;
+                return;
+            }
+
+            tickets.forEach((ticket, index) => {
+                const ticketItem = createTicketItem(ticket);
+                ticketItem.style.animationDelay = `${index * 0.1}s`;
+                ticketsList.appendChild(ticketItem);
+            });
+        }
+
+        function createTicketItem(ticket) {
+            const item = document.createElement('div');
+            item.className = 'ticket-item';
+
+            const rowText = currentLanguage === 'fr' ? 'Rangée' : 'Row';
+            const seatsText = currentLanguage === 'fr' ? 'Sièges' : 'Seats';
+            const buyNowText = currentLanguage === 'fr' ? 'Acheter Maintenant' : 'Buy Now';
+
+            item.innerHTML = `
+                <div class="ticket-header">
+                    <div class="ticket-section">${ticket.section}</div>
+                    <div class="ticket-price">${ticket.price}€</div>
+                </div>
+                <div class="ticket-details">
+                    <div class="ticket-detail">
+                        ${rowText}: <span>${ticket.row}</span>
+                    </div>
+                    <div class="ticket-detail">
+                        ${seatsText}: <span>${ticket.seats}</span>
+                    </div>
+                </div>
+                <button class="btn-buy" onclick="openCheckoutModal(${JSON.stringify(ticket).replace(/"/g, '&quot;')})">
+                    ${buyNowText}
+                </button>
+            `;
+
+            return item;
+        }
+
+        // Open checkout modal
+        function openCheckoutModal(ticket) {
+            currentTicket = ticket;
+            currentQuantity = 1;
+            
+            const modal = document.getElementById('checkoutModal');
+            const modalBody = document.getElementById('modal-body');
+            
+            const firstNameLabel = currentLanguage === 'fr' ? 'Prénom' : 'First Name';
+            const lastNameLabel = currentLanguage === 'fr' ? 'Nom' : 'Last Name';
+            const phoneLabel = currentLanguage === 'fr' ? 'Téléphone' : 'Phone';
+            const quantityLabel = currentLanguage === 'fr' ? 'Quantité' : 'Quantity';
+            const paymentLabel = currentLanguage === 'fr' ? 'Mode de paiement préféré' : 'Preferred payment method';
+            const termsLabel = currentLanguage === 'fr' 
+                ? 'J\'accepte les <a href="#" target="_blank">conditions générales</a> de vente'
+                : 'I accept the <a href="#" target="_blank">terms and conditions</a>';
+            const submitLabel = currentLanguage === 'fr' ? 'Confirmer la commande' : 'Confirm order';
+            const timerText = currentLanguage === 'fr' 
+                ? '⏰ Réservation valable 15 minutes'
+                : '⏰ Reservation valid for 15 minutes';
+            
+            modalBody.innerHTML = `
+                <div class="timer-warning">
+                    <strong>${timerText}</strong>
+                </div>
+                
+                <div class="order-summary">
+                    <h3>📋 ${currentLanguage === 'fr' ? 'Récapitulatif' : 'Summary'}</h3>
+                    <div class="summary-row">
+                        <span>${currentLanguage === 'fr' ? 'Événement' : 'Event'}:</span>
+                        <strong>${currentEvent.name}</strong>
+                    </div>
+                    <div class="summary-row">
+                        <span>${currentLanguage === 'fr' ? 'Section' : 'Section'}:</span>
+                        <strong>${ticket.section}</strong>
+                    </div>
+                    <div class="summary-row">
+                        <span>${currentLanguage === 'fr' ? 'Rangée' : 'Row'}:</span>
+                        <strong>${ticket.row}</strong>
+                    </div>
+                    <div class="summary-row">
+                        <span>${currentLanguage === 'fr' ? 'Prix unitaire' : 'Unit price'}:</span>
+                        <strong>${ticket.price}€</strong>
+                    </div>
+                    <div class="summary-row">
+                        <span>${currentLanguage === 'fr' ? 'Quantité' : 'Quantity'}:</span>
+                        <strong id="summary-quantity">1</strong>
+                    </div>
+                    <div class="summary-row">
+                        <span>${currentLanguage === 'fr' ? 'TOTAL' : 'TOTAL'}:</span>
+                        <strong id="summary-total">${ticket.price}€</strong>
+                    </div>
+                </div>
+                
+                <form class="checkout-form" id="checkoutForm" onsubmit="submitOrder(event)">
+                    <div class="form-section">
+                        <h3>👤 ${currentLanguage === 'fr' ? 'Vos informations' : 'Your information'}</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>${firstNameLabel} *</label>
+                                <input type="text" name="firstName" required placeholder="Jean">
+                            </div>
+                            <div class="form-group">
+                                <label>${lastNameLabel} *</label>
+                                <input type="text" name="lastName" required placeholder="Dupont">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Email *</label>
+                            <input type="email" name="email" required placeholder="jean.dupont@example.com">
+                        </div>
+                        <div class="form-group">
+                            <label>${phoneLabel} *</label>
+                            <input type="tel" name="phone" required placeholder="+33 6 12 34 56 78" pattern="^(?:(?:\\+|00)33|0)\\s*[1-9](?:[\\s.-]*\\d{2}){4}$">
+                            <small style="color: var(--text-muted); font-size: 0.85em; margin-top: 0.25rem; display: block;">
+                                ${currentLanguage === 'fr' ? 'Format français: 06 12 34 56 78 ou +33 6 12 34 56 78' : 'French format: 06 12 34 56 78 or +33 6 12 34 56 78'}
+                            </small>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <h3>🎫 ${quantityLabel}</h3>
+                        <div class="quantity-selector">
+                            <button type="button" class="qty-btn" onclick="updateQuantity(-1)">−</button>
+                            <div class="qty-display" id="quantity-display">1</div>
+                            <button type="button" class="qty-btn" onclick="updateQuantity(1)">+</button>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <h3>💳 ${paymentLabel}</h3>
+                        <div class="payment-options">
+                            <label class="payment-option selected">
+                                <input type="radio" name="payment" value="virement" checked>
+                                <div class="payment-option-icon">🏦</div>
+                                <div>${currentLanguage === 'fr' ? 'Virement' : 'Bank Transfer'}</div>
+                            </label>
+                            <label class="payment-option">
+                                <input type="radio" name="payment" value="paypal">
+                                <div class="payment-option-icon">💙</div>
+                                <div>PayPal</div>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="terms-checkbox">
+                        <input type="checkbox" id="terms" name="terms" required>
+                        <label for="terms">${termsLabel}</label>
+                    </div>
+                    
+                    <div id="error-container"></div>
+                    
+                    <button type="submit" class="submit-order-btn">
+                        ${submitLabel}
+                    </button>
+                </form>
+            `;
+            
+            // Add payment option click handlers
+            document.querySelectorAll('.payment-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    document.querySelectorAll('.payment-option').forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
+                    this.querySelector('input').checked = true;
+                });
+            });
+            
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Close modal
+        function closeCheckoutModal() {
+            const modal = document.getElementById('checkoutModal');
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // Update quantity
+        function updateQuantity(delta) {
+            currentQuantity = Math.max(1, Math.min(10, currentQuantity + delta));
+            document.getElementById('quantity-display').textContent = currentQuantity;
+            document.getElementById('summary-quantity').textContent = currentQuantity;
+            const total = currentTicket.price * currentQuantity;
+            document.getElementById('summary-total').textContent = `${total}€`;
+        }
+
+        // Submit order
+        async function submitOrder(event) {
+            event.preventDefault();
+            
+            const form = event.target;
+            const formData = new FormData(form);
+            
+            const customerData = {
+                firstName: formData.get('firstName'),
+                lastName: formData.get('lastName'),
+                email: formData.get('email'),
+                phone: formData.get('phone'),
+                preferredPayment: formData.get('payment'),
+                acceptTerms: formData.get('terms') === 'on',
+                language: currentLanguage
+            };
+            
+            // Create order
+            const order = new window.TicketHubCheckout.Order(
+                currentEvent,
+                currentTicket,
+                customerData,
+                currentQuantity
+            );
+            
+            // Validate
+            const validation = order.validate();
+            if (!validation.isValid) {
+                showError(validation.errors.join('<br>'));
+                return;
+            }
+            
+            // Disable submit button
+            const submitBtn = form.querySelector('.submit-order-btn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = currentLanguage === 'fr' ? 'Envoi en cours...' : 'Sending...';
+            
+            // Save to local storage
+            order.saveToLocalStorage();
+            
+            // Submit to Google Sheets
+            const result = await window.TicketHubCheckout.submitOrderToSheets(order);
+            
+            // Show success
+            showSuccess(order);
+        }
+
+        function showError(message) {
+            const errorContainer = document.getElementById('error-container');
+            errorContainer.innerHTML = `<div class="error-message">${message}</div>`;
+            setTimeout(() => {
+                errorContainer.innerHTML = '';
+            }, 5000);
+        }
+
+        function showSuccess(order) {
+            const modalBody = document.getElementById('modal-body');
+            const successText = currentLanguage === 'fr' 
+                ? `<div class="success-message">
+                    <div class="success-icon">✅</div>
+                    <h2>Commande confirmée !</h2>
+                    <p class="order-number">${order.orderNumber}</p>
+                    <p>Merci ${order.customer.firstName} !</p>
+                    <p>Vous allez recevoir un email de confirmation avec les instructions de paiement.</p>
+                    <p style="margin-top: 2rem;">
+                        <a href="https://wa.me/${window.TicketHubCheckout.CONFIG.WHATSAPP}?text=${order.getWhatsAppMessage()}" 
+                           class="button" 
+                           style="display: inline-block; background: #25D366; color: white; padding: 15px 30px; text-decoration: none; border-radius: 30px; font-weight: bold;">
+                            💬 Contacter par WhatsApp
+                        </a>
+                    </p>
+                    <p style="margin-top: 1rem;">
+                        <button onclick="closeCheckoutModal()" class="btn-view">Fermer</button>
+                    </p>
+                </div>`
+                : `<div class="success-message">
+                    <div class="success-icon">✅</div>
+                    <h2>Order confirmed!</h2>
+                    <p class="order-number">${order.orderNumber}</p>
+                    <p>Thank you ${order.customer.firstName}!</p>
+                    <p>You will receive a confirmation email with payment instructions.</p>
+                    <p style="margin-top: 2rem;">
+                        <a href="https://wa.me/${window.TicketHubCheckout.CONFIG.WHATSAPP}?text=${order.getWhatsAppMessage()}" 
+                           class="button" 
+                           style="display: inline-block; background: #25D366; color: white; padding: 15px 30px; text-decoration: none; border-radius: 30px; font-weight: bold;">
+                            💬 Contact via WhatsApp
+                        </a>
+                    </p>
+                    <p style="margin-top: 1rem;">
+                        <button onclick="closeCheckoutModal()" class="btn-view">Close</button>
+                    </p>
+                </div>`;
+            
+            modalBody.innerHTML = successText;
+        }
+
+        // Close modal on outside click
+        document.getElementById('checkoutModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeCheckoutModal();
+            }
+        });
+    </script>
+</body>
+</html>
