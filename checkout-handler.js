@@ -4,16 +4,16 @@
 // CONFIGURATION - À PERSONNALISER
 const CONFIG = {
     // URL de votre Google Apps Script (voir SETUP_PAIEMENT.md)
-    GOOGLE_SCRIPT_URL: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTvCQIYzDcNpyFv5Ky0reWleWjeDlz2iPA4kTWzZsKSzOrFUfevS7_AkDvvFF1H3PGIKmhM8RqoUtM-/pub?gid=0&single=true&output=csv',
+    GOOGLE_SCRIPT_URL: 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE',
     
     // Emails
     EMAIL: {
-        support: 'alexeden69@gmail.com',
-        admin: 'alexeden69@gmail.com'  // TON EMAIL pour recevoir les alertes
+        support: 'contact@tickethub.com',
+        admin: 'admin@tickethub.com'  // TON EMAIL pour recevoir les alertes
     },
     
     // WhatsApp (format international sans +)
-    WHATSAPP: '33652051917',  // TON NUMÉRO
+    WHATSAPP: '33612345678',  // TON NUMÉRO
     
     // Durée de réservation en minutes
     RESERVATION_DURATION: 15
@@ -159,7 +159,7 @@ class Order {
         <div class="content">
             <p>Bonjour <strong>${this.customer.firstName} ${this.customer.lastName}</strong>,</p>
             
-            <p>Merci pour votre commande ! Voici un récapitulatif de votre commande :</p>
+            <p>Merci pour votre demande ! Voici un récapitulatif :</p>
             
             <div class="order-box">
                 <h2 style="margin-top: 0; color: #ff006e;">📋 Votre demande</h2>
@@ -196,13 +196,13 @@ class Order {
                     <strong>${this.quantity}</strong>
                 </div>
                 <div class="total">
-                    Prix : ${this.ticket.price * this.quantity}€
+                    Prix estimé : ${this.ticket.price * this.quantity}€
                 </div>
             </div>
             
             <div class="highlight-box">
                 <h3 style="margin-top: 0; color: #1976D2;">📞 Prochaines étapes</h3>
-                <p><strong>Nous vous contactons sous 24h maximum pour finaliser votre commande</strong> pour :</p>
+                <p><strong>Nous vous contactons sous 24h maximum</strong> pour :</p>
                 <ul>
                     <li>✅ Confirmer la disponibilité des billets</li>
                     <li>✅ Vous communiquer le prix final</li>
@@ -304,7 +304,7 @@ class Order {
                     <strong>${this.quantity}</strong>
                 </div>
                 <div class="total">
-                    Price: €${this.ticket.price * this.quantity}
+                    Estimated price: €${this.ticket.price * this.quantity}
                 </div>
             </div>
             
