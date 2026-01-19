@@ -13,7 +13,7 @@ const CONFIG = {
     },
     
     // WhatsApp (format international sans +)
-    WHATSAPP: '33612345678',  // TON NUMÉRO
+    WHATSAPP: '33652051917',  // TON NUMÉRO
     
     // Durée de réservation en minutes
     RESERVATION_DURATION: 15
