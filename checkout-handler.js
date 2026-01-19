@@ -196,7 +196,7 @@ class Order {
                     <strong>${this.quantity}</strong>
                 </div>
                 <div class="total">
-                    Prix estimé : ${this.ticket.price * this.quantity}€
+                    Prix : ${this.ticket.price * this.quantity}€
                 </div>
             </div>
             
@@ -304,7 +304,7 @@ class Order {
                     <strong>${this.quantity}</strong>
                 </div>
                 <div class="total">
-                    Estimated price: €${this.ticket.price * this.quantity}
+                    Price: €${this.ticket.price * this.quantity}
                 </div>
             </div>
             
