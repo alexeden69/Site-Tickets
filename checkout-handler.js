@@ -4,7 +4,7 @@
 // CONFIGURATION - À PERSONNALISER
 const CONFIG = {
     // URL de votre Google Apps Script (voir SETUP_PAIEMENT.md)
-    GOOGLE_SCRIPT_URL: 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE',
+    GOOGLE_SCRIPT_URL: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTvCQIYzDcNpyFv5Ky0reWleWjeDlz2iPA4kTWzZsKSzOrFUfevS7_AkDvvFF1H3PGIKmhM8RqoUtM-/pub?gid=0&single=true&output=csv',
     
     // Emails
     EMAIL: {
