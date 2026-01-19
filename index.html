@@ -364,28 +364,30 @@
                 }
             ];
 
-            // Load Trending Events
-            const trendingGrid = document.getElementById('trending-grid');
-            const trendingEvents = getAllEvents().filter(event => event.trending);
-            
-            trendingEvents.forEach(event => {
-                const card = createTrendingCard(event);
-                trendingGrid.appendChild(card);
-            });
+            // ✅ APRÈS - Version corrigée
+// Load Trending Events
+const trendingGrid = document.getElementById('trending-grid');
+const trendingEvents = await getTrendingEvents(); // Utiliser la fonction dédiée
 
-            // Update category counts
-            document.getElementById('concerts-count').textContent = `${eventsData.concerts.length} ${t('events')}`;
-            document.getElementById('sports-count').textContent = `${eventsData.sports.length} ${t('events')}`;
+trendingEvents.forEach(event => {
+    const card = createTrendingCard(event);
+    trendingGrid.appendChild(card);
+});
 
-            // Display popular events
-            const popularEventsContainer = document.getElementById('popular-events');
-            const allEvents = getAllEvents();
-            const popularEvents = allEvents.filter(e => !e.trending).slice(0, 6);
+// Update category counts
+document.getElementById('concerts-count').textContent = `${eventsData.concerts.length} ${t('events')}`;
+document.getElementById('sports-count').textContent = `${eventsData.sports.length} ${t('events')}`;
 
-            popularEvents.forEach(event => {
-                const eventCard = createEventCard(event);
-                popularEventsContainer.appendChild(eventCard);
-            });
+// Display popular events
+const popularEventsContainer = document.getElementById('popular-events');
+const allEventsData = await getAllEvents(); // Ajouter await
+const allEventsArray = [...allEventsData.concerts, ...allEventsData.sports]; // Convertir en tableau
+const popularEvents = allEventsArray.filter(e => !e.trending).slice(0, 6);
+
+popularEvents.forEach(event => {
+    const eventCard = createEventCard(event);
+    popularEventsContainer.appendChild(eventCard);
+});
 
             // Load Testimonials
             const testimonialsTrack = document.getElementById('testimonials-track');
