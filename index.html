@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TicketHub - Billets Concerts & Sports au Meilleur Prix | Revente Sécurisée</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Achetez et vendez vos billets de concerts, matchs et spectacles au meilleur prix. Paiement sécurisé, billets garantis 100% authentiques.">
+    <meta name="keywords" content="billets concert, billets match, revente billets, tickets sports, places concert">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="TicketHub - Billets Concerts & Sports">
+    <meta property="og:description" content="Marketplace de confiance pour acheter et vendre vos billets">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?w=1200">
+    
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-GQGGCMG7GF"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-GQGGCMG7GF');
+    </script>
+    
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo">TicketHub</div>
+            <ul class="nav-links">
+                <li><a href="index.html" data-fr="Accueil" data-en="Home">Accueil</a></li>
+                <li><a href="concerts.html" data-fr="Concerts" data-en="Concerts">Concerts</a></li>
+                <li><a href="sports.html" data-fr="Sports" data-en="Sports">Sports</a></li>
+                <li>
+                    <select id="language-selector" onchange="changeLanguage(this.value)">
+                        <option value="fr">🇫🇷 FR</option>
+                        <option value="en">🇬🇧 EN</option>
+                    </select>
+                </li>
+                <li>
+                    <button class="dark-mode-toggle" onclick="toggleDarkMode()" title="Toggle Dark Mode">
+                        <span id="dark-mode-icon">🌙</span>
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Contact Buttons -->
+    <div class="contact-buttons">
+        <a href="https://wa.me/33612345678?text=Bonjour%2C%20je%20suis%20int%C3%A9ress%C3%A9%20par%20vos%20billets" target="_blank" class="contact-btn whatsapp-btn" title="WhatsApp">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+            </svg>
+        </a>
+        <a href="mailto:contact@tickethub.com?subject=Demande%20d%27information&body=Bonjour%2C%0D%0A%0D%0AJe%20souhaite%20obtenir%20des%20informations%20sur%20vos%20billets." class="contact-btn email-btn" title="Email">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+            </svg>
+        </a>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1 data-fr="Vos Événements, Nos Meilleurs Prix" data-en="Your Events, Our Best Prices">Vos Événements, Nos Meilleurs Prix</h1>
+            <p data-fr="Concerts, matchs, spectacles - Trouvez vos places pour les événements les plus attendus" data-en="Concerts, matches, shows - Find your seats for the most anticipated events">Concerts, matchs, spectacles - Trouvez vos places pour les événements les plus attendus</p>
+        </div>
+    </section>
+
+    <!-- Trust Counters -->
+    <section class="trust-counters">
+        <div class="trust-counter">
+            <div class="counter-icon">🎫</div>
+            <div class="counter-number">15,000+</div>
+            <div class="counter-label" data-fr="Billets Vendus" data-en="Tickets Sold">Billets Vendus</div>
+        </div>
+        <div class="trust-counter">
+            <div class="counter-icon">⭐</div>
+            <div class="counter-number">98%</div>
+            <div class="counter-label" data-fr="Clients Satisfaits" data-en="Satisfied Customers">Clients Satisfaits</div>
+        </div>
+        <div class="trust-counter">
+            <div class="counter-icon">⚡</div>
+            <div class="counter-number">24h</div>
+            <div class="counter-label" data-fr="Livraison Rapide" data-en="Fast Delivery">Livraison Rapide</div>
+        </div>
+        <div class="trust-counter">
+            <div class="counter-icon">💬</div>
+            <div class="counter-number">7j/7</div>
+            <div class="counter-label" data-fr="Support Client" data-en="Customer Support">Support Client</div>
+        </div>
+    </section>
+
+    <!-- Trending Section -->
+    <section class="trending-section">
+        <div class="trending-grid" id="trending-grid">
+            <!-- Events loaded here -->
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="how-it-works">
+        <div class="section-header">
+            <h2 data-fr="Comment Ça Marche ?" data-en="How It Works?">Comment Ça Marche ?</h2>
+            <p data-fr="Acheter vos billets n'a jamais été aussi simple" data-en="Buying tickets has never been easier">Acheter vos billets n'a jamais été aussi simple</p>
+        </div>
+        <div class="steps-grid">
+            <div class="step-card">
+                <div class="step-number">1</div>
+                <div class="step-icon">🔍</div>
+                <h3 data-fr="Trouvez votre événement" data-en="Find your event">Trouvez votre événement</h3>
+                <p data-fr="Parcourez nos concerts, matchs et spectacles" data-en="Browse our concerts, matches and shows">Parcourez nos concerts, matchs et spectacles</p>
+            </div>
+            <div class="step-card">
+                <div class="step-number">2</div>
+                <div class="step-icon">💳</div>
+                <h3 data-fr="Paiement sécurisé" data-en="Secure payment">Paiement sécurisé</h3>
+                <p data-fr="Réglez en toute sécurité" data-en="Pay securely">Réglez en toute sécurité</p>
+            </div>
+            <div class="step-card">
+                <div class="step-number">3</div>
+                <div class="step-icon">📧</div>
+                <h3 data-fr="Recevez vos billets" data-en="Receive tickets">Recevez vos billets</h3>
+                <p data-fr="Billets envoyés instantanément" data-en="Tickets sent instantly">Billets envoyés instantanément</p>
+            </div>
+            <div class="step-card">
+                <div class="step-number">4</div>
+                <div class="step-icon">🎉</div>
+                <h3 data-fr="Profitez du spectacle !" data-en="Enjoy the show!">Profitez du spectacle !</h3>
+                <p data-fr="Vivez une expérience inoubliable" data-en="Live an unforgettable experience">Vivez une expérience inoubliable</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Categories -->
+    <section class="categories">
+        <div class="category-grid">
+            <a href="concerts.html" class="category-card">
+                <div class="category-image-container">
+                    <img src="https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?w=800&q=80" alt="Concerts" class="category-image">
+                </div>
+                <div class="category-content">
+                    <span class="category-icon">🎵</span>
+                    <h3 data-fr="Concerts" data-en="Concerts">Concerts</h3>
+                    <p data-fr="Les plus grands artistes" data-en="The biggest artists">Les plus grands artistes</p>
+                </div>
+            </a>
+            <a href="sports.html" class="category-card">
+                <div class="category-image-container">
+                    <img src="https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=800&q=80" alt="Sports" class="category-image">
+                </div>
+                <div class="category-content">
+                    <span class="category-icon">⚽</span>
+                    <h3 data-fr="Sports" data-en="Sports">Sports</h3>
+                    <p data-fr="Événements sportifs majeurs" data-en="Major sporting events">Événements sportifs majeurs</p>
+                </div>
+            </a>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="testimonials-section">
+        <div class="testimonials-header">
+            <h2 data-fr="Ce Que Disent Nos Clients" data-en="What Our Customers Say">Ce Que Disent Nos Clients</h2>
+            <p data-fr="Des milliers de fans satisfaits" data-en="Thousands of satisfied fans">Des milliers de fans satisfaits</p>
+        </div>
+        <div class="testimonials-container">
+            <button class="carousel-btn prev" onclick="scrollTestimonials('left')">‹</button>
+            <div class="testimonials-track" id="testimonials-track"></div>
+            <button class="carousel-btn next" onclick="scrollTestimonials('right')">›</button>
+        </div>
+        <div class="carousel-dots" id="carousel-dots"></div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="faq-section">
+        <div class="faq-header">
+            <h2 data-fr="Questions Fréquentes" data-en="FAQ">Questions Fréquentes</h2>
+        </div>
+        <div class="faq-list" id="faq-list"></div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <!-- Trust Badges -->
+        <div class="trust-badges">
+            <div class="trust-badge">
+                <span class="badge-icon">🔒</span>
+                <span data-fr="Paiement Sécurisé" data-en="Secure Payment">Paiement Sécurisé</span>
+            </div>
+            <div class="trust-badge">
+                <span class="badge-icon">✅</span>
+                <span data-fr="Billets Garantis" data-en="Guaranteed Tickets">Billets Garantis</span>
+            </div>
+            <div class="trust-badge">
+                <span class="badge-icon">💰</span>
+                <span data-fr="Remboursement" data-en="Refund">Remboursement</span>
+            </div>
+            <div class="trust-badge">
+                <span class="badge-icon">🎯</span>
+                <span data-fr="Support 7j/7" data-en="24/7 Support">Support 7j/7</span>
+            </div>
+        </div>
+        
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>TicketHub</h3>
+                <p data-fr="Votre marketplace de confiance pour la revente de tickets premium." data-en="Your trusted marketplace for premium ticket resale.">Votre marketplace de confiance pour la revente de tickets premium.</p>
+            </div>
+            <div class="footer-section">
+                <h3 data-fr="Navigation" data-en="Navigation">Navigation</h3>
+                <a href="index.html" data-fr="Accueil" data-en="Home">Accueil</a>
+                <a href="concerts.html" data-fr="Concerts" data-en="Concerts">Concerts</a>
+                <a href="sports.html" data-fr="Sports" data-en="Sports">Sports</a>
+            </div>
+            <div class="footer-section">
+                <h3 data-fr="Informations" data-en="Information">Informations</h3>
+                <a href="#" data-fr="À propos" data-en="About">À propos</a>
+                <a href="#" data-fr="Contact" data-en="Contact">Contact</a>
+                <a href="#" data-fr="CGV" data-en="Terms">CGV</a>
+            </div>
+            <div class="footer-section">
+                <h3 data-fr="Suivez-nous" data-en="Follow us">Suivez-nous</h3>
+                <a href="#">Instagram</a>
+                <a href="#">Twitter</a>
+                <a href="#">Facebook</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p data-fr="&copy; 2026 TicketHub. Tous droits réservés." data-en="&copy; 2026 TicketHub. All rights reserved.">&copy; 2026 TicketHub. Tous droits réservés.</p>
+        </div>
+    </footer>
+
+    <script src="dark-mode.js"></script>
+    <script src="language.js"></script>
+    <script src="sheets-loader.js"></script>
+    <script>
+        // Wait for events to load
+        document.addEventListener('eventsLoaded', function() {
+            console.log('✅ Events loaded!');
+            displayTrendingEvents();
+            loadTestimonials();
+            loadFAQ();
+        });
+
+        function displayTrendingEvents() {
+            const grid = document.getElementById('trending-grid');
+            const allEvents = [...eventsData.concerts, ...eventsData.sports];
+            const trendingEvents = allEvents.filter(e => e.trending);
+            
+            trendingEvents.forEach(event => {
+                const card = createEventCard(event);
+                grid.appendChild(card);
+            });
+        }
+
+        function createEventCard(event) {
+            const card = document.createElement('a');
+            card.href = `event.html?id=${event.id}`;
+            card.className = 'event-card';
+
+            const dateObj = new Date(event.date);
+            const lang = currentLanguage === 'fr' ? 'fr-FR' : 'en-GB';
+            const formattedDate = dateObj.toLocaleDateString(lang, { 
+                weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
+            });
+
+            const fromText = currentLanguage === 'fr' ? 'À partir de' : 'From';
+            const viewText = currentLanguage === 'fr' ? 'Voir' : 'View';
+            const lastTickets = currentLanguage === 'fr' ? '🔥 Dernières places' : '🔥 Last tickets';
+
+            card.innerHTML = `
+                <div class="event-image-container">
+                    ${event.trending ? `<div class="trending-badge">${lastTickets}</div>` : ''}
+                    <img src="${event.image}" alt="${event.name}" class="event-image">
+                    <div class="event-badge">${fromText} ${event.minPrice}€</div>
+                </div>
+                <div class="event-info">
+                    <h3 class="event-name">${event.name}</h3>
+                    <div class="event-details">
+                        <div class="event-detail">
+                            <span class="event-detail-icon">📍</span>
+                            <span>${event.venue}, ${event.city}</span>
+                        </div>
+                        <div class="event-detail">
+                            <span class="event-detail-icon">📅</span>
+                            <span>${formattedDate}</span>
+                        </div>
+                        <div class="event-detail">
+                            <span class="event-detail-icon">🕐</span>
+                            <span>${event.time}</span>
+                        </div>
+                    </div>
+                    <div class="event-footer">
+                        <div class="price-info">
+                            <span class="price-label">${fromText}</span>
+                            <span class="price-amount">${event.minPrice}€</span>
+                        </div>
+                        <button class="btn-view">${viewText}</button>
+                    </div>
+                </div>
+            `;
+
+            return card;
+        }
+
+        function loadTestimonials() {
+            const lang = currentLanguage || 'fr';
+            const testimonials = [
+                {
+                    name: 'Hans M.',
+                    location: lang === 'fr' ? 'Berlin, Allemagne' : 'Berlin, Germany',
+                    avatar: 'H',
+                    rating: 5,
+                    text: lang === 'fr' 
+                        ? "J'ai pu assister à la finale de Roland Garros grâce à TicketHub ! Transaction rapide et billets authentiques."
+                        : "I attended the Roland Garros final thanks to TicketHub! Fast transaction and authentic tickets.",
+                    event: 'Roland Garros'
+                },
+                {
+                    name: 'Karim T.',
+                    location: 'Marseille, France',
+                    avatar: 'K',
+                    rating: 5,
+                    text: lang === 'fr'
+                        ? "Merci pour les places pour Jul ! Très sérieux et réactif, billets reçus instantanément."
+                        : "Thanks for the Jul tickets! Very serious and responsive, tickets received instantly.",
+                    event: 'Jul Concert'
+                },
+                {
+                    name: 'Sophie L.',
+                    location: lang === 'fr' ? 'Londres, Royaume-Uni' : 'London, UK',
+                    avatar: 'S',
+                    rating: 5,
+                    text: lang === 'fr'
+                        ? "Places VIP pour Drake à un prix imbattable ! Communication parfaite, vendeur de confiance."
+                        : "VIP seats for Drake at an unbeatable price! Perfect communication, trusted seller.",
+                    event: 'Drake'
+                },
+                {
+                    name: 'Julie R.',
+                    location: 'Lyon, France',
+                    avatar: 'J',
+                    rating: 5,
+                    text: lang === 'fr'
+                        ? "Bruno Mars était extraordinaire ! Transaction sans problème, billets reçus en quelques minutes."
+                        : "Bruno Mars was extraordinary! Transaction without problems, tickets received in minutes.",
+                    event: 'Bruno Mars'
+                },
+                {
+                    name: 'Youssef A.',
+                    location: lang === 'fr' ? 'Casablanca, Maroc' : 'Casablanca, Morocco',
+                    avatar: 'Y',
+                    rating: 5,
+                    text: lang === 'fr'
+                        ? "Quelle fierté de voir le Maroc en finale ! Merci TicketHub, tout s'est passé parfaitement."
+                        : "What a pride to see Morocco in the final! Thank you TicketHub, everything went perfectly.",
+                    event: 'CAN Final'
+                },
+                {
+                    name: 'Carlos G.',
+                    location: lang === 'fr' ? 'Mexico, Mexique' : 'Mexico City, Mexico',
+                    avatar: 'C',
+                    rating: 5,
+                    text: lang === 'fr'
+                        ? "Merci pour les billets de la Coupe du Monde ! Transaction rapide. ¡Muchas gracias!"
+                        : "Thank you for the World Cup tickets! Fast transaction. ¡Muchas gracias!",
+                    event: 'World Cup'
+                }
+            ];
+            
+            const track = document.getElementById('testimonials-track');
+            testimonials.forEach((test, index) => {
+                const card = document.createElement('div');
+                card.className = 'testimonial-card';
+                card.style.animationDelay = `${index * 0.1}s`;
+
+                card.innerHTML = `
+                    <div class="testimonial-header">
+                        <div class="testimonial-avatar">${test.avatar}</div>
+                        <div class="testimonial-info">
+                            <h4>${test.name}</h4>
+                            <div class="testimonial-location">${test.location}</div>
+                        </div>
+                    </div>
+                    <div class="testimonial-stars">${'⭐'.repeat(test.rating)}</div>
+                    <p class="testimonial-text">${test.text}</p>
+                    <div class="testimonial-event">${test.event}</div>
+                `;
+                track.appendChild(card);
+            });
+
+            setupCarousel();
+        }
+
+        let currentTestimonial = 0;
+
+        function setupCarousel() {
+            const cards = document.querySelectorAll('.testimonial-card');
+            const dots = document.getElementById('carousel-dots');
+            const numDots = Math.ceil(cards.length / 3);
+
+            for (let i = 0; i < numDots; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'carousel-dot' + (i === 0 ? ' active' : '');
+                dot.onclick = () => goToTestimonial(i);
+                dots.appendChild(dot);
+            }
+        }
+
+        function scrollTestimonials(dir) {
+            const cards = document.querySelectorAll('.testimonial-card');
+            const max = Math.ceil(cards.length / 3) - 1;
+            currentTestimonial = dir === 'left' 
+                ? Math.max(0, currentTestimonial - 1)
+                : Math.min(max, currentTestimonial + 1);
+            updateCarousel();
+        }
+
+        function goToTestimonial(index) {
+            currentTestimonial = index;
+            updateCarousel();
+        }
+
+        function updateCarousel() {
+            const track = document.getElementById('testimonials-track');
+            track.style.transform = `translateX(-${currentTestimonial * 100}%)`;
+            document.querySelectorAll('.carousel-dot').forEach((dot, i) => {
+                dot.classList.toggle('active', i === currentTestimonial);
+            });
+        }
+
+        function loadFAQ() {
+            const lang = currentLanguage || 'fr';
+            const faqs = [
+                {
+                    q: { fr: "Comment acheter des billets ?", en: "How to buy tickets?" },
+                    a: { fr: "Parcourez nos événements, sélectionnez vos places, puis procédez au paiement sécurisé.", en: "Browse events, select seats, then proceed to secure payment." }
+                },
+                {
+                    q: { fr: "Les billets sont-ils garantis ?", en: "Are tickets guaranteed?" },
+                    a: { fr: "Oui, nous garantissons l'authenticité de tous nos billets à 100%.", en: "Yes, we guarantee 100% authenticity of all tickets." }
+                },
+                {
+                    q: { fr: "Modes de paiement acceptés ?", en: "Payment methods?" },
+                    a: { fr: "Cartes bancaires, PayPal, virements. Tous sécurisés SSL.", en: "Credit cards, PayPal, transfers. All SSL secured." }
+                },
+                {
+                    q: { fr: "Puis-je revendre mes billets ?", en: "Can I resell tickets?" },
+                    a: { fr: "Oui ! Créez un compte vendeur et nous gérons la transaction.", en: "Yes! Create seller account and we handle the transaction." }
+                },
+                {
+                    q: { fr: "Événement annulé ?", en: "Event cancelled?" },
+                    a: { fr: "Remboursement à 100% dans les 7 jours ouvrés.", en: "100% refund within 7 business days." }
+                }
+            ];
+            
+            const list = document.getElementById('faq-list');
+            faqs.forEach((faq, i) => {
+                const item = document.createElement('div');
+                item.className = 'faq-item';
+                item.style.animationDelay = `${i * 0.1}s`;
+                item.innerHTML = `
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <h3>${faq.q[lang]}</h3>
+                        <span class="faq-icon">▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>${faq.a[lang]}</p>
+                    </div>
+                `;
+                list.appendChild(item);
+            });
+        }
+
+        function toggleFAQ(el) {
+            const item = el.parentElement;
+            const wasActive = item.classList.contains('active');
+            document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('active'));
+            if (!wasActive) item.classList.add('active');
+        }
+    </script>
+</body>
+</html>
