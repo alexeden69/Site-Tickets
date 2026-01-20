@@ -8,12 +8,12 @@ const CONFIG = {
     
     // Emails
     EMAIL: {
-        support: 'contact@tickethub.com',
-        admin: 'admin@tickethub.com'  // TON EMAIL pour recevoir les alertes
+        support: 'dzb67291@gmail.com',
+        admin: 'dzb67291@gmail.com'  // TON EMAIL pour recevoir les alertes
     },
     
     // WhatsApp (format international sans +)
-    WHATSAPP: '33612345678',  // TON NUMÉRO
+    WHATSAPP: '33652051917',  // TON NUMÉRO
     
     // Durée de réservation en minutes
     RESERVATION_DURATION: 15
