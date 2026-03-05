@@ -23,12 +23,18 @@
         gtag('config', 'G-GQGGCMG7GF');
     </script>
     
+    <meta name="theme-color" content="#fafafa">
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="icon" href="icon.svg" type="image/svg+xml">
+
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script src="app.js" defer></script>
 </head>
 <body>
+    <a class="skip-link" href="#main">Aller au contenu</a>
     <!-- Navigation -->
     <nav>
         <div class="nav-container">
@@ -67,7 +73,7 @@
     </div>
 
     <!-- Hero Section -->
-    <section class="hero">
+    <section class="hero" id="main">
         <div class="hero-content">
             <h1 data-fr="Vos Événements, Nos Meilleurs Prix" data-en="Your Events, Our Best Prices">Vos Événements, Nos Meilleurs Prix</h1>
             <p data-fr="Concerts, matchs, spectacles - Trouvez vos places pour les événements les plus attendus" data-en="Concerts, matches, shows - Find your seats for the most anticipated events">Concerts, matchs, spectacles - Trouvez vos places pour les événements les plus attendus</p>
@@ -144,7 +150,7 @@
         <div class="category-grid">
             <a href="concerts.html" class="category-card">
                 <div class="category-image-container">
-                    <img src="https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?w=800&q=80" alt="Concerts" class="category-image">
+                    <img src="https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?w=800&q=80" alt="Concerts" class="category-image" loading="lazy" decoding="async">
                 </div>
                 <div class="category-content">
                     <span class="category-icon">🎵</span>
@@ -154,7 +160,7 @@
             </a>
             <a href="sports.html" class="category-card">
                 <div class="category-image-container">
-                    <img src="https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=800&q=80" alt="Sports" class="category-image">
+                    <img src="https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=800&q=80" alt="Sports" class="category-image" loading="lazy" decoding="async">
                 </div>
                 <div class="category-content">
                     <span class="category-icon">⚽</span>
@@ -279,7 +285,7 @@
             card.innerHTML = `
                 <div class="event-image-container">
                     ${event.trending ? `<div class="trending-badge">${lastTickets}</div>` : ''}
-                    <img src="${event.image}" alt="${event.name}" class="event-image">
+                    <img src="${event.image}" alt="${event.name}" class="event-image" loading="lazy" decoding="async">
                     <div class="event-badge">${fromText} ${event.minPrice}€</div>
                 </div>
                 <div class="event-info">

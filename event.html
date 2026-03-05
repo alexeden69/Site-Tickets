@@ -4,12 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title id="page-title">Événement - TicketHub</title>
+    <meta name="theme-color" content="#fafafa">
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="icon" href="icon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script src="app.js" defer></script>
 </head>
 <body>
+    <a class="skip-link" href="#main">Aller au contenu</a>
     <!-- Navigation -->
     <nav>
         <div class="nav-container">
@@ -161,7 +166,7 @@
             const eventHeader = document.getElementById('event-header');
             eventHeader.innerHTML = `
                 <div class="event-detail-content">
-                    <img src="${currentEvent.image}" alt="${currentEvent.name}" class="event-detail-image">
+                    <img src="${currentEvent.image}" alt="${currentEvent.name}" class="event-detail-image" loading="eager" decoding="async">
                     <div class="event-detail-info">
                         <h1>${currentEvent.name}</h1>
                         ${currentEvent.league ? `<p style="font-size: 1.2rem; opacity: 0.9; margin-bottom: 1rem;">${currentEvent.league}</p>` : ''}
