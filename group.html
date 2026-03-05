@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">Événements - TicketHub</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        .group-hero {
+            position: relative;
+            height: 340px;
+            overflow: hidden;
+            display: flex;
+            align-items: flex-end;
+        }
+        .group-hero-img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .group-hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.3) 60%, transparent 100%);
+        }
+        .group-hero-content {
+            position: relative;
+            z-index: 2;
+            padding: 2rem 2.5rem;
+            color: white;
+        }
+        .group-hero-content h1 {
+            font-size: 2.4rem;
+            font-weight: 800;
+            margin: 0 0 0.4rem 0;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+        }
+        .group-hero-meta {
+            display: flex;
+            gap: 1.5rem;
+            font-size: 0.95rem;
+            opacity: 0.9;
+            flex-wrap: wrap;
+        }
+        .group-hero-meta span { display: flex; align-items: center; gap: 0.4rem; }
+
+        .group-subtitle {
+            text-align: center;
+            padding: 2.5rem 1rem 0.5rem;
+            font-size: 1.1rem;
+            color: var(--text-muted, #888);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .sub-events-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            padding: 1.5rem 2rem 4rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .sub-event-card {
+            background: var(--card-bg, #fff);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+            border: 2px solid transparent;
+        }
+        .sub-event-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 35px rgba(0,0,0,0.15);
+            border-color: #ff006e;
+        }
+        .sub-event-card-body {
+            padding: 1.4rem 1.5rem;
+        }
+        .sub-event-name {
+            font-size: 1.05rem;
+            font-weight: 700;
+            margin: 0 0 0.9rem 0;
+            color: var(--text-primary, #1a1a2e);
+            line-height: 1.3;
+        }
+        .sub-event-details {
+            display: flex;
+            flex-direction: column;
+            gap: 0.45rem;
+            margin-bottom: 1.2rem;
+        }
+        .sub-event-detail {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.88rem;
+            color: var(--text-muted, #666);
+        }
+        .sub-event-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border, #f0f0f0);
+        }
+        .sub-price {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: #ff006e;
+        }
+        .sub-price-label {
+            font-size: 0.75rem;
+            color: var(--text-muted, #999);
+            display: block;
+        }
+        .sub-btn-view {
+            background: linear-gradient(135deg, #ff006e, #fb5607);
+            color: white;
+            border: none;
+            padding: 0.6rem 1.4rem;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 0.88rem;
+            cursor: pointer;
+            transition: opacity 0.2s;
+            font-family: 'Outfit', sans-serif;
+        }
+        .sub-btn-view:hover { opacity: 0.85; }
+
+        .sub-trending-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #ff006e, #fb5607);
+            color: white;
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 0.25rem 0.7rem;
+            border-radius: 20px;
+            margin-bottom: 0.6rem;
+        }
+
+        .ticket-count-badge {
+            background: #f0f4ff;
+            color: #3a86ff;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+        }
+
+        body.dark-mode .sub-event-card { background: #1e2035; }
+        body.dark-mode .sub-event-name { color: #f0f0f0; }
+        body.dark-mode .sub-event-footer { border-color: #2a2a4a; }
+        body.dark-mode .ticket-count-badge { background: #2a2a4a; color: #7eb8ff; }
+
+        @media (max-width: 600px) {
+            .group-hero-content h1 { font-size: 1.6rem; }
+            .sub-events-grid { grid-template-columns: 1fr; padding: 1rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo">TicketHub</div>
+            <ul class="nav-links">
+                <li><a href="index.html" data-fr="Accueil" data-en="Home">Accueil</a></li>
+                <li><a href="concerts.html" data-fr="Concerts" data-en="Concerts">Concerts</a></li>
+                <li><a href="sports.html" data-fr="Sports" data-en="Sports">Sports</a></li>
+                <li>
+                    <select id="language-selector" onchange="changeLanguage(this.value)">
+                        <option value="fr">🇫🇷 FR</option>
+                        <option value="en">🇬🇧 EN</option>
+                    </select>
+                </li>
+                <li>
+                    <button class="dark-mode-toggle" onclick="toggleDarkMode()" title="Toggle Dark Mode">
+                        <span id="dark-mode-icon">🌙</span>
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Contact Buttons -->
+    <div class="contact-buttons">
+        <a href="https://wa.me/33652051917?text=Bonjour%2C%20je%20suis%20int%C3%A9ress%C3%A9%20par%20vos%20billets" target="_blank" class="contact-btn whatsapp-btn" title="WhatsApp">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+            </svg>
+        </a>
+        <a href="mailto:dzb67291@gmail.com" class="contact-btn email-btn" title="Email">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+            </svg>
+        </a>
+    </div>
+
+    <!-- Hero image du groupe -->
+    <section class="group-hero" id="group-hero">
+        <img src="" alt="" class="group-hero-img" id="group-hero-img">
+        <div class="group-hero-overlay"></div>
+        <div class="group-hero-content" id="group-hero-content">
+            <h1 id="group-title">Chargement...</h1>
+            <div class="group-hero-meta" id="group-hero-meta"></div>
+        </div>
+    </section>
+
+    <!-- Sous-événements -->
+    <p class="group-subtitle" id="group-subtitle">Choisissez une date / ville</p>
+    <div class="sub-events-grid" id="sub-events-grid"></div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>TicketHub</h3>
+                <p>Votre marketplace de confiance pour la revente de tickets premium.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Navigation</h3>
+                <a href="index.html">Accueil</a>
+                <a href="concerts.html">Concerts</a>
+                <a href="sports.html">Sports</a>
+            </div>
+            <div class="footer-section">
+                <h3>Informations</h3>
+                <a href="#">À propos</a>
+                <a href="#">Contact</a>
+                <a href="#">CGV</a>
+            </div>
+            <div class="footer-section">
+                <h3>Suivez-nous</h3>
+                <a href="#">Instagram</a>
+                <a href="#">Twitter</a>
+                <a href="#">Facebook</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 TicketHub. Tous droits réservés.</p>
+        </div>
+    </footer>
+
+    <script src="dark-mode.js"></script>
+    <script src="language.js"></script>
+    <script src="sheets-loader.js"></script>
+    <script>
+        document.addEventListener('eventsLoaded', function () {
+            const params = new URLSearchParams(window.location.search);
+            const groupId = params.get('id');
+
+            const group = getGroupById(groupId);
+            if (!group) {
+                document.getElementById('group-title').textContent = 'Groupe introuvable';
+                return;
+            }
+
+            // Hero
+            document.title = group.groupName + ' - TicketHub';
+            document.getElementById('page-title').textContent = group.groupName + ' - TicketHub';
+            document.getElementById('group-hero-img').src = group.image;
+            document.getElementById('group-hero-img').alt = group.groupName;
+            document.getElementById('group-title').textContent = group.groupName;
+
+            const lang = currentLanguage || 'fr';
+            const totalTickets = group.events.reduce((sum, e) => sum + e.tickets.length, 0);
+            const prices = group.events.flatMap(e => e.tickets.map(t => t.price)).filter(p => p > 0);
+            const minPrice = prices.length > 0 ? Math.min(...prices) : 0;
+
+            document.getElementById('group-hero-meta').innerHTML =
+                '<span>📅 ' + group.events.length + ' ' + (lang === 'fr' ? 'date(s) disponible(s)' : 'date(s) available') + '</span>' +
+                '<span>🎫 ' + totalTickets + ' ' + (lang === 'fr' ? 'billets' : 'tickets') + '</span>' +
+                (minPrice > 0 ? '<span>💰 ' + (lang === 'fr' ? 'À partir de ' : 'From ') + minPrice + '€</span>' : '');
+
+            document.getElementById('group-subtitle').textContent =
+                lang === 'fr' ? '📅 Choisissez une date / ville' : '📅 Choose a date / city';
+
+            // Sous-événements
+            const grid = document.getElementById('sub-events-grid');
+            group.events.forEach((event, i) => {
+                const card = createSubEventCard(event, lang);
+                card.style.animationDelay = (i * 0.08) + 's';
+                grid.appendChild(card);
+            });
+        });
+
+        function createSubEventCard(event, lang) {
+            const card = document.createElement('a');
+            card.href = 'event.html?id=' + event.id;
+            card.className = 'sub-event-card';
+
+            const dateObj = new Date(event.date);
+            const formattedDate = isNaN(dateObj)
+                ? 'Date à confirmer'
+                : dateObj.toLocaleDateString(lang === 'fr' ? 'fr-FR' : 'en-GB', {
+                    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+                });
+
+            const prices = event.tickets.map(t => t.price).filter(p => p > 0);
+            const minPrice = prices.length > 0 ? Math.min(...prices) : null;
+            const fromText = lang === 'fr' ? 'À partir de' : 'From';
+            const viewText = lang === 'fr' ? 'Voir les billets' : 'View tickets';
+            const priceLabel = lang === 'fr' ? 'Prix' : 'Price';
+            const tbdText = lang === 'fr' ? 'Prix à confirmer' : 'Price TBD';
+            const ticketText = lang === 'fr'
+                ? event.tickets.length + ' billet' + (event.tickets.length > 1 ? 's' : '')
+                : event.tickets.length + ' ticket' + (event.tickets.length > 1 ? 's' : '');
+
+            card.innerHTML =
+                (event.trending ? '<div class="sub-trending-badge">🔥 ' + (lang === 'fr' ? 'Dernières places' : 'Last tickets') + '</div>' : '') +
+                '<div class="sub-event-card-body">' +
+                '<h3 class="sub-event-name">' + event.name + '</h3>' +
+                '<div class="sub-event-details">' +
+                '<div class="sub-event-detail"><span>📍</span><span>' + event.venue + ', ' + event.city + '</span></div>' +
+                '<div class="sub-event-detail"><span>📅</span><span>' + formattedDate + '</span></div>' +
+                '<div class="sub-event-detail"><span>🕐</span><span>' + event.time + '</span></div>' +
+                '<div class="sub-event-detail"><span>🎫</span><span class="ticket-count-badge">' + ticketText + ' disponibles</span></div>' +
+                '</div>' +
+                '<div class="sub-event-footer">' +
+                '<div>' +
+                '<span class="sub-price-label">' + fromText + '</span>' +
+                '<span class="sub-price">' + (minPrice !== null ? minPrice + '€' : tbdText) + '</span>' +
+                '</div>' +
+                '<button class="sub-btn-view">' + viewText + '</button>' +
+                '</div>' +
+                '</div>';
+
+            return card;
+        }
+    </script>
+</body>
+</html>
