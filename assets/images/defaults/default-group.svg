@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-label="�v�nements">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1a1a1a"/>
+      <stop offset="1" stop-color="#333333"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#ff006e"/>
+      <stop offset="1" stop-color="#fb5607"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#bg)"/>
+  <rect x="220" y="220" width="1160" height="460" rx="48" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.12)" stroke-width="2"/>
+  <rect x="260" y="260" width="1080" height="12" rx="6" fill="url(#accent)"/>
+  <g fill="rgba(255,255,255,0.90)">
+    <path d="M520 380h560v56H520z"/>
+    <path d="M520 470h420v44H520z" opacity="0.8"/>
+    <path d="M520 546h300v40H520z" opacity="0.55"/>
+    <circle cx="450" cy="410" r="46" fill="rgba(255,255,255,0.18)"/>
+    <path d="M430 410l18 18 36-40" fill="none" stroke="rgba(255,255,255,0.75)" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <g fill="rgba(255,255,255,0.25)">
+    <circle cx="1280" cy="620" r="10"/>
+    <circle cx="320" cy="280" r="7"/>
+    <circle cx="1380" cy="300" r="8"/>
+  </g>
+</svg>
+

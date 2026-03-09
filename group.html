@@ -12,6 +12,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
     <script src="app.js" defer></script>
+    <script src="image-utils.js" defer></script>
     <style>
         .group-hero {
             position: relative;
@@ -275,9 +276,24 @@
             // Hero
             document.title = group.groupName + ' - TicketHub';
             document.getElementById('page-title').textContent = group.groupName + ' - TicketHub';
-            document.getElementById('group-hero-img').src = group.image;
             document.getElementById('group-hero-img').alt = group.groupName;
             document.getElementById('group-title').textContent = group.groupName;
+
+            const heroImg = document.getElementById('group-hero-img');
+            if (window.TicketHubImages?.applyResponsiveImage) {
+                window.TicketHubImages.applyResponsiveImage(heroImg, {
+                    kind: 'group',
+                    id: group.id,
+                    variant: 'hero',
+                    category: group.category,
+                    remoteFallback: group.image,
+                    eager: true
+                });
+            } else {
+                heroImg.src = group.image;
+                heroImg.loading = 'eager';
+                heroImg.decoding = 'async';
+            }
 
             const lang = currentLanguage || 'fr';
             const totalTickets = group.events.reduce((sum, e) => sum + e.tickets.length, 0);

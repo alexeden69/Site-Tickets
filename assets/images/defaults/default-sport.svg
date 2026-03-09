@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-label="Sport">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#3a86ff"/>
+      <stop offset="1" stop-color="#8338ec"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="70%" cy="35%" r="65%">
+      <stop offset="0" stop-color="rgba(255,255,255,0.28)"/>
+      <stop offset="1" stop-color="rgba(255,255,255,0)"/>
+    </radialGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#bg)"/>
+  <rect width="1600" height="900" fill="url(#glow)"/>
+  <g fill="rgba(255,255,255,0.92)">
+    <path d="M800 250c165 0 300 135 300 300S965 850 800 850 500 715 500 550s135-300 300-300zm0 70c-126 0-230 104-230 230s104 230 230 230 230-104 230-230-104-230-230-230z" opacity="0.95"/>
+    <path d="M800 370c99 0 180 81 180 180s-81 180-180 180-180-81-180-180 81-180 180-180zm0 70c-61 0-110 49-110 110s49 110 110 110 110-49 110-110-49-110-110-110z" opacity="0.55"/>
+    <path d="M800 410l40 30-15 50h-50l-15-50 40-30zm-70 80h140l-18 60 52 100-44 26-60-86-60 86-44-26 52-100-18-60z" opacity="0.35"/>
+  </g>
+  <g fill="rgba(255,255,255,0.35)">
+    <path d="M220 720h280v22H220z"/>
+    <path d="M1100 160h300v22h-300z"/>
+    <circle cx="1300" cy="700" r="10"/>
+    <circle cx="320" cy="190" r="7"/>
+  </g>
+</svg>
+

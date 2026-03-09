@@ -12,6 +12,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
     <script src="app.js" defer></script>
+    <script src="image-utils.js" defer></script>
 </head>
 <body>
     <a class="skip-link" href="#main">Aller au contenu</a>
@@ -40,12 +41,12 @@
 
     <!-- Contact Buttons -->
     <div class="contact-buttons">
-        <a href="https://wa.me/33612345678?text=Bonjour%2C%20je%20suis%20int%C3%A9ress%C3%A9%20par%20vos%20billets" target="_blank" class="contact-btn whatsapp-btn" title="WhatsApp">
+        <a href="https://wa.me/33652051917?text=Bonjour%2C%20je%20suis%20int%C3%A9ress%C3%A9%20par%20vos%20billets" target="_blank" class="contact-btn whatsapp-btn" title="WhatsApp">
             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
             </svg>
         </a>
-        <a href="mailto:contact@tickethub.com?subject=Demande%20d%27information&body=Bonjour%2C%0D%0A%0D%0AJe%20souhaite%20obtenir%20des%20informations%20sur%20vos%20billets." class="contact-btn email-btn" title="Email">
+        <a href="mailto:dzb67291@gmail.com?subject=Demande%20d%27information&body=Bonjour%2C%0D%0A%0D%0AJe%20souhaite%20obtenir%20des%20informations%20sur%20vos%20billets." class="contact-btn email-btn" title="Email">
             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
             </svg>
@@ -166,7 +167,7 @@
             const eventHeader = document.getElementById('event-header');
             eventHeader.innerHTML = `
                 <div class="event-detail-content">
-                    <img src="${currentEvent.image}" alt="${currentEvent.name}" class="event-detail-image" loading="eager" decoding="async">
+                    <img alt="${currentEvent.name}" class="event-detail-image">
                     <div class="event-detail-info">
                         <h1>${currentEvent.name}</h1>
                         ${currentEvent.league ? `<p style="font-size: 1.2rem; opacity: 0.9; margin-bottom: 1rem;">${currentEvent.league}</p>` : ''}
@@ -191,6 +192,22 @@
                     </div>
                 </div>
             `;
+
+            const heroImg = eventHeader.querySelector('img.event-detail-image');
+            if (window.TicketHubImages?.applyResponsiveImage) {
+                window.TicketHubImages.applyResponsiveImage(heroImg, {
+                    kind: 'event',
+                    id: currentEvent.id,
+                    variant: 'hero',
+                    category: currentEvent.category,
+                    remoteFallback: currentEvent.image,
+                    eager: true
+                });
+            } else if (heroImg) {
+                heroImg.src = currentEvent.image;
+                heroImg.loading = 'eager';
+                heroImg.decoding = 'async';
+            }
 
             // Load tickets
             loadTickets(currentEvent.tickets);
@@ -222,7 +239,7 @@
 
             const rowText = currentLanguage === 'fr' ? 'Rangée' : 'Row';
             const seatsText = currentLanguage === 'fr' ? 'Sièges' : 'Seats';
-            const buyNowText = currentLanguage === 'fr' ? 'Acheter Maintenant' : 'Buy Now';
+            const buyNowText = currentLanguage === 'fr' ? 'Réserver sur WhatsApp' : 'Reserve on WhatsApp';
 
             item.innerHTML = `
                 <div class="ticket-header">
@@ -245,32 +262,35 @@
             return item;
         }
 
-        // Open checkout modal
+        // Open request modal (WhatsApp / Email)
         function openCheckoutModal(ticket) {
             currentTicket = ticket;
             currentQuantity = 1;
             
             const modal = document.getElementById('checkoutModal');
             const modalBody = document.getElementById('modal-body');
-            
-            const firstNameLabel = currentLanguage === 'fr' ? 'Prénom' : 'First Name';
-            const lastNameLabel = currentLanguage === 'fr' ? 'Nom' : 'Last Name';
-            const phoneLabel = currentLanguage === 'fr' ? 'Téléphone' : 'Phone';
+
+            const title = currentLanguage === 'fr' ? '💬 Demande rapide (15 secondes)' : '💬 Quick request (15 seconds)';
+            document.getElementById('modal-title').textContent = title;
+
             const quantityLabel = currentLanguage === 'fr' ? 'Quantité' : 'Quantity';
-            const paymentLabel = currentLanguage === 'fr' ? 'Mode de paiement préféré' : 'Preferred payment method';
-            const termsLabel = currentLanguage === 'fr' 
-                ? 'J\'accepte les <a href="#" target="_blank">conditions générales</a> de vente'
-                : 'I accept the <a href="#" target="_blank">terms and conditions</a>';
-            const submitLabel = currentLanguage === 'fr' ? 'Confirmer la commande' : 'Confirm order';
-            const timerText = currentLanguage === 'fr' 
-                ? '⏰ Réservation valable 15 minutes'
-                : '⏰ Reservation valid for 15 minutes';
+
+            const nameLabel = currentLanguage === 'fr' ? 'Nom' : 'Name';
+            const emailLabel = 'Email';
+            const contactLabel = currentLanguage === 'fr' ? 'Contact' : 'Contact';
+
+            const termsLabel = currentLanguage === 'fr'
+                ? 'J\'accepte les <a href="#" target="_blank">conditions</a>'
+                : 'I accept the <a href="#" target="_blank">terms</a>';
+
+            const whatsappBtn = currentLanguage === 'fr' ? 'Ouvrir WhatsApp' : 'Open WhatsApp';
+            const emailBtn = currentLanguage === 'fr' ? 'Envoyer par email' : 'Send via email';
+
+            const helper = currentLanguage === 'fr'
+                ? 'On envoie un message pré-rempli. Tu finalises ensuite par conversation.'
+                : 'We’ll open a pre-filled message. You finalize via chat.';
             
             modalBody.innerHTML = `
-                <div class="timer-warning">
-                    <strong>${timerText}</strong>
-                </div>
-                
                 <div class="order-summary">
                     <h3>📋 ${currentLanguage === 'fr' ? 'Récapitulatif' : 'Summary'}</h3>
                     <div class="summary-row">
@@ -299,29 +319,22 @@
                     </div>
                 </div>
                 
-                <form class="checkout-form" id="checkoutForm" onsubmit="submitOrder(event)">
+                <p style="margin: -0.5rem 0 1.5rem; color: var(--text-muted);">${helper}</p>
+
+                <form class="checkout-form" id="checkoutForm" onsubmit="submitLead(event)">
                     <div class="form-section">
-                        <h3>👤 ${currentLanguage === 'fr' ? 'Vos informations' : 'Your information'}</h3>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>${firstNameLabel} *</label>
-                                <input type="text" name="firstName" required placeholder="Jean">
-                            </div>
-                            <div class="form-group">
-                                <label>${lastNameLabel} *</label>
-                                <input type="text" name="lastName" required placeholder="Dupont">
-                            </div>
+                        <h3>👤 ${currentLanguage === 'fr' ? 'Vos infos' : 'Your info'}</h3>
+                        <div class="form-group">
+                            <label>${nameLabel} *</label>
+                            <input type="text" name="name" required placeholder="Alex">
                         </div>
                         <div class="form-group">
-                            <label>Email *</label>
-                            <input type="email" name="email" required placeholder="jean.dupont@example.com">
+                            <label>${emailLabel} (${currentLanguage === 'fr' ? 'optionnel' : 'optional'})</label>
+                            <input type="email" name="email" placeholder="alex@example.com">
                         </div>
                         <div class="form-group">
-                            <label>${phoneLabel} *</label>
-                            <input type="tel" name="phone" required placeholder="+33 6 12 34 56 78" pattern="^(?:(?:\\+|00)33|0)\\s*[1-9](?:[\\s.-]*\\d{2}){4}$">
-                            <small style="color: var(--text-muted); font-size: 0.85em; margin-top: 0.25rem; display: block;">
-                                ${currentLanguage === 'fr' ? 'Format français: 06 12 34 56 78 ou +33 6 12 34 56 78' : 'French format: 06 12 34 56 78 or +33 6 12 34 56 78'}
-                            </small>
+                            <label>${currentLanguage === 'fr' ? 'Note (optionnel)' : 'Note (optional)'}</label>
+                            <textarea name="notes" placeholder="${currentLanguage === 'fr' ? 'Ex: places côte à côte si possible' : 'e.g. seats together if possible'}"></textarea>
                         </div>
                     </div>
                     
@@ -335,17 +348,17 @@
                     </div>
                     
                     <div class="form-section">
-                        <h3>💳 ${paymentLabel}</h3>
+                        <h3>📩 ${contactLabel}</h3>
                         <div class="payment-options">
                             <label class="payment-option selected">
-                                <input type="radio" name="payment" value="virement" checked>
-                                <div class="payment-option-icon">🏦</div>
-                                <div>${currentLanguage === 'fr' ? 'Virement' : 'Bank Transfer'}</div>
+                                <input type="radio" name="contact" value="whatsapp" checked>
+                                <div class="payment-option-icon">💬</div>
+                                <div>WhatsApp</div>
                             </label>
                             <label class="payment-option">
-                                <input type="radio" name="payment" value="paypal">
-                                <div class="payment-option-icon">💙</div>
-                                <div>PayPal</div>
+                                <input type="radio" name="contact" value="email">
+                                <div class="payment-option-icon">✉️</div>
+                                <div>Email</div>
                             </label>
                         </div>
                     </div>
@@ -357,13 +370,18 @@
                     
                     <div id="error-container"></div>
                     
-                    <button type="submit" class="submit-order-btn">
-                        ${submitLabel}
-                    </button>
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <button type="button" class="submit-order-btn" style="background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);" onclick="submitLead(event, 'whatsapp')">
+                            ${whatsappBtn}
+                        </button>
+                        <button type="button" class="submit-order-btn" style="background: linear-gradient(135deg, #4285f4 0%, #1a73e8 100%);" onclick="submitLead(event, 'email')">
+                            ${emailBtn}
+                        </button>
+                    </div>
                 </form>
             `;
             
-            // Add payment option click handlers
+            // Add contact option click handlers
             document.querySelectorAll('.payment-option').forEach(option => {
                 option.addEventListener('click', function() {
                     document.querySelectorAll('.payment-option').forEach(opt => opt.classList.remove('selected'));
@@ -392,51 +410,63 @@
             document.getElementById('summary-total').textContent = `${total}€`;
         }
 
-        // Submit order
-        async function submitOrder(event) {
-            event.preventDefault();
-            
-            const form = event.target;
+        // Submit lead + open WhatsApp/email (fast conversion)
+        async function submitLead(e, forcedChannel) {
+            if (e && typeof e.preventDefault === 'function') e.preventDefault();
+
+            const form = document.getElementById('checkoutForm');
+            if (!form) return;
+
             const formData = new FormData(form);
-            
+            const selected = forcedChannel || formData.get('contact') || 'whatsapp';
+
             const customerData = {
-                firstName: formData.get('firstName'),
-                lastName: formData.get('lastName'),
+                name: formData.get('name'),
                 email: formData.get('email'),
-                phone: formData.get('phone'),
-                preferredPayment: formData.get('payment'),
+                notes: formData.get('notes'),
+                contactChannel: selected,
                 acceptTerms: formData.get('terms') === 'on',
                 language: currentLanguage
             };
-            
-            // Create order
-            const order = new window.TicketHubCheckout.Order(
+
+            const lead = new window.TicketHubCheckout.Lead(
                 currentEvent,
                 currentTicket,
                 customerData,
                 currentQuantity
             );
-            
-            // Validate
-            const validation = order.validate();
+
+            const validation = lead.validate();
             if (!validation.isValid) {
                 showError(validation.errors.join('<br>'));
                 return;
             }
-            
-            // Disable submit button
-            const submitBtn = form.querySelector('.submit-order-btn');
-            submitBtn.disabled = true;
-            submitBtn.textContent = currentLanguage === 'fr' ? 'Envoi en cours...' : 'Sending...';
-            
-            // Save to local storage
-            order.saveToLocalStorage();
-            
-            // Submit to Google Sheets
-            const result = await window.TicketHubCheckout.submitOrderToSheets(order);
-            
-            // Show success
-            showSuccess(order);
+
+            // Best effort: save locally
+            try {
+                const leads = JSON.parse(localStorage.getItem('tickethub_leads') || '[]');
+                leads.push({
+                    orderNumber: lead.orderNumber,
+                    timestamp: lead.timestamp,
+                    event: lead.event.name,
+                    total: lead.totalPrice,
+                    channel: selected
+                });
+                localStorage.setItem('tickethub_leads', JSON.stringify(leads));
+            } catch (_) {}
+
+            // Best effort: send to Sheets (if configured)
+            try {
+                await window.TicketHubCheckout.submitLeadToSheets(lead);
+            } catch (_) {}
+
+            if (selected === 'email') {
+                openEmailLead(lead);
+            } else {
+                openWhatsAppLead(lead);
+            }
+
+            showLeadSent(lead, selected);
         }
 
         function showError(message) {
@@ -447,45 +477,60 @@
             }, 5000);
         }
 
-        function showSuccess(order) {
+        function showLeadSent(lead, channel) {
             const modalBody = document.getElementById('modal-body');
-            const successText = currentLanguage === 'fr' 
-                ? `<div class="success-message">
+            const isFr = currentLanguage === 'fr';
+            const title = isFr ? 'Demande envoyée !' : 'Request sent!';
+            const subtitle = channel === 'email'
+                ? (isFr ? 'Ton email est prêt à être envoyé.' : 'Your email is ready to send.')
+                : (isFr ? 'La conversation WhatsApp est ouverte (message pré-rempli).' : 'WhatsApp is opened (pre-filled message).');
+
+            modalBody.innerHTML = `
+                <div class="success-message">
                     <div class="success-icon">✅</div>
-                    <h2>Commande confirmée !</h2>
-                    <p class="order-number">${order.orderNumber}</p>
-                    <p>Merci ${order.customer.firstName} !</p>
-                    <p>Vous allez recevoir un email de confirmation avec les instructions de paiement.</p>
-                    <p style="margin-top: 2rem;">
-                        <a href="https://wa.me/${window.TicketHubCheckout.CONFIG.WHATSAPP}?text=${order.getWhatsAppMessage()}" 
-                           class="button" 
-                           style="display: inline-block; background: #25D366; color: white; padding: 15px 30px; text-decoration: none; border-radius: 30px; font-weight: bold;">
-                            💬 Contacter par WhatsApp
-                        </a>
+                    <h2>${title}</h2>
+                    <p class="order-number">${lead.orderNumber}</p>
+                    <p>${subtitle}</p>
+                    <p style="margin-top: 1.25rem;">
+                        <button onclick="closeCheckoutModal()" class="btn-view">${isFr ? 'Fermer' : 'Close'}</button>
                     </p>
-                    <p style="margin-top: 1rem;">
-                        <button onclick="closeCheckoutModal()" class="btn-view">Fermer</button>
-                    </p>
-                </div>`
-                : `<div class="success-message">
-                    <div class="success-icon">✅</div>
-                    <h2>Order confirmed!</h2>
-                    <p class="order-number">${order.orderNumber}</p>
-                    <p>Thank you ${order.customer.firstName}!</p>
-                    <p>You will receive a confirmation email with payment instructions.</p>
-                    <p style="margin-top: 2rem;">
-                        <a href="https://wa.me/${window.TicketHubCheckout.CONFIG.WHATSAPP}?text=${order.getWhatsAppMessage()}" 
-                           class="button" 
-                           style="display: inline-block; background: #25D366; color: white; padding: 15px 30px; text-decoration: none; border-radius: 30px; font-weight: bold;">
-                            💬 Contact via WhatsApp
-                        </a>
-                    </p>
-                    <p style="margin-top: 1rem;">
-                        <button onclick="closeCheckoutModal()" class="btn-view">Close</button>
-                    </p>
-                </div>`;
-            
-            modalBody.innerHTML = successText;
+                </div>
+            `;
+        }
+
+        function openWhatsAppLead(lead) {
+            const url = `https://wa.me/${window.TicketHubCheckout.CONFIG.WHATSAPP}?text=${lead.getSellerWhatsAppMessage()}`;
+            window.open(url, '_blank', 'noopener,noreferrer');
+        }
+
+        function openEmailLead(lead) {
+            const isFr = (lead.customer.language || 'fr') === 'fr';
+            const subject = isFr
+                ? `Demande ${lead.orderNumber} - ${lead.event.name}`
+                : `Request ${lead.orderNumber} - ${lead.event.name}`;
+
+            const bodyLines = [
+                isFr ? 'Bonjour,' : 'Hello,',
+                '',
+                isFr ? 'Je souhaite réserver / connaître la disponibilité pour :' : 'I would like to reserve / check availability for:',
+                '',
+                `N°: ${lead.orderNumber}`,
+                `Événement: ${lead.event.name}`,
+                `Date: ${new Date(lead.event.date).toLocaleDateString(isFr ? 'fr-FR' : 'en-GB')}`,
+                `Lieu: ${lead.event.venue}, ${lead.event.city}`,
+                '',
+                `Section: ${lead.ticket.section}`,
+                `Rangée: ${lead.ticket.row}`,
+                `Sièges: ${lead.ticket.seats}`,
+                `Quantité: ${lead.quantity}`,
+                `Budget estimé: ${lead.totalPrice}€`,
+                '',
+                `Nom: ${lead.customer.name || ''}`,
+                lead.customer.notes ? (isFr ? `Note: ${lead.customer.notes}` : `Note: ${lead.customer.notes}`) : null
+            ].filter(Boolean);
+
+            const mailto = `mailto:${encodeURIComponent(window.TicketHubCheckout.CONFIG.EMAIL.support)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(bodyLines.join('\n'))}`;
+            window.location.href = mailto;
         }
 
         // Close modal on outside click
