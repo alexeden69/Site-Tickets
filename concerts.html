@@ -12,7 +12,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
     <script src="app.js" defer></script>
-    <script src="image-utils.js" defer></script>
 </head>
 <body>
     <a class="skip-link" href="#main">Aller au contenu</a>
@@ -145,7 +144,7 @@
             card.innerHTML =
                 '<div class="event-image-container">' +
                 (group.trending ? '<div class="trending-badge">' + lastTickets + '</div>' : '') +
-                '<img alt="' + group.groupName + '" class="event-image">' +
+                '<img src="' + group.image + '" alt="' + group.groupName + '" class="event-image">' +
                 (group.minPrice > 0 ? '<div class="event-badge">' + fromText + ' ' + group.minPrice + '€</div>' : '<div class="event-badge">Prix à confirmer</div>') +
                 '</div>' +
                 '<div class="event-info">' +
@@ -161,22 +160,6 @@
                 '<button class="btn-view">' + viewText + '</button>' +
                 '</div>' +
                 '</div>';
-
-            const img = card.querySelector('img.event-image');
-            if (window.TicketHubImages?.applyResponsiveImage) {
-                window.TicketHubImages.applyResponsiveImage(img, {
-                    kind: 'group',
-                    id: group.id,
-                    variant: 'card',
-                    category: group.category,
-                    remoteFallback: group.image,
-                    eager: false
-                });
-            } else if (img) {
-                img.src = group.image;
-                img.loading = 'lazy';
-                img.decoding = 'async';
-            }
 
             return card;
         }
@@ -200,7 +183,7 @@
             card.innerHTML =
                 '<div class="event-image-container">' +
                 (event.trending ? '<div class="trending-badge">' + lastTickets + '</div>' : '') +
-                '<img alt="' + event.name + '" class="event-image">' +
+                '<img src="' + event.image + '" alt="' + event.name + '" class="event-image">' +
                 '<div class="event-badge">' + fromText + ' ' + event.minPrice + '€</div>' +
                 '</div>' +
                 '<div class="event-info">' +
@@ -215,22 +198,6 @@
                 '<button class="btn-view">' + viewText + '</button>' +
                 '</div>' +
                 '</div>';
-
-            const img = card.querySelector('img.event-image');
-            if (window.TicketHubImages?.applyResponsiveImage) {
-                window.TicketHubImages.applyResponsiveImage(img, {
-                    kind: 'event',
-                    id: event.id,
-                    variant: 'card',
-                    category: event.category,
-                    remoteFallback: event.image,
-                    eager: false
-                });
-            } else if (img) {
-                img.src = event.image;
-                img.loading = 'lazy';
-                img.decoding = 'async';
-            }
 
             return card;
         }

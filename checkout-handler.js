@@ -469,92 +469,6 @@ ${this.customer.phone}
     }
 }
 
-// Lead (demande) : plus léger qu'une commande payée
-class Lead {
-    constructor(event, ticket, customerData, quantity = 1) {
-        this.orderNumber = generateOrderNumber();
-        this.timestamp = new Date().toISOString();
-        this.event = event;
-        this.ticket = ticket;
-        this.customer = customerData || {};
-        this.quantity = quantity;
-        this.totalPrice = ticket.price * quantity;
-        this.status = 'lead'; // lead, contacted, confirmed, paid, sent, cancelled
-        this.reservationExpiry = new Date(Date.now() + CONFIG.RESERVATION_DURATION * 60000);
-    }
-
-    validate() {
-        const errors = [];
-        const name = (this.customer.name || '').trim();
-        if (name.length < 2) errors.push('Nom invalide');
-
-        const channel = this.customer.contactChannel || 'whatsapp';
-        if (channel !== 'whatsapp' && channel !== 'email') errors.push('Mode de contact invalide');
-
-        const email = (this.customer.email || '').trim();
-        if (channel === 'email' && !isValidEmail(email)) errors.push('Email invalide');
-        if (email && !isValidEmail(email)) errors.push('Email invalide');
-
-        if (this.quantity < 1 || this.quantity > 10) errors.push('Quantité invalide (1-10)');
-        if (!this.customer.acceptTerms) errors.push('Vous devez accepter les conditions');
-
-        return { isValid: errors.length === 0, errors };
-    }
-
-    toSheetRow() {
-        return {
-            type: 'lead',
-            orderNumber: this.orderNumber,
-            timestamp: this.timestamp,
-            eventId: this.event.id,
-            eventName: this.event.name,
-            eventDate: this.event.date,
-            eventVenue: this.event.venue,
-            eventCity: this.event.city,
-            ticketSection: this.ticket.section,
-            ticketRow: this.ticket.row,
-            ticketSeats: this.ticket.seats,
-            ticketPrice: this.ticket.price,
-            quantity: this.quantity,
-            totalPrice: this.totalPrice,
-            customerName: this.customer.name || '',
-            customerEmail: this.customer.email || '',
-            contactChannel: this.customer.contactChannel || 'whatsapp',
-            notes: this.customer.notes || '',
-            language: this.customer.language || 'fr',
-            status: this.status,
-            reservationExpiry: this.reservationExpiry.toISOString()
-        };
-    }
-
-    getSellerWhatsAppMessage() {
-        const lang = this.customer.language || 'fr';
-        const lines = [
-            '🎫 *Demande TicketHub*',
-            '',
-            `N°: ${this.orderNumber}`,
-            '',
-            `Événement: ${this.event.name}`,
-            `Date: ${new Date(this.event.date).toLocaleDateString(lang === 'fr' ? 'fr-FR' : 'en-GB')}`,
-            `Lieu: ${this.event.venue}, ${this.event.city}`,
-            '',
-            `Section: ${this.ticket.section}`,
-            `Rangée: ${this.ticket.row}`,
-            `Sièges: ${this.ticket.seats}`,
-            `Quantité: ${this.quantity}`,
-            `Budget estimé: ${this.totalPrice}€`,
-            '',
-            `Nom: ${this.customer.name || ''}`,
-            this.customer.email ? `Email: ${this.customer.email}` : null,
-            this.customer.notes ? `Note: ${this.customer.notes}` : null,
-            '',
-            'Bonjour, je souhaite réserver/obtenir la disponibilité pour ces billets.'
-        ].filter(Boolean);
-
-        return encodeURIComponent(lines.join('\n'));
-    }
-}
-
 // Envoi de la commande à Google Sheets
 async function submitOrderToSheets(order) {
     if (CONFIG.GOOGLE_SCRIPT_URL === 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE') {
@@ -581,35 +495,10 @@ async function submitOrderToSheets(order) {
     }
 }
 
-// Envoi d'un lead (demande) à Google Sheets
-async function submitLeadToSheets(lead) {
-    if (CONFIG.GOOGLE_SCRIPT_URL === 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE') {
-        console.warn('Google Sheets URL not configured. Lead saved locally only.');
-        return { success: false, message: 'Configuration incomplète' };
-    }
-
-    try {
-        await fetch(CONFIG.GOOGLE_SCRIPT_URL, {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(lead.toSheetRow())
-        });
-        return { success: true, message: 'Demande enregistrée' };
-    } catch (error) {
-        console.error('Error submitting lead to Sheets:', error);
-        return { success: false, message: error.message };
-    }
-}
-
 // Export des fonctions
 window.TicketHubCheckout = {
     Order,
-    Lead,
     submitOrderToSheets,
-    submitLeadToSheets,
     CONFIG,
     generateOrderNumber,
     isValidEmail,

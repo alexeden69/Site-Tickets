@@ -1,5 +1,5 @@
 // TicketHub Service Worker (simple cache-first for static assets)
-const CACHE_NAME = 'tickethub-v3';
+const CACHE_NAME = 'tickethub-v1';
 
 const PRECACHE_URLS = [
   './',
@@ -56,3 +56,4 @@ self.addEventListener('fetch', (event) => {
     })
   );
 });
+

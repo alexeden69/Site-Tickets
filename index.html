@@ -6,7 +6,7 @@
     <title>TicketHub - Billets Concerts & Sports au Meilleur Prix | Revente Sécurisée</title>
     
     <!-- SEO Meta Tags -->
-    <meta name="description" content="Trouvez des billets de concerts, matchs et spectacles au meilleur prix et réservez en quelques secondes par WhatsApp ou email.">
+    <meta name="description" content="Achetez et vendez vos billets de concerts, matchs et spectacles au meilleur prix. Paiement sécurisé, billets garantis 100% authentiques.">
     <meta name="keywords" content="billets concert, billets match, revente billets, tickets sports, places concert">
     
     <!-- Open Graph -->
@@ -32,7 +32,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
     <script src="app.js" defer></script>
-    <script src="image-utils.js" defer></script>
 </head>
 <body>
     <a class="skip-link" href="#main">Aller au contenu</a>
@@ -77,7 +76,7 @@
     <section class="hero" id="main">
         <div class="hero-content">
             <h1 data-fr="Vos Événements, Nos Meilleurs Prix" data-en="Your Events, Our Best Prices">Vos Événements, Nos Meilleurs Prix</h1>
-            <p data-fr="Concerts, matchs, spectacles – Réservez vos billets en quelques secondes par WhatsApp ou email" data-en="Concerts, matches, shows – Reserve your tickets in seconds via WhatsApp or email">Concerts, matchs, spectacles – Réservez vos billets en quelques secondes par WhatsApp ou email</p>
+            <p data-fr="Concerts, matchs, spectacles - Trouvez vos places pour les événements les plus attendus" data-en="Concerts, matches, shows - Find your seats for the most anticipated events">Concerts, matchs, spectacles - Trouvez vos places pour les événements les plus attendus</p>
         </div>
     </section>
 
@@ -116,7 +115,7 @@
     <section class="how-it-works">
         <div class="section-header">
             <h2 data-fr="Comment Ça Marche ?" data-en="How It Works?">Comment Ça Marche ?</h2>
-            <p data-fr="Réserver vos billets via WhatsApp ou email n'a jamais été aussi simple" data-en="Reserving your tickets via WhatsApp or email has never been easier">Réserver vos billets via WhatsApp ou email n'a jamais été aussi simple</p>
+            <p data-fr="Acheter vos billets n'a jamais été aussi simple" data-en="Buying tickets has never been easier">Acheter vos billets n'a jamais été aussi simple</p>
         </div>
         <div class="steps-grid">
             <div class="step-card">
@@ -127,15 +126,15 @@
             </div>
             <div class="step-card">
                 <div class="step-number">2</div>
-                <div class="step-icon">💬</div>
-                <h3 data-fr="Envoyez une demande" data-en="Send a request">Envoyez une demande</h3>
-                <p data-fr="Ouvrez une conversation WhatsApp ou email pré-remplie" data-en="Open a pre-filled WhatsApp or email conversation">Ouvrez une conversation WhatsApp ou email pré-remplie</p>
+                <div class="step-icon">💳</div>
+                <h3 data-fr="Paiement sécurisé" data-en="Secure payment">Paiement sécurisé</h3>
+                <p data-fr="Réglez en toute sécurité" data-en="Pay securely">Réglez en toute sécurité</p>
             </div>
             <div class="step-card">
                 <div class="step-number">3</div>
-                <div class="step-icon">✅</div>
-                <h3 data-fr="On confirme ensemble" data-en="We confirm together">On confirme ensemble</h3>
-                <p data-fr="On vérifie la dispo, le prix et le mode de paiement" data-en="We confirm availability, price and payment method">On vérifie la dispo, le prix et le mode de paiement</p>
+                <div class="step-icon">📧</div>
+                <h3 data-fr="Recevez vos billets" data-en="Receive tickets">Recevez vos billets</h3>
+                <p data-fr="Billets envoyés instantanément" data-en="Tickets sent instantly">Billets envoyés instantanément</p>
             </div>
             <div class="step-card">
                 <div class="step-number">4</div>
@@ -286,7 +285,7 @@
             card.innerHTML = `
                 <div class="event-image-container">
                     ${event.trending ? `<div class="trending-badge">${lastTickets}</div>` : ''}
-                    <img alt="${event.name}" class="event-image">
+                    <img src="${event.image}" alt="${event.name}" class="event-image" loading="lazy" decoding="async">
                     <div class="event-badge">${fromText} ${event.minPrice}€</div>
                 </div>
                 <div class="event-info">
@@ -314,22 +313,6 @@
                     </div>
                 </div>
             `;
-
-            const img = card.querySelector('img.event-image');
-            if (window.TicketHubImages?.applyResponsiveImage) {
-                window.TicketHubImages.applyResponsiveImage(img, {
-                    kind: 'event',
-                    id: event.id,
-                    variant: 'card',
-                    category: event.category,
-                    remoteFallback: event.image,
-                    eager: false
-                });
-            } else if (img) {
-                img.src = event.image;
-                img.loading = 'lazy';
-                img.decoding = 'async';
-            }
 
             return card;
         }
@@ -464,16 +447,16 @@
             const lang = currentLanguage || 'fr';
             const faqs = [
                 {
-                    q: { fr: "Comment réserver des billets ?", en: "How do I reserve tickets?" },
-                    a: { fr: "Choisissez un événement, cliquez sur \"Réserver sur WhatsApp\" ou \"Email\" et envoyez la demande pré-remplie. On vous répond rapidement avec la confirmation et les modalités de paiement.", en: "Choose an event, click \"Reserve on WhatsApp\" or \"Email\" and send the pre-filled request. We reply quickly with confirmation and payment details." }
+                    q: { fr: "Comment acheter des billets ?", en: "How to buy tickets?" },
+                    a: { fr: "Parcourez nos événements, sélectionnez vos places, puis procédez au paiement sécurisé.", en: "Browse events, select seats, then proceed to secure payment." }
                 },
                 {
                     q: { fr: "Les billets sont-ils garantis ?", en: "Are tickets guaranteed?" },
                     a: { fr: "Oui, nous garantissons l'authenticité de tous nos billets à 100%.", en: "Yes, we guarantee 100% authenticity of all tickets." }
                 },
                 {
-                    q: { fr: "Comment se passe le paiement ?", en: "How does payment work?" },
-                    a: { fr: "Le paiement se fait ensuite directement avec nous après la confirmation de votre demande (virement, autres moyens selon le cas). Tout est expliqué par WhatsApp ou email.", en: "Payment is handled directly with us after your request is confirmed (bank transfer, other methods depending on the case). Everything is explained via WhatsApp or email." }
+                    q: { fr: "Modes de paiement acceptés ?", en: "Payment methods?" },
+                    a: { fr: "Cartes bancaires, PayPal, virements. Tous sécurisés SSL.", en: "Credit cards, PayPal, transfers. All SSL secured." }
                 },
                 {
                     q: { fr: "Puis-je revendre mes billets ?", en: "Can I resell tickets?" },
