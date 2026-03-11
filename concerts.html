@@ -64,7 +64,9 @@
     <!-- Events Grid -->
     <section class="events-section">
         <div class="events-grid" id="concerts-grid">
-            <!-- Concerts loaded here -->
+            <div class="loading-state" id="loading-state">
+                <div class="loading-spinner"></div>
+            </div>
         </div>
     </section>
 
@@ -82,16 +84,9 @@
                 <a href="sports.html">Sports</a>
             </div>
             <div class="footer-section">
-                <h3>Informations</h3>
-                <a href="#">À propos</a>
-                <a href="#">Contact</a>
-                <a href="#">CGV</a>
-            </div>
-            <div class="footer-section">
-                <h3>Suivez-nous</h3>
-                <a href="#">Instagram</a>
-                <a href="#">Twitter</a>
-                <a href="#">Facebook</a>
+                <h3>Contact</h3>
+                <a href="https://wa.me/33652051917?text=Bonjour%2C%20je%20suis%20int%C3%A9ress%C3%A9%20par%20vos%20billets" target="_blank" rel="noopener noreferrer">WhatsApp</a>
+                <a href="https://mail.google.com/mail/?view=cm&fs=1&to=dzb67291@gmail.com&su=Demande%20d%27information&body=Bonjour%2C%0D%0A%0D%0AJe%20souhaite%20obtenir%20des%20informations%20sur%20vos%20billets.">Email</a>
             </div>
         </div>
         <div class="footer-bottom">
@@ -109,6 +104,8 @@
 
         function loadConcerts() {
             const grid = document.getElementById('concerts-grid');
+            const loader = document.getElementById('loading-state');
+            if (loader) loader.remove();
             const items = getConcertsForDisplay();
 
             if (items.length === 0) {

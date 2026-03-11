@@ -98,16 +98,9 @@
                 <a href="sports.html" data-fr="Sports" data-en="Sports">Sports</a>
             </div>
             <div class="footer-section">
-                <h3 data-fr="Informations" data-en="Information">Informations</h3>
-                <a href="#" data-fr="À propos" data-en="About">À propos</a>
-                <a href="#" data-fr="Contact" data-en="Contact">Contact</a>
-                <a href="#" data-fr="CGV" data-en="Terms">CGV</a>
-            </div>
-            <div class="footer-section">
-                <h3 data-fr="Suivez-nous" data-en="Follow us">Suivez-nous</h3>
-                <a href="#">Instagram</a>
-                <a href="#">Twitter</a>
-                <a href="#">Facebook</a>
+                <h3 data-fr="Contact" data-en="Contact">Contact</h3>
+                <a href="https://wa.me/33652051917?text=Bonjour%2C%20je%20suis%20int%C3%A9ress%C3%A9%20par%20vos%20billets" target="_blank" rel="noopener noreferrer">WhatsApp</a>
+                <a href="https://mail.google.com/mail/?view=cm&fs=1&to=dzb67291@gmail.com&su=Demande%20d%27information&body=Bonjour%2C%0D%0A%0D%0AJe%20souhaite%20obtenir%20des%20informations%20sur%20vos%20billets.">Email</a>
             </div>
         </div>
         <div class="footer-bottom">
@@ -280,8 +273,8 @@
             const contactLabel = currentLanguage === 'fr' ? 'Contact' : 'Contact';
 
             const termsLabel = currentLanguage === 'fr'
-                ? 'J\'accepte les <a href="#" target="_blank">conditions</a>'
-                : 'I accept the <a href="#" target="_blank">terms</a>';
+                ? 'J\'accepte les conditions de vente'
+                : 'I accept the terms of sale';
 
             const whatsappBtn = currentLanguage === 'fr' ? 'Ouvrir WhatsApp' : 'Open WhatsApp';
             const emailBtn = currentLanguage === 'fr' ? 'Envoyer par email' : 'Send via email';
@@ -417,6 +410,12 @@
             const form = document.getElementById('checkoutForm');
             if (!form) return;
 
+            // Prevent double submission
+            const submitBtns = form.querySelectorAll('.submit-order-btn');
+            if (form.dataset.submitting === 'true') return;
+            form.dataset.submitting = 'true';
+            submitBtns.forEach(btn => { btn.disabled = true; btn.style.opacity = '0.6'; });
+
             const formData = new FormData(form);
             const selected = forcedChannel || formData.get('contact') || 'whatsapp';
 
@@ -439,6 +438,8 @@
             const validation = lead.validate();
             if (!validation.isValid) {
                 showError(validation.errors.join('<br>'));
+                form.dataset.submitting = 'false';
+                submitBtns.forEach(btn => { btn.disabled = false; btn.style.opacity = ''; });
                 return;
             }
 
@@ -533,9 +534,15 @@
             window.location.href = mailto;
         }
 
-        // Close modal on outside click
+        // Close modal on outside click or Escape key
         document.getElementById('checkoutModal').addEventListener('click', function(e) {
             if (e.target === this) {
+                closeCheckoutModal();
+            }
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
                 closeCheckoutModal();
             }
         });
