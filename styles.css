@@ -1886,11 +1886,53 @@ body.dark-mode footer {
   }
 }
 
-/* ===== Search bar ===== */
+/* ===== Back button ===== */
+.back-btn-wrapper {
+    max-width: 1200px;
+    margin: 1.5rem auto 0;
+    padding: 0 1.5rem;
+}
+.back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: color 0.2s;
+}
+.back-btn:hover {
+    color: var(--secondary);
+}
+
+/* ===== Search bar + Sort ===== */
 .search-bar-wrapper {
     max-width: 600px;
     margin: 2rem auto;
     padding: 0 1.5rem;
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+}
+.search-bar-wrapper .search-bar {
+    flex: 1;
+}
+.sort-select {
+    background: var(--card-bg);
+    border: 1.5px solid var(--border);
+    color: var(--text);
+    border-radius: 12px;
+    padding: 0.75rem 1rem;
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.9rem;
+    cursor: pointer;
+    outline: none;
+    transition: border-color 0.2s;
+    white-space: nowrap;
+}
+.sort-select:focus {
+    border-color: var(--secondary);
 }
 
 .search-bar {

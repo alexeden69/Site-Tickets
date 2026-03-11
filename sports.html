@@ -61,9 +61,15 @@
         </div>
     </section>
 
-    <!-- Search -->
+    <!-- Search + Sort -->
     <div class="search-bar-wrapper">
         <input type="search" id="search-input" class="search-bar" placeholder="Rechercher un sport, une équipe…" oninput="filterEvents(this.value)" autocomplete="off">
+        <select class="sort-select" onchange="sortEvents(this.value, 'sports-grid')">
+            <option value="">Trier par</option>
+            <option value="date">Date (↑)</option>
+            <option value="price-asc">Prix (↑)</option>
+            <option value="price-desc">Prix (↓)</option>
+        </select>
     </div>
 
     <!-- Events Grid -->
@@ -87,6 +93,7 @@
                 <a href="index.html">Accueil</a>
                 <a href="concerts.html">Concerts</a>
                 <a href="sports.html">Sports</a>
+                <a href="request.html">Faire une demande</a>
             </div>
             <div class="footer-section">
                 <h3>Contact</h3>
@@ -129,6 +136,19 @@
             return (s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
         }
 
+        function sortEvents(value, gridId) {
+            if (!value) return;
+            const grid = document.getElementById(gridId);
+            const cards = [...grid.querySelectorAll('.event-card')];
+            cards.sort((a, b) => {
+                if (value === 'date') return (a.dataset.date || '') < (b.dataset.date || '') ? -1 : 1;
+                if (value === 'price-asc') return parseFloat(a.dataset.price || 9999) - parseFloat(b.dataset.price || 9999);
+                if (value === 'price-desc') return parseFloat(b.dataset.price || 0) - parseFloat(a.dataset.price || 0);
+                return 0;
+            });
+            cards.forEach(c => grid.appendChild(c));
+        }
+
         function filterEvents(query) {
             const words = normalizeText(query).trim().split(/\s+/).filter(Boolean);
             document.querySelectorAll('#sports-grid .event-card').forEach(card => {
@@ -147,6 +167,8 @@
                 group.events.map(e => e.venue + ' ' + e.city).join(' ') + ' ' +
                 (group.category || '')
             );
+            card.dataset.date = group.events[0].date || '';
+            card.dataset.price = group.minPrice || 9999;
 
             const lang = currentLanguage || 'fr';
             const firstDate = new Date(group.events[0].date);
@@ -209,6 +231,8 @@
                 event.name + ' ' + event.venue + ' ' + event.city + ' ' +
                 (event.league || '') + ' ' + (event.category || '')
             );
+            card.dataset.date = event.date || '';
+            card.dataset.price = event.minPrice || 9999;
 
             const lang = currentLanguage || 'fr';
             const dateObj = new Date(event.date);

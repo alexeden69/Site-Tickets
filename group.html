@@ -53,6 +53,9 @@
         </a>
     </div>
 
+    <!-- Back button -->
+    <div class="back-btn-wrapper" id="back-btn-wrapper"></div>
+
     <!-- Hero image du groupe -->
     <section class="group-hero" id="group-hero">
         <img src="" alt="" class="group-hero-img" id="group-hero-img">
@@ -95,6 +98,26 @@
     <script src="language.js"></script>
     <script src="sheets-loader.js"></script>
     <script>
+        // Back button
+        (function() {
+            const ref = document.referrer;
+            if (!ref) return;
+            const path = ref.split('?')[0].split('/').pop();
+            const map = {
+                'concerts.html': '← Retour aux concerts',
+                'sports.html':   '← Retour aux sports',
+                'index.html':    '← Retour à l\'accueil',
+                '':              '← Retour à l\'accueil'
+            };
+            const label = map[path];
+            if (!label) return;
+            const a = document.createElement('a');
+            a.className = 'back-btn';
+            a.href = path || 'index.html';
+            a.textContent = label;
+            document.getElementById('back-btn-wrapper').appendChild(a);
+        })();
+
         document.addEventListener('eventsLoaded', function () {
             const params = new URLSearchParams(window.location.search);
             const groupId = params.get('id');

@@ -53,6 +53,9 @@
         </a>
     </div>
 
+    <!-- Back button -->
+    <div class="back-btn-wrapper" id="back-btn-wrapper"></div>
+
     <!-- Event Detail Header -->
     <section class="event-detail-header" id="event-header">
         <!-- Content will be dynamically loaded -->
@@ -122,6 +125,27 @@
     <script src="sheets-loader.js"></script>
     <script src="checkout-handler.js"></script>
     <script>
+        // Back button
+        (function() {
+            const ref = document.referrer;
+            if (!ref) return;
+            const path = ref.split('?')[0].split('/').pop();
+            const map = {
+                'concerts.html': '← Retour aux concerts',
+                'sports.html':   '← Retour aux sports',
+                'index.html':    '← Retour à l\'accueil',
+                'group.html':    '← Retour au groupe',
+                '':              '← Retour à l\'accueil'
+            };
+            const label = map[path];
+            if (!label) return;
+            const a = document.createElement('a');
+            a.className = 'back-btn';
+            a.href = path === 'group.html' ? ref : (path || 'index.html');
+            a.textContent = label;
+            document.getElementById('back-btn-wrapper').appendChild(a);
+        })();
+
         // Global variables
         let currentEvent = null;
         let currentTicket = null;
