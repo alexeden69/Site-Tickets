@@ -205,6 +205,13 @@
         <div class="faq-list" id="faq-list"></div>
     </section>
 
+    <!-- Déjà vendus -->
+    <section class="soldout-section" id="soldout-section" style="display:none">
+        <h2 class="soldout-title">✅ Déjà vendus</h2>
+        <p class="soldout-subtitle">Ces billets ont trouvé preneur — d'autres arrivent régulièrement.</p>
+        <div class="soldout-grid" id="soldout-grid"></div>
+    </section>
+
     <!-- Avis clients -->
     <section class="reviews-section">
         <h2 class="reviews-title">Ce que disent nos clients</h2>
@@ -295,6 +302,7 @@
         document.addEventListener('eventsLoaded', function() {
             console.log('✅ Events loaded!');
             displayTrendingEvents();
+            displaySoldOut();
             loadTestimonials();
             loadFAQ();
         });
@@ -309,6 +317,30 @@
                 const haystack = card.dataset.search || normalizeText(card.querySelector('.event-name')?.textContent || '');
                 const visible = words.length === 0 || words.every(w => haystack.includes(w));
                 card.style.display = visible ? '' : 'none';
+            });
+        }
+
+        function displaySoldOut() {
+            const events = getSoldOutEvents();
+            if (!events.length) return;
+            const section = document.getElementById('soldout-section');
+            const grid = document.getElementById('soldout-grid');
+            section.style.display = '';
+            events.forEach(event => {
+                const lang = currentLanguage || 'fr';
+                const locale = lang === 'fr' ? 'fr-FR' : 'en-GB';
+                const dateObj = new Date(event.date);
+                const formattedDate = isNaN(dateObj) ? '' : dateObj.toLocaleDateString(locale, { day: 'numeric', month: 'long', year: 'numeric' });
+                const card = document.createElement('div');
+                card.className = 'soldout-card';
+                card.innerHTML =
+                    '<div class="soldout-img-wrap"><img src="' + (event.image || '') + '" alt="' + event.name + '" class="soldout-img" loading="lazy"></div>' +
+                    '<div class="soldout-info">' +
+                    '<span class="soldout-badge">ÉPUISÉ</span>' +
+                    '<div class="soldout-name">' + event.name + '</div>' +
+                    '<div class="soldout-meta">' + event.venue + ', ' + event.city + ' · ' + formattedDate + '</div>' +
+                    '</div>';
+                grid.appendChild(card);
             });
         }
 

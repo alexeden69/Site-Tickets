@@ -50,6 +50,7 @@ function groupTicketsByEvent(rows) {
         image: row.image_url ? row.image_url.trim() : 'https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?w=800&q=80',
         category: row.category.trim().toLowerCase(),
         trending: row.trending === 'TRUE' || row.trending === 'true' || row.trending === '1',
+        soldOut: row.sold_out === 'TRUE' || row.sold_out === 'true' || row.sold_out === '1',
         tickets: []
       };
       if (row.league && row.league.trim()) events[eventId].league = row.league.trim();
@@ -540,7 +541,7 @@ function buildGroups() {
 // Retourne la liste "concerts" avec groupes substitués
 function getConcertsForDisplay() {
   const groups = buildGroups().filter(g => g.category === 'concert');
-  const ungrouped = eventsData.concerts.filter(e => !GROUPED_EVENT_IDS.has(e.id));
+  const ungrouped = eventsData.concerts.filter(e => !GROUPED_EVENT_IDS.has(e.id) && !e.soldOut);
   const all = [...groups, ...ungrouped];
   all.sort((a, b) => {
     const dateA = a.isGroup ? new Date(a.events[0].date) : new Date(a.date);
@@ -553,7 +554,7 @@ function getConcertsForDisplay() {
 // Retourne la liste "sports" avec groupes substitués
 function getSportsForDisplay() {
   const groups = buildGroups().filter(g => g.category === 'sport');
-  const ungrouped = eventsData.sports.filter(e => !GROUPED_EVENT_IDS.has(e.id));
+  const ungrouped = eventsData.sports.filter(e => !GROUPED_EVENT_IDS.has(e.id) && !e.soldOut);
   const all = [...groups, ...ungrouped];
   all.sort((a, b) => {
     const dateA = a.isGroup ? new Date(a.events[0].date) : new Date(a.date);
@@ -566,6 +567,13 @@ function getSportsForDisplay() {
 // Retourne tous les items (groupes + events solo) pour la home trending
 function getAllForDisplay() {
   return [...getConcertsForDisplay(), ...getSportsForDisplay()];
+}
+
+// Retourne les events sold out pour la section "Déjà vendus"
+function getSoldOutEvents() {
+  return [...eventsData.concerts, ...eventsData.sports]
+    .filter(e => e.soldOut)
+    .sort((a, b) => new Date(b.date) - new Date(a.date));
 }
 
 function getGroupById(id) {
