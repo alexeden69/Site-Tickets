@@ -17,8 +17,10 @@ const GOOGLE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQfVTu
 // PARSING CSV
 // ─────────────────────────────────────────────
 function parseCSV(csv) {
-  const lines = csv.split('\n');
-  const headers = lines[0].split(',').map(h => h.trim());
+  // Strip BOM if present
+  csv = csv.replace(/^\ufeff/, '');
+  const lines = csv.split(/\r?\n/);
+  const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, '').toLowerCase());
   const data = [];
   for (let i = 1; i < lines.length; i++) {
     if (!lines[i].trim()) continue;
