@@ -59,6 +59,14 @@
         </div>
     </nav>
 
+    <!-- Trust strip -->
+    <div class="trust-strip">
+        <span>✅ Billets garantis</span>
+        <span>⚡ Réponse sous 24h</span>
+        <span>🔒 Paiement sécurisé</span>
+        <span>📧 E-tickets</span>
+    </div>
+
     <!-- Contact Buttons -->
     <div class="contact-buttons">
         <a href="https://wa.me/33652051917?text=Bonjour%2C%20je%20suis%20int%C3%A9ress%C3%A9%20par%20vos%20billets" target="_blank" rel="noopener noreferrer" class="contact-btn whatsapp-btn" title="WhatsApp">
@@ -300,12 +308,19 @@
 
             const fromText = lang === 'fr' ? 'À partir de' : 'From';
             const viewText = lang === 'fr' ? 'Voir' : 'View';
-            const lastTickets = lang === 'fr' ? '🔥 Dernières places' : '🔥 Last tickets';
             const datesLabel = group.events.length + ' date(s)';
+            const totalTickets = group.events.reduce((s, e) => s + e.tickets.length, 0);
+            const urgencyBadge = totalTickets === 1
+                ? '<div class="trending-badge urgent-badge">⚡ 1 billet restant</div>'
+                : totalTickets <= 3
+                    ? '<div class="trending-badge urgent-badge">⚡ ' + totalTickets + ' billets restants</div>'
+                    : totalTickets <= 8 || group.trending
+                        ? '<div class="trending-badge">🔥 Dernières places</div>'
+                        : '';
 
             card.innerHTML =
                 '<div class="event-image-container">' +
-                (group.trending ? '<div class="trending-badge">' + lastTickets + '</div>' : '') +
+                urgencyBadge +
                 '<img alt="' + group.groupName + '" class="event-image">' +
                 (group.minPrice > 0 ? '<div class="event-badge">' + fromText + ' ' + group.minPrice + '€</div>' : '<div class="event-badge">Prix à confirmer</div>') +
                 '</div>' +
@@ -359,11 +374,18 @@
 
             const fromText = currentLanguage === 'fr' ? 'À partir de' : 'From';
             const viewText = currentLanguage === 'fr' ? 'Voir' : 'View';
-            const lastTickets = currentLanguage === 'fr' ? '🔥 Dernières places' : '🔥 Last tickets';
+            const tc = event.tickets.length;
+            const urgencyBadge = tc === 1
+                ? '<div class="trending-badge urgent-badge">⚡ 1 billet restant</div>'
+                : tc <= 3
+                    ? `<div class="trending-badge urgent-badge">⚡ ${tc} billets restants</div>`
+                    : tc <= 8 || event.trending
+                        ? '<div class="trending-badge">🔥 Dernières places</div>'
+                        : '';
 
             card.innerHTML = `
                 <div class="event-image-container">
-                    ${event.trending ? `<div class="trending-badge">${lastTickets}</div>` : ''}
+                    ${urgencyBadge}
                     <img alt="${event.name}" class="event-image">
                     <div class="event-badge">${fromText} ${event.minPrice}€</div>
                 </div>

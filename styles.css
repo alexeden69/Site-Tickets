@@ -1886,6 +1886,36 @@ body.dark-mode footer {
   }
 }
 
+/* ===== Trust strip ===== */
+.trust-strip {
+    background: var(--primary);
+    color: var(--bg);
+    padding: 0.55rem 1.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    flex-wrap: wrap;
+    letter-spacing: 0.01em;
+}
+.trust-strip span {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    white-space: nowrap;
+}
+body.dark-mode .trust-strip {
+    background: #1e1e1e;
+    color: #f0f0f0;
+}
+
+/* ===== Urgent badge (billets restants) ===== */
+.urgent-badge {
+    background: linear-gradient(135deg, #fb5607, #ff8c00) !important;
+}
+
 /* ===== Back button ===== */
 .back-btn-wrapper {
     max-width: 1200px;
