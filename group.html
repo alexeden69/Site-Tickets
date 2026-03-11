@@ -68,7 +68,9 @@
 
     <!-- Sous-événements -->
     <p class="group-subtitle" id="group-subtitle">Choisissez une date / ville</p>
-    <div class="sub-events-grid" id="sub-events-grid"></div>
+    <section class="events-section">
+        <div class="events-grid" id="sub-events-grid"></div>
+    </section>
 
     <!-- Footer -->
     <footer>
@@ -175,43 +177,63 @@
         function createSubEventCard(event, lang) {
             const card = document.createElement('a');
             card.href = 'event.html?id=' + event.id;
-            card.className = 'sub-event-card';
+            card.className = 'event-card';
 
+            const locale = lang === 'fr' ? 'fr-FR' : 'en-GB';
             const dateObj = new Date(event.date);
             const formattedDate = isNaN(dateObj)
                 ? 'Date à confirmer'
-                : dateObj.toLocaleDateString(lang === 'fr' ? 'fr-FR' : 'en-GB', {
-                    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
-                });
+                : dateObj.toLocaleDateString(locale, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 
             const prices = event.tickets.map(t => t.price).filter(p => p > 0);
             const minPrice = prices.length > 0 ? Math.min(...prices) : null;
             const fromText = lang === 'fr' ? 'À partir de' : 'From';
-            const viewText = lang === 'fr' ? 'Voir les billets' : 'View tickets';
-            const priceLabel = lang === 'fr' ? 'Prix' : 'Price';
+            const viewText = lang === 'fr' ? 'Voir' : 'View';
             const tbdText = lang === 'fr' ? 'Prix à confirmer' : 'Price TBD';
-            const ticketText = lang === 'fr'
-                ? event.tickets.length + ' billet' + (event.tickets.length > 1 ? 's' : '')
-                : event.tickets.length + ' ticket' + (event.tickets.length > 1 ? 's' : '');
+            const tc = event.tickets.length;
+            const urgencyBadge = tc === 1
+                ? '<div class="trending-badge urgent-badge">⚡ 1 billet restant</div>'
+                : tc <= 3
+                    ? '<div class="trending-badge urgent-badge">⚡ ' + tc + ' billets restants</div>'
+                    : tc <= 8 || event.trending
+                        ? '<div class="trending-badge">🔥 Dernières places</div>'
+                        : '';
 
             card.innerHTML =
-                (event.trending ? '<div class="sub-trending-badge">🔥 ' + (lang === 'fr' ? 'Dernières places' : 'Last tickets') + '</div>' : '') +
-                '<div class="sub-event-card-body">' +
-                '<h3 class="sub-event-name">' + event.name + '</h3>' +
-                '<div class="sub-event-details">' +
-                '<div class="sub-event-detail"><span>📍</span><span>' + event.venue + ', ' + event.city + '</span></div>' +
-                '<div class="sub-event-detail"><span>📅</span><span>' + formattedDate + '</span></div>' +
-                '<div class="sub-event-detail"><span>🕐</span><span>' + event.time + '</span></div>' +
-                '<div class="sub-event-detail"><span>🎫</span><span class="ticket-count-badge">' + ticketText + ' disponibles</span></div>' +
+                '<div class="event-image-container">' +
+                urgencyBadge +
+                '<img alt="' + event.name + '" class="event-image">' +
+                (minPrice !== null
+                    ? '<div class="event-badge">' + fromText + ' ' + minPrice + '€</div>'
+                    : '<div class="event-badge">' + tbdText + '</div>') +
                 '</div>' +
-                '<div class="sub-event-footer">' +
-                '<div>' +
-                '<span class="sub-price-label">' + fromText + '</span>' +
-                '<span class="sub-price">' + (minPrice !== null ? minPrice + '€' : tbdText) + '</span>' +
+                '<div class="event-info">' +
+                '<h3 class="event-name">' + event.name + '</h3>' +
+                '<div class="event-details">' +
+                '<div class="event-detail"><span class="event-detail-icon">📍</span><span>' + event.venue + ', ' + event.city + '</span></div>' +
+                '<div class="event-detail"><span class="event-detail-icon">📅</span><span>' + formattedDate + '</span></div>' +
+                '<div class="event-detail"><span class="event-detail-icon">🕐</span><span>' + event.time + '</span></div>' +
+                '<div class="event-detail"><span class="event-detail-icon">🎫</span><span>' + tc + ' billet' + (tc > 1 ? 's' : '') + ' disponible' + (tc > 1 ? 's' : '') + '</span></div>' +
                 '</div>' +
-                '<button class="sub-btn-view">' + viewText + '</button>' +
+                '<div class="event-footer">' +
+                (minPrice !== null
+                    ? '<div class="price-info"><span class="price-label">' + fromText + '</span><span class="price-amount">' + minPrice + '€</span></div>'
+                    : '<div class="price-info"><span class="price-label" style="font-size:0.85rem">' + tbdText + '</span></div>') +
+                '<button class="btn-view">' + viewText + '</button>' +
                 '</div>' +
                 '</div>';
+
+            const img = card.querySelector('img.event-image');
+            if (window.TicketHubImages?.applyResponsiveImage) {
+                window.TicketHubImages.applyResponsiveImage(img, {
+                    kind: 'event', id: event.id, variant: 'card',
+                    category: event.category, remoteFallback: event.image, eager: false
+                });
+            } else if (img) {
+                img.src = event.image || '';
+                img.loading = 'lazy';
+                img.decoding = 'async';
+            }
 
             return card;
         }
