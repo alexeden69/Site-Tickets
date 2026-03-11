@@ -1886,6 +1886,105 @@ body.dark-mode footer {
   }
 }
 
+/* ===== Search bar ===== */
+.search-bar-wrapper {
+    max-width: 600px;
+    margin: 2rem auto 0;
+    padding: 0 1.5rem;
+}
+
+.search-bar {
+    width: 100%;
+    padding: 0.85rem 1.25rem;
+    border: 2px solid var(--border);
+    border-radius: 50px;
+    font-size: 1rem;
+    font-family: 'Outfit', sans-serif;
+    background: var(--card-bg);
+    color: var(--text-primary);
+    outline: none;
+    transition: border-color 0.2s;
+    box-sizing: border-box;
+}
+
+.search-bar:focus {
+    border-color: var(--accent);
+}
+
+.search-bar::placeholder {
+    color: var(--text-muted);
+}
+
+/* ===== Sticky CTA (mobile only) ===== */
+.sticky-cta {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 200;
+    background: var(--card-bg);
+    border-top: 1px solid var(--border);
+    padding: 0.85rem 1.25rem;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.12);
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+}
+
+.sticky-cta.visible {
+    transform: translateY(0);
+}
+
+.sticky-cta.modal-open {
+    display: none !important;
+}
+
+.sticky-cta-info {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.sticky-cta-name {
+    font-weight: 700;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--text-primary);
+}
+
+.sticky-cta-price {
+    font-size: 0.8rem;
+    color: var(--accent);
+    font-weight: 600;
+}
+
+.sticky-cta-btn {
+    flex-shrink: 0;
+    background: linear-gradient(135deg, #ff006e, #fb5607);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    font-family: 'Outfit', sans-serif;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.sticky-cta-btn:hover { opacity: 0.85; }
+
+@media (max-width: 768px) {
+    .sticky-cta {
+        display: flex;
+    }
+}
+
 /* ===== group.html specific styles ===== */
 .group-hero {
     position: relative;

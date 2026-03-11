@@ -61,6 +61,11 @@
         </div>
     </section>
 
+    <!-- Search -->
+    <div class="search-bar-wrapper">
+        <input type="search" id="search-input" class="search-bar" placeholder="Rechercher un sport, une équipe…" oninput="filterEvents(this.value)" autocomplete="off">
+    </div>
+
     <!-- Events Grid -->
     <section class="events-section">
         <div class="events-grid" id="sports-grid">
@@ -117,6 +122,14 @@
                 const card = item.isGroup ? createGroupCard(item) : createEventCard(item);
                 card.style.animationDelay = (i * 0.1) + 's';
                 grid.appendChild(card);
+            });
+        }
+
+        function filterEvents(query) {
+            const q = query.trim().toLowerCase();
+            document.querySelectorAll('#sports-grid .event-card').forEach(card => {
+                const text = card.querySelector('.event-name')?.textContent.toLowerCase() || '';
+                card.style.display = (!q || text.includes(q)) ? '' : 'none';
             });
         }
 

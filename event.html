@@ -71,6 +71,15 @@
         </div>
     </section>
 
+    <!-- Sticky CTA (mobile) -->
+    <div class="sticky-cta" id="sticky-cta">
+        <div class="sticky-cta-info">
+            <span class="sticky-cta-name" id="sticky-cta-name"></span>
+            <span class="sticky-cta-price" id="sticky-cta-price"></span>
+        </div>
+        <button class="sticky-cta-btn" id="sticky-cta-btn">Réserver</button>
+    </div>
+
     <!-- Checkout Modal -->
     <div class="modal-overlay" id="checkoutModal">
         <div class="modal-content">
@@ -204,6 +213,34 @@
 
             // Load tickets
             loadTickets(currentEvent.tickets);
+            setupStickyCTA();
+        }
+
+        function setupStickyCTA() {
+            if (!currentEvent) return;
+            const isFr = currentLanguage === 'fr';
+            const nameEl = document.getElementById('sticky-cta-name');
+            const priceEl = document.getElementById('sticky-cta-price');
+            const btn = document.getElementById('sticky-cta-btn');
+
+            if (nameEl) nameEl.textContent = currentEvent.name;
+            if (priceEl) priceEl.textContent = isFr ? `À partir de ${currentEvent.minPrice}€` : `From ${currentEvent.minPrice}€`;
+            if (btn) btn.textContent = isFr ? 'Réserver' : 'Reserve';
+
+            if (btn && currentEvent.tickets && currentEvent.tickets.length > 0) {
+                btn.onclick = () => openCheckoutModal(currentEvent.tickets[0]);
+            }
+
+            const header = document.getElementById('event-header');
+            if (header) {
+                const observer = new IntersectionObserver((entries) => {
+                    const sticky = document.getElementById('sticky-cta');
+                    if (sticky && !sticky.classList.contains('modal-open')) {
+                        sticky.classList.toggle('visible', !entries[0].isIntersecting);
+                    }
+                }, { threshold: 0 });
+                observer.observe(header);
+            }
         }
 
         function loadTickets(tickets) {
@@ -385,6 +422,7 @@
             
             modal.classList.add('active');
             document.body.style.overflow = 'hidden';
+            document.getElementById('sticky-cta')?.classList.add('modal-open');
         }
 
         // Close modal
@@ -392,6 +430,7 @@
             const modal = document.getElementById('checkoutModal');
             modal.classList.remove('active');
             document.body.style.overflow = '';
+            document.getElementById('sticky-cta')?.classList.remove('modal-open');
         }
 
         // Update quantity
