@@ -125,11 +125,16 @@
             });
         }
 
+        function normalizeText(s) {
+            return (s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+        }
+
         function filterEvents(query) {
-            const q = query.trim().toLowerCase();
+            const words = normalizeText(query).trim().split(/\s+/).filter(Boolean);
             document.querySelectorAll('#concerts-grid .event-card').forEach(card => {
-                const text = card.querySelector('.event-name')?.textContent.toLowerCase() || '';
-                card.style.display = (!q || text.includes(q)) ? '' : 'none';
+                const haystack = card.dataset.search || normalizeText(card.querySelector('.event-name')?.textContent || '');
+                const visible = words.length === 0 || words.every(w => haystack.includes(w));
+                card.style.display = visible ? '' : 'none';
             });
         }
 
@@ -137,6 +142,11 @@
             const card = document.createElement('a');
             card.href = 'group.html?id=' + group.id;
             card.className = 'event-card';
+            card.dataset.search = normalizeText(
+                group.groupName + ' ' +
+                group.events.map(e => e.venue + ' ' + e.city).join(' ') + ' ' +
+                (group.category || '')
+            );
 
             const lang = currentLanguage || 'fr';
             const firstDate = new Date(group.events[0].date);
@@ -195,6 +205,10 @@
             const card = document.createElement('a');
             card.href = 'event.html?id=' + event.id;
             card.className = 'event-card';
+            card.dataset.search = normalizeText(
+                event.name + ' ' + event.venue + ' ' + event.city + ' ' +
+                (event.league || '') + ' ' + (event.category || '')
+            );
 
             const lang = currentLanguage || 'fr';
             const dateObj = new Date(event.date);
