@@ -11,7 +11,7 @@ let dataLoaded = false;
 
 // CONFIGURATION: Remplacer par l'URL de votre Google Sheet publié en CSV
 // Fichier > Partager > Publier sur le Web > Feuille 1 > CSV > Publier
-const GOOGLE_SHEET_URL = 'VOTRE_URL_GOOGLE_SHEET_CSV_ICI';
+const GOOGLE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRI0nsyHM0uH2VCBS6GaF1fntB1ywckqzmIeqsfK9RRXde2VdRcvsWn13qO7-WXj_L1ty1DiZ2CVDBK/pub?output=csv';
 
 // ─────────────────────────────────────────────
 // PARSING CSV
