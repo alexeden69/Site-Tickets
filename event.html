@@ -236,11 +236,12 @@
                 heroImg.decoding = 'async';
             }
 
-            // Compteur de vues
-            const seed = (currentEvent.id + new Date().toDateString()).split('').reduce((a, c) => a + c.charCodeAt(0), 0);
-            const viewers = 8 + (seed % 19);
+            // Compteur de vues (change chaque heure)
+            const _now = new Date();
+            const _seed = (currentEvent.id + _now.toDateString() + _now.getHours()).split('').reduce((a, c) => a + c.charCodeAt(0), 0);
+            const viewers = 1 + (_seed % 20);
             const vcEl = document.getElementById('view-counter');
-            if (vcEl) vcEl.innerHTML = '👁 ' + viewers + ' personne' + (viewers > 1 ? 's regardent' : ' regarde') + ' cet événement en ce moment';
+            if (vcEl) vcEl.innerHTML = '👁 ' + viewers + ' personne' + (viewers > 1 ? 's ont regardé' : ' a regardé') + ' cet événement au cours de la dernière heure';
 
             // WhatsApp pré-rempli avec l'event
             const waText = encodeURIComponent('Bonjour, je suis intéressé par ' + currentEvent.name + ' (' + currentEvent.date + ') — à partir de ' + currentEvent.minPrice + '€. Pouvez-vous me confirmer la disponibilité ?');
