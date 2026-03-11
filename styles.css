@@ -2041,6 +2041,23 @@ body.dark-mode .trust-strip {
     background: linear-gradient(135deg, #fb5607, #ff8c00) !important;
 }
 
+/* ===== Countdown tag ===== */
+.countdown-tag {
+    display: inline-block;
+    margin-left: 0.45rem;
+    padding: 0.1rem 0.5rem;
+    border-radius: 20px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    background: var(--secondary);
+    color: #fff;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+.countdown-tag.soon {
+    background: #fb5607;
+}
+
 /* ===== Back button ===== */
 .back-btn-wrapper {
     max-width: 1200px;
