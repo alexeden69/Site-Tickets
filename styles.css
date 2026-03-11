@@ -1886,6 +1886,65 @@ body.dark-mode footer {
   }
 }
 
+/* ===== Reviews ===== */
+.reviews-section {
+    max-width: 1200px;
+    margin: 4rem auto;
+    padding: 0 1.5rem;
+}
+.reviews-title {
+    font-size: 1.8rem;
+    font-weight: 800;
+    text-align: center;
+    margin-bottom: 2rem;
+}
+.reviews-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.25rem;
+}
+.review-card {
+    background: var(--card-bg);
+    border-radius: 16px;
+    padding: 1.4rem;
+    box-shadow: 0 4px 20px var(--shadow);
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+.review-stars {
+    color: #f5a623;
+    font-size: 1rem;
+    letter-spacing: 2px;
+}
+.review-text {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: var(--text);
+    font-style: italic;
+    flex: 1;
+}
+.review-author {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--text-muted);
+}
+
+/* ===== View counter ===== */
+.view-counter {
+    margin-top: 1rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(4px);
+    color: white;
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 0.4rem 0.9rem;
+    border-radius: 20px;
+}
+
 /* ===== Trust strip ===== */
 .trust-strip {
     background: var(--primary);

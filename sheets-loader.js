@@ -17,12 +17,14 @@ const GOOGLE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQfVTu
 // PARSING CSV
 // ─────────────────────────────────────────────
 function parseCSV(csv) {
-  // Strip BOM if present
   csv = csv.replace(/^\ufeff/, '');
   const lines = csv.split(/\r?\n/);
-  const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, '').toLowerCase());
+  // Trouver la vraie ligne d'en-têtes (celle qui contient "event_id")
+  let headerIndex = lines.findIndex(l => l.toLowerCase().includes('event_id'));
+  if (headerIndex === -1) headerIndex = 0;
+  const headers = lines[headerIndex].split(',').map(h => h.trim().replace(/^"|"$/g, '').toLowerCase());
   const data = [];
-  for (let i = 1; i < lines.length; i++) {
+  for (let i = headerIndex + 1; i < lines.length; i++) {
     if (!lines[i].trim()) continue;
     const values = lines[i].split(',').map(v => v.trim().replace(/^"|"$/g, ''));
     const row = {};
