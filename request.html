@@ -116,6 +116,47 @@
         @media (max-width: 480px) {
             .form-actions { flex-direction: column; }
         }
+        .faq-section {
+            margin-top: 2.5rem;
+        }
+        .faq-section h2 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        .faq-item {
+            border-bottom: 1px solid var(--border);
+        }
+        .faq-item summary {
+            list-style: none;
+            cursor: pointer;
+            padding: 1rem 0;
+            font-weight: 600;
+            font-size: 0.95rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            user-select: none;
+        }
+        .faq-item summary::-webkit-details-marker { display: none; }
+        .faq-item summary::after {
+            content: '+';
+            font-size: 1.3rem;
+            color: var(--text-muted);
+            flex-shrink: 0;
+            transition: transform 0.2s;
+        }
+        .faq-item[open] summary::after {
+            transform: rotate(45deg);
+        }
+        .faq-item p {
+            padding-bottom: 1rem;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin: 0;
+        }
     </style>
 </head>
 <body>
@@ -186,6 +227,29 @@
             </div>
             <p class="form-note">Votre demande sera envoyée directement à notre équipe. Réponse en moins de 2h.</p>
         </div>
+        <section class="faq-section">
+            <h2>Questions fréquentes</h2>
+            <details class="faq-item">
+                <summary>Est-ce que CFTickets est fiable ?</summary>
+                <p>Oui. Tous nos billets sont vérifiés avant livraison et garantis authentiques. En cas de problème avec un billet, on vous rembourse intégralement — sans discussion.</p>
+            </details>
+            <details class="faq-item">
+                <summary>Comment se passe le paiement ?</summary>
+                <p>Après votre demande, on vous confirme la disponibilité et le prix par WhatsApp ou email. Le paiement se fait uniquement une fois qu'on a validé ensemble les détails — aucune surprise.</p>
+            </details>
+            <details class="faq-item">
+                <summary>Et si l'événement est annulé ou reporté ?</summary>
+                <p>Si l'événement est annulé par l'organisateur, vous êtes remboursé en intégralité. Si l'événement est reporté, les billets restent valables pour la nouvelle date.</p>
+            </details>
+            <details class="faq-item">
+                <summary>Dans quel délai vous répondez ?</summary>
+                <p>En moins de 2h en journée (9h–21h). On fait le maximum pour répondre le plus vite possible, surtout pour les événements proches.</p>
+            </details>
+            <details class="faq-item">
+                <summary>Vous pouvez trouver des billets pour n'importe quel événement ?</summary>
+                <p>On couvre la grande majorité des concerts et matchs en France. Si on ne peut pas vous aider, on vous le dit clairement — on ne prend pas votre commande si on n'a pas le billet.</p>
+            </details>
+        </section>
     </main>
 
     <!-- Footer -->
