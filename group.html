@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Choisissez votre date sur TicketHub. Billets premium garantis, réponse sous 24h par WhatsApp ou email.">
     <title id="page-title">Événements - TicketHub</title>
     <meta name="theme-color" content="#fafafa">
     <link rel="manifest" href="manifest.webmanifest">
@@ -99,6 +100,7 @@
     <script src="dark-mode.js"></script>
     <script src="language.js"></script>
     <script src="sheets-loader.js"></script>
+    <script src="ui-extras.js"></script>
     <script>
         // Back button
         (function() {
@@ -215,6 +217,7 @@
                 '<div class="event-detail"><span class="event-detail-icon">🕐</span><span>' + event.time + '</span></div>' +
                 '<div class="event-detail"><span class="event-detail-icon">🎫</span><span>' + tc + ' billet' + (tc > 1 ? 's' : '') + ' disponible' + (tc > 1 ? 's' : '') + '</span></div>' +
                 '</div>' +
+                '<div class="verified-line">✓ Billet authentifié · Garanti TicketHub</div>' +
                 '<div class="event-footer">' +
                 (minPrice !== null
                     ? '<div class="price-info"><span class="price-label">' + fromText + '</span><span class="price-amount">' + minPrice + '€</span></div>'

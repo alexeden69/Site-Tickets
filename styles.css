@@ -2382,3 +2382,132 @@ body.dark-mode .ticket-count-badge { background: #2a2a4a; color: #7eb8ff; }
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
+
+/* ===== Verified line on cards ===== */
+.verified-line {
+    font-size: 0.72rem;
+    color: #22c55e;
+    font-weight: 600;
+    padding: 0.3rem 0;
+    letter-spacing: 0.01em;
+}
+
+/* ===== Floating request button ===== */
+.float-request-btn {
+    position: fixed;
+    bottom: 5.5rem;
+    right: 1.25rem;
+    background: var(--gradient-1);
+    color: #fff;
+    border-radius: 50px;
+    padding: 0.7rem 1.2rem;
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-decoration: none;
+    box-shadow: 0 4px 20px rgba(102,126,234,0.4);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    z-index: 900;
+    transition: transform 0.2s, opacity 0.2s;
+}
+.float-request-btn:hover { transform: translateY(-2px); opacity: 0.92; }
+
+/* ===== Exit intent popup ===== */
+.exit-popup-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    animation: fadeIn 0.25s ease;
+}
+.exit-popup {
+    background: var(--card-bg);
+    border-radius: 20px;
+    padding: 2.5rem 2rem;
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+    position: relative;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.25);
+}
+.exit-popup-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--text-muted);
+    line-height: 1;
+}
+.exit-popup-icon { font-size: 3rem; margin-bottom: 1rem; }
+.exit-popup h3 { font-size: 1.4rem; font-weight: 800; margin-bottom: 0.75rem; }
+.exit-popup p { color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; margin-bottom: 1.5rem; }
+.exit-popup-btn {
+    display: inline-block;
+    background: var(--gradient-1);
+    color: #fff;
+    border-radius: 12px;
+    padding: 0.85rem 1.75rem;
+    font-family: 'Outfit', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: opacity 0.2s;
+    margin-bottom: 0.75rem;
+}
+.exit-popup-btn:hover { opacity: 0.88; }
+.exit-popup-skip {
+    display: block;
+    width: 100%;
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    cursor: pointer;
+    font-family: 'Outfit', sans-serif;
+}
+
+/* ===== Share button on event page ===== */
+.share-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 1rem;
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(4px);
+    color: white;
+    border: 1.5px solid rgba(255,255,255,0.3);
+    border-radius: 20px;
+    padding: 0.4rem 1rem;
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.share-btn:hover { background: rgba(255,255,255,0.25); }
+
+/* ===== Share toast ===== */
+.share-toast {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1a1a2e;
+    color: #fff;
+    padding: 0.75rem 1.5rem;
+    border-radius: 50px;
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    z-index: 9999;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    animation: fadeIn 0.2s ease;
+}

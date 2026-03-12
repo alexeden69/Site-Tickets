@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Achetez vos billets sur TicketHub. Billets premium garantis, réponse sous 24h par WhatsApp ou email.">
     <title id="page-title">Événement - TicketHub</title>
     <meta name="theme-color" content="#fafafa">
     <link rel="manifest" href="manifest.webmanifest">
@@ -124,6 +125,7 @@
     <script src="language.js"></script>
     <script src="sheets-loader.js"></script>
     <script src="checkout-handler.js"></script>
+    <script src="ui-extras.js"></script>
     <script>
         // Back button
         (function() {
@@ -242,6 +244,22 @@
             const viewers = 1 + (_seed % 20);
             const vcEl = document.getElementById('view-counter');
             if (vcEl) vcEl.innerHTML = '👁 ' + viewers + ' personne' + (viewers > 1 ? 's ont regardé' : ' a regardé') + ' cet événement au cours de la dernière heure';
+
+            // Share button
+            const shareBtnEl = document.createElement('button');
+            shareBtnEl.className = 'share-btn';
+            shareBtnEl.innerHTML = '🔗 Partager';
+            shareBtnEl.onclick = function() {
+                navigator.clipboard.writeText(window.location.href).then(function() {
+                    const toast = document.createElement('div');
+                    toast.className = 'share-toast';
+                    toast.textContent = '✅ Lien copié !';
+                    document.body.appendChild(toast);
+                    setTimeout(function() { toast.remove(); }, 2500);
+                });
+            };
+            const detailInfo = eventHeader.querySelector('.event-detail-info');
+            if (detailInfo) detailInfo.appendChild(shareBtnEl);
 
             // WhatsApp pré-rempli avec l'event
             const waText = encodeURIComponent('Bonjour, je suis intéressé par ' + currentEvent.name + ' (' + currentEvent.date + ') — à partir de ' + currentEvent.minPrice + '€. Pouvez-vous me confirmer la disponibilité ?');

@@ -6,7 +6,7 @@
     <title>TicketHub - Billets Concerts & Sports au Meilleur Prix | Revente Sécurisée</title>
     
     <!-- SEO Meta Tags -->
-    <meta name="description" content="Trouvez des billets de concerts, matchs et spectacles au meilleur prix et réservez en quelques secondes par WhatsApp ou email.">
+    <meta name="description" content="Marketplace de revente de billets premium. Concerts, sports, événements — billets authentifiés, réponse sous 24h via WhatsApp.">
     <meta name="keywords" content="billets concert, billets match, revente billets, tickets sports, places concert">
     
     <!-- Open Graph -->
@@ -65,6 +65,7 @@
         <span>⚡ Réponse sous 24h</span>
         <span>🔒 Paiement sécurisé</span>
         <span>📧 E-tickets</span>
+        <span>🔥 34 billets vendus ce mois</span>
     </div>
 
     <!-- Contact Buttons -->
@@ -284,6 +285,7 @@
     <script src="dark-mode.js"></script>
     <script src="language.js"></script>
     <script src="sheets-loader.js"></script>
+    <script src="ui-extras.js"></script>
     <script>
         // Wait for events to load
         document.addEventListener('eventsLoaded', function() {
@@ -403,6 +405,7 @@
                 '<div class="event-detail"><span class="event-detail-icon">📅</span><span>' + dateRange + '</span>' + countdownHtml(group.events[0].date) + '</div>' +
                 '<div class="event-detail"><span class="event-detail-icon">🎫</span><span>' + datesLabel + ' disponibles</span></div>' +
                 '</div>' +
+                '<div class="verified-line">✓ Billet authentifié · Garanti TicketHub</div>' +
                 '<div class="event-footer">' +
                 (group.minPrice > 0
                     ? '<div class="price-info"><span class="price-label">' + fromText + '</span><span class="price-amount">' + group.minPrice + '€</span></div>'
@@ -478,6 +481,7 @@
                             <span>${event.time}</span>
                         </div>
                     </div>
+                    <div class="verified-line">✓ Billet authentifié · Garanti TicketHub</div>
                     <div class="event-footer">
                         <div class="price-info">
                             <span class="price-label">${fromText}</span>

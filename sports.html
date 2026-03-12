@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Billets sport en revente sur TicketHub. Roland Garros, FIFA World Cup, 6 Nations… Billets garantis et authentifiés.">
     <title>Sports - TicketHub</title>
     <meta name="theme-color" content="#fafafa">
     <link rel="manifest" href="manifest.webmanifest">
@@ -45,6 +46,7 @@
         <span>⚡ Réponse sous 24h</span>
         <span>🔒 Paiement sécurisé</span>
         <span>📧 E-tickets</span>
+        <span>🔥 34 billets vendus ce mois</span>
     </div>
 
     <!-- Contact Buttons -->
@@ -228,6 +230,7 @@
                 '<div class="event-detail"><span class="event-detail-icon">📅</span><span>' + dateRange + '</span>' + countdownHtml(group.events[0].date) + '</div>' +
                 '<div class="event-detail"><span class="event-detail-icon">🎫</span><span>' + datesLabel + ' disponibles</span></div>' +
                 '</div>' +
+                '<div class="verified-line">✓ Billet authentifié · Garanti TicketHub</div>' +
                 '<div class="event-footer">' +
                 (group.minPrice > 0
                     ? '<div class="price-info"><span class="price-label">' + fromText + '</span><span class="price-amount">' + group.minPrice + '€</span></div>'
@@ -297,6 +300,7 @@
                 '<div class="event-detail"><span class="event-detail-icon">📅</span><span>' + formattedDate + '</span>' + countdownHtml(event.date) + '</div>' +
                 '<div class="event-detail"><span class="event-detail-icon">🕐</span><span>' + event.time + '</span></div>' +
                 '</div>' +
+                '<div class="verified-line">✓ Billet authentifié · Garanti TicketHub</div>' +
                 '<div class="event-footer">' +
                 '<div class="price-info"><span class="price-label">' + fromText + '</span><span class="price-amount">' + event.minPrice + '€</span></div>' +
                 '<button class="btn-view">' + viewText + '</button>' +
@@ -322,6 +326,7 @@
             return card;
         }
     </script>
+    <script src="ui-extras.js"></script>
 </body>
 </html>
 
