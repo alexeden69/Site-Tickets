@@ -14,6 +14,69 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
     <script src="app.js" defer></script>
     <script src="image-utils.js" defer></script>
+    <style>
+        .related-section {
+            max-width: 1100px;
+            margin: 0 auto 4rem;
+            padding: 0 1.5rem;
+        }
+        .related-title {
+            font-size: 1.4rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+        }
+        .related-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+        }
+        .related-card {
+            text-decoration: none;
+            color: var(--text);
+            background: var(--card-bg);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 2px 12px var(--shadow);
+            transition: transform 0.2s;
+            display: block;
+        }
+        .related-card:hover { transform: translateY(-3px); }
+        .related-card-img {
+            width: 100%;
+            aspect-ratio: 16/9;
+            object-fit: cover;
+            display: block;
+        }
+        .related-card-body { padding: 0.75rem; }
+        .related-card-name {
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-bottom: 0.3rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .related-card-date { font-size: 0.78rem; color: var(--text-muted); margin-bottom: 0.25rem; }
+        .related-card-price { font-size: 0.85rem; font-weight: 700; color: var(--accent); }
+        @media (max-width: 900px) {
+            .related-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 480px) {
+            .related-grid {
+                display: flex;
+                overflow-x: auto;
+                scroll-snap-type: x mandatory;
+                -webkit-overflow-scrolling: touch;
+                padding-bottom: 0.5rem;
+            }
+            .related-card {
+                min-width: 200px;
+                flex-shrink: 0;
+                scroll-snap-align: start;
+            }
+        }
+    </style>
 </head>
 <body>
     <a class="skip-link" href="#main">Aller au contenu</a>
@@ -74,6 +137,12 @@
                 <!-- Tickets will be dynamically loaded -->
             </div>
         </div>
+    </section>
+
+    <!-- Related Events -->
+    <section class="related-section" id="related-section" style="display:none">
+        <h2 class="related-title">Vous aimerez aussi</h2>
+        <div class="related-grid" id="related-grid"></div>
     </section>
 
     <!-- Sticky CTA (mobile) -->
@@ -263,6 +332,7 @@
             // Load tickets
             loadTickets(currentEvent.tickets);
             setupStickyCTA();
+            loadRelatedEvents();
         }
 
         function setupStickyCTA() {
@@ -340,6 +410,52 @@
             `;
 
             return item;
+        }
+
+        function loadRelatedEvents() {
+            if (!currentEvent) return;
+            const allInCategory = currentEvent.category === 'concert'
+                ? getConcertsForDisplay()
+                : getSportsForDisplay();
+
+            const related = allInCategory
+                .filter(e => !e.isGroup && e.id !== currentEvent.id)
+                .slice(0, 4);
+
+            if (related.length === 0) return;
+
+            const section = document.getElementById('related-section');
+            const grid = document.getElementById('related-grid');
+            section.style.display = '';
+
+            const lang = currentLanguage || 'fr';
+            const locale = lang === 'fr' ? 'fr-FR' : 'en-GB';
+            const fromText = lang === 'fr' ? 'À partir de' : 'From';
+
+            related.forEach(event => {
+                const a = document.createElement('a');
+                a.href = 'event.html?id=' + event.id;
+                a.className = 'related-card';
+                const dateStr = new Date(event.date).toLocaleDateString(locale, { day: 'numeric', month: 'short', year: 'numeric' });
+                a.innerHTML = `
+                    <img class="related-card-img" alt="${event.name}" loading="lazy">
+                    <div class="related-card-body">
+                        <div class="related-card-name">${event.name}</div>
+                        <div class="related-card-date">📅 ${dateStr}</div>
+                        <div class="related-card-price">${fromText} ${event.minPrice}€</div>
+                    </div>
+                `;
+                const img = a.querySelector('img');
+                if (window.TicketHubImages?.applyResponsiveImage) {
+                    window.TicketHubImages.applyResponsiveImage(img, {
+                        kind: 'event', id: event.id, variant: 'card',
+                        category: event.category, remoteFallback: event.image, eager: false
+                    });
+                } else if (img) {
+                    img.src = event.image;
+                }
+                grid.appendChild(a);
+            });
         }
 
         // Open request modal (WhatsApp / Email)
