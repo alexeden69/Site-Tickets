@@ -191,7 +191,53 @@
         <div class="faq-header">
             <h2 data-fr="Questions Fréquentes" data-en="FAQ">Questions Fréquentes</h2>
         </div>
-        <div class="faq-list" id="faq-list"></div>
+        <div class="faq-list" id="faq-list">
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    <h3>Comment réserver des billets ?</h3>
+                    <span class="faq-icon">▼</span>
+                </div>
+                <div class="faq-answer">
+                    <p>Choisissez un événement, cliquez sur "Réserver sur WhatsApp" ou "Email" et envoyez la demande pré-remplie. On vous répond rapidement avec la confirmation et les modalités de paiement.</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    <h3>Les billets sont-ils garantis authentiques ?</h3>
+                    <span class="faq-icon">▼</span>
+                </div>
+                <div class="faq-answer">
+                    <p>Oui, tous nos billets sont vérifiés avant livraison. En cas de problème à l'entrée, on vous rembourse intégralement — sans discussion.</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    <h3>Comment se passe le paiement ?</h3>
+                    <span class="faq-icon">▼</span>
+                </div>
+                <div class="faq-answer">
+                    <p>Le paiement se fait directement avec nous après confirmation de votre demande (virement, autres moyens selon le cas). Tout est expliqué par WhatsApp ou email — aucune surprise.</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    <h3>Et si l'événement est annulé ou reporté ?</h3>
+                    <span class="faq-icon">▼</span>
+                </div>
+                <div class="faq-answer">
+                    <p>Si l'événement est annulé par l'organisateur, vous êtes remboursé en intégralité sous 7 jours ouvrés. Si l'événement est reporté, les billets restent valables pour la nouvelle date.</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    <h3>Dans quel délai vous répondez ?</h3>
+                    <span class="faq-icon">▼</span>
+                </div>
+                <div class="faq-answer">
+                    <p>En moins de 2h en journée (9h–21h). On répond le plus vite possible, surtout pour les événements proches.</p>
+                </div>
+            </div>
+        </div>
     </section>
 
     <!-- Déjà vendus -->
@@ -296,7 +342,6 @@
             displayTrendingEvents();
             displaySoldOut();
             loadTestimonials();
-            loadFAQ();
         });
 
         function normalizeText(s) {
