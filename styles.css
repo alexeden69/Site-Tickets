@@ -2529,7 +2529,7 @@ body.dark-mode .ticket-count-badge { background: #2a2a4a; color: #7eb8ff; }
 .scroll-top-btn {
     position: fixed;
     bottom: 1.25rem;
-    right: 1.25rem;
+    left: 1.25rem;
     width: 36px;
     height: 36px;
     border-radius: 50%;
