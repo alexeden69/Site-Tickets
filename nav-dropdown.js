@@ -1,5 +1,4 @@
 (function () {
-    // Sport type detection from text (league + name)
     function getSportType(text) {
         text = (text || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
         if (/tennis|roland.garros|monte.carlo|queen|wimbledon|atp|wta/.test(text)) return 'tennis';
@@ -9,17 +8,15 @@
         return null;
     }
 
-    // Build sport dropdown items from live data (or static fallback)
     function buildSportItems() {
-        var items = [{ href: 'sports.html', label: '🏅 Tous les sports' }];
         var STATIC = [
             { q: 'football', label: '⚽ Football' },
             { q: 'tennis',   label: '🎾 Tennis' },
             { q: 'rugby',    label: '🏉 Rugby' },
         ];
+        var items = [{ href: 'sports.html', label: '🏅 Tous les sports' }];
 
         if (typeof getSportsForDisplay === 'function') {
-            // Build from real data
             var found = {};
             getSportsForDisplay().forEach(function (item) {
                 var text = item.isGroup
@@ -32,7 +29,7 @@
                 if (found[s.q]) items.push({ href: 'sports.html?q=' + s.q, label: s.label });
             });
         } else {
-            // Static fallback for pages without sheets-loader
+            // Static fallback — show all known categories
             STATIC.forEach(function (s) {
                 items.push({ href: 'sports.html?q=' + s.q, label: s.label });
             });
@@ -40,7 +37,6 @@
         return items;
     }
 
-    // Build concert dropdown items from live data (top artists/groups)
     function buildConcertItems() {
         var items = [{ href: 'concerts.html', label: '🎵 Tous les concerts' }];
         if (typeof getConcertsForDisplay !== 'function') return items;
@@ -50,7 +46,6 @@
         getConcertsForDisplay().forEach(function (item) {
             if (count >= 5) return;
             var name = item.isGroup ? item.groupName : item.name;
-            // Strip " — City (date)" suffixes, keep artist name
             var artist = name.split('—')[0].split('(')[0].trim();
             if (!seen[artist] && artist.length > 1) {
                 seen[artist] = true;
@@ -68,7 +63,6 @@
         if (!li || !items || items.length <= 1) return;
         li.classList.add('has-dropdown');
 
-        // Add arrow indicator to the link
         var link = li.querySelector('a');
         if (link && !link.querySelector('.dropdown-arrow')) {
             var arrow = document.createElement('span');
@@ -77,7 +71,6 @@
             link.appendChild(arrow);
         }
 
-        // Remove existing dropdown if rebuilding
         var old = li.querySelector('.nav-subdrop');
         if (old) old.remove();
 
@@ -93,8 +86,7 @@
     }
 
     function init() {
-        var lis = document.querySelectorAll('.nav-links > li');
-        lis.forEach(function (li) {
+        document.querySelectorAll('.nav-links > li').forEach(function (li) {
             var a = li.querySelector('a');
             if (!a) return;
             var href = a.getAttribute('href') || '';
@@ -106,19 +98,13 @@
         });
     }
 
-    // Run after data is ready
-    if (typeof getSportsForDisplay === 'function') {
-        // sheets-loader already ran synchronously (shouldn't happen, but safe)
-        init();
-    } else if (typeof loadEventsFromSheet === 'function' || document.querySelector('script[src*="sheets-loader"]')) {
-        // This page loads sheets-loader — wait for data
-        document.addEventListener('eventsLoaded', init);
+    // Run immediately with static data
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
     } else {
-        // No sheets-loader on this page — run immediately with static content
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', init);
-        } else {
-            init();
-        }
+        init();
     }
+
+    // Also rebuild with live data when sheets-loader fires
+    document.addEventListener('eventsLoaded', init);
 }());
