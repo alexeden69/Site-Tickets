@@ -2528,7 +2528,7 @@ body.dark-mode .ticket-count-badge { background: #2a2a4a; color: #7eb8ff; }
 /* ===== Scroll to top ===== */
 .scroll-top-btn {
     position: fixed;
-    bottom: 1.25rem;
+    bottom: 5.5rem;
     left: 1.25rem;
     width: 36px;
     height: 36px;
