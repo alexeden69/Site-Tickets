@@ -124,6 +124,8 @@ nav {
   background-clip: text;
   -webkit-text-fill-color: transparent;
   letter-spacing: -0.03em;
+  text-decoration: none;
+  cursor: pointer;
 }
 
 .nav-links {
