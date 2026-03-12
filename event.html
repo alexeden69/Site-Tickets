@@ -250,13 +250,23 @@
             shareBtnEl.className = 'share-btn';
             shareBtnEl.innerHTML = '🔗 Partager';
             shareBtnEl.onclick = function() {
-                navigator.clipboard.writeText(window.location.href).then(function() {
-                    const toast = document.createElement('div');
-                    toast.className = 'share-toast';
-                    toast.textContent = '✅ Lien copié !';
-                    document.body.appendChild(toast);
-                    setTimeout(function() { toast.remove(); }, 2500);
-                });
+                const url = window.location.href;
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(url).catch(function() { fallbackCopy(url); });
+                } else {
+                    fallbackCopy(url);
+                }
+                function fallbackCopy(u) {
+                    const ta = document.createElement('textarea');
+                    ta.value = u; ta.style.position = 'fixed'; ta.style.opacity = '0';
+                    document.body.appendChild(ta); ta.select();
+                    document.execCommand('copy'); document.body.removeChild(ta);
+                }
+                const toast = document.createElement('div');
+                toast.className = 'share-toast';
+                toast.textContent = '✅ Lien copié !';
+                document.body.appendChild(toast);
+                setTimeout(function() { toast.remove(); }, 2500);
             };
             const detailInfo = eventHeader.querySelector('.event-detail-info');
             if (detailInfo) detailInfo.appendChild(shareBtnEl);

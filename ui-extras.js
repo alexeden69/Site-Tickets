@@ -1,5 +1,5 @@
 (function () {
-    // ── Floating request button ──
+    // ── Floating request button (bottom-left, ne chevauche pas les boutons WhatsApp/Email) ──
     const page = window.location.pathname.split('/').pop();
     if (page !== 'request.html') {
         const btn = document.createElement('a');
@@ -9,16 +9,47 @@
         document.body.appendChild(btn);
     }
 
-    // ── Exit intent popup (once per session) ──
-    const SESSION_KEY = 'th_exit_shown';
+    // ── Compteur dynamique "billets vendus ce mois" (~18/jour) ──
+    function calcSoldCount() {
+        var now = new Date();
+        var day = now.getDate();
+        var hour = now.getHours();
+        var minute = now.getMinutes();
+        // Jours complets écoulés × 18
+        var base = (day - 1) * 18;
+        // Progression d'aujourd'hui (0 → 18 sur 24h)
+        var todayProgress = Math.round(((hour * 60 + minute) / 1440) * 18);
+        // Bruit pseudo-aléatoire basé sur l'heure (−3 à +3) pour simuler la fluctuation
+        var seed = hour * 13 + day * 7;
+        var noise = (seed % 7) - 3;
+        return Math.max(0, base + todayProgress + noise);
+    }
+
+    function updateSoldCount() {
+        var count = calcSoldCount();
+        document.querySelectorAll('.trust-strip span').forEach(function (span) {
+            if (span.textContent.includes('billets vendus')) {
+                span.textContent = '🔥 ' + count + ' billets vendus ce mois';
+            }
+        });
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', updateSoldCount);
+    } else {
+        updateSoldCount();
+    }
+
+    // ── Exit intent popup (une seule fois par session) ──
+    var SESSION_KEY = 'th_exit_shown';
     if (!sessionStorage.getItem(SESSION_KEY)) {
-        let triggered = false;
+        var triggered = false;
         document.addEventListener('mouseleave', function handler(e) {
             if (e.clientY > 5 || triggered) return;
             triggered = true;
             sessionStorage.setItem(SESSION_KEY, '1');
             document.removeEventListener('mouseleave', handler);
-            const overlay = document.createElement('div');
+            var overlay = document.createElement('div');
             overlay.className = 'exit-popup-overlay';
             overlay.innerHTML =
                 '<div class="exit-popup">' +

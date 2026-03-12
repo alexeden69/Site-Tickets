@@ -2395,8 +2395,8 @@ body.dark-mode .ticket-count-badge { background: #2a2a4a; color: #7eb8ff; }
 /* ===== Floating request button ===== */
 .float-request-btn {
     position: fixed;
-    bottom: 5.5rem;
-    right: 1.25rem;
+    bottom: 2rem;
+    left: 1.25rem;
     background: var(--gradient-1);
     color: #fff;
     border-radius: 50px;
@@ -2480,15 +2480,16 @@ body.dark-mode .ticket-count-badge { background: #2a2a4a; color: #7eb8ff; }
     align-items: center;
     gap: 0.4rem;
     margin-top: 1rem;
-    background: rgba(255,255,255,0.15);
-    backdrop-filter: blur(4px);
-    color: white;
-    border: 1.5px solid rgba(255,255,255,0.3);
+    background: rgba(255,255,255,0.22);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    color: #fff;
+    border: 2px solid rgba(255,255,255,0.6);
     border-radius: 20px;
-    padding: 0.4rem 1rem;
+    padding: 0.45rem 1.1rem;
     font-family: 'Outfit', sans-serif;
     font-size: 0.85rem;
-    font-weight: 600;
+    font-weight: 700;
     cursor: pointer;
     transition: background 0.2s;
 }
