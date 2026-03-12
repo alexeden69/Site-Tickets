@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Billets sport en revente sur TicketHub. Roland Garros, FIFA World Cup, 6 Nations… Billets garantis et authentifiés.">
-    <title>Sports - TicketHub</title>
+    <meta name="description" content="Billets sport en revente sur CFTickets. Roland Garros, FIFA World Cup, 6 Nations… Billets garantis et authentifiés.">
+    <title>Sports - CFTickets</title>
     <meta name="theme-color" content="#fafafa">
     <link rel="manifest" href="manifest.webmanifest">
     <link rel="icon" href="icon.svg" type="image/svg+xml">
@@ -20,8 +20,9 @@
     <!-- Navigation -->
     <nav>
         <div class="nav-container">
-            <div class="logo">TicketHub</div>
+            <div class="logo">CFTickets</div>
             <ul class="nav-links">
+                <li><a href="https://wa.me/33652051917" target="_blank" rel="noopener noreferrer" class="nav-whatsapp">💬 WhatsApp</a></li>
                 <li><a href="index.html" data-fr="Accueil" data-en="Home">Accueil</a></li>
                 <li><a href="concerts.html" data-fr="Concerts" data-en="Concerts">Concerts</a></li>
                 <li><a href="sports.html" data-fr="Sports" data-en="Sports" class="active">Sports</a></li>
@@ -95,7 +96,7 @@
     <footer>
         <div class="footer-content">
             <div class="footer-section">
-                <h3>TicketHub</h3>
+                <h3>CFTickets</h3>
                 <p>Marketplace de confiance pour la revente de tickets premium.</p>
             </div>
             <div class="footer-section">
@@ -104,6 +105,8 @@
                 <a href="concerts.html">Concerts</a>
                 <a href="sports.html">Sports</a>
                 <a href="request.html">Faire une demande</a>
+                <a href="about.html">À propos</a>
+                <a href="cgv.html">CGV</a>
             </div>
             <div class="footer-section">
                 <h3>Contact</h3>
@@ -112,7 +115,7 @@
             </div>
         </div>
         <div class="footer-bottom">
-            <p>&copy; 2026 TicketHub. Tous droits réservés.</p>
+            <p>&copy; 2026 CFTickets. Tous droits réservés.</p>
         </div>
     </footer>
 
@@ -230,7 +233,7 @@
                 '<div class="event-detail"><span class="event-detail-icon">📅</span><span>' + dateRange + '</span>' + countdownHtml(group.events[0].date) + '</div>' +
                 '<div class="event-detail"><span class="event-detail-icon">🎫</span><span>' + datesLabel + ' disponibles</span></div>' +
                 '</div>' +
-                '<div class="verified-line">✓ Billet authentifié · Garanti TicketHub</div>' +
+                '<div class="verified-line">✓ Billet authentifié · Garanti CFTickets</div>' +
                 '<div class="event-footer">' +
                 (group.minPrice > 0
                     ? '<div class="price-info"><span class="price-label">' + fromText + '</span><span class="price-amount">' + group.minPrice + '€</span></div>'
@@ -300,7 +303,7 @@
                 '<div class="event-detail"><span class="event-detail-icon">📅</span><span>' + formattedDate + '</span>' + countdownHtml(event.date) + '</div>' +
                 '<div class="event-detail"><span class="event-detail-icon">🕐</span><span>' + event.time + '</span></div>' +
                 '</div>' +
-                '<div class="verified-line">✓ Billet authentifié · Garanti TicketHub</div>' +
+                '<div class="verified-line">✓ Billet authentifié · Garanti CFTickets</div>' +
                 '<div class="event-footer">' +
                 '<div class="price-info"><span class="price-label">' + fromText + '</span><span class="price-amount">' + event.minPrice + '€</span></div>' +
                 '<button class="btn-view">' + viewText + '</button>' +

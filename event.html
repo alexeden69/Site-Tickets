@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Achetez vos billets sur TicketHub. Billets premium garantis, réponse sous 24h par WhatsApp ou email.">
-    <title id="page-title">Événement - TicketHub</title>
+    <meta name="description" content="Achetez vos billets sur CFTickets. Billets premium garantis, réponse sous 24h par WhatsApp ou email.">
+    <title id="page-title">Événement - CFTickets</title>
     <meta name="theme-color" content="#fafafa">
     <link rel="manifest" href="manifest.webmanifest">
     <link rel="icon" href="icon.svg" type="image/svg+xml">
@@ -20,8 +20,9 @@
     <!-- Navigation -->
     <nav>
         <div class="nav-container">
-            <div class="logo">TicketHub</div>
+            <div class="logo">CFTickets</div>
             <ul class="nav-links">
+                <li><a href="https://wa.me/33652051917" target="_blank" rel="noopener noreferrer" class="nav-whatsapp">💬 WhatsApp</a></li>
                 <li><a href="index.html" data-fr="Accueil" data-en="Home">Accueil</a></li>
                 <li><a href="concerts.html" data-fr="Concerts" data-en="Concerts">Concerts</a></li>
                 <li><a href="sports.html" data-fr="Sports" data-en="Sports">Sports</a></li>
@@ -101,7 +102,7 @@
     <footer>
         <div class="footer-content">
             <div class="footer-section">
-                <h3>TicketHub</h3>
+                <h3>CFTickets</h3>
                 <p data-fr="Votre marketplace de confiance pour la revente de tickets premium." data-en="Your trusted marketplace for premium ticket resale.">Votre marketplace de confiance pour la revente de tickets premium.</p>
             </div>
             <div class="footer-section">
@@ -109,6 +110,8 @@
                 <a href="index.html" data-fr="Accueil" data-en="Home">Accueil</a>
                 <a href="concerts.html" data-fr="Concerts" data-en="Concerts">Concerts</a>
                 <a href="sports.html" data-fr="Sports" data-en="Sports">Sports</a>
+                <a href="about.html">À propos</a>
+                <a href="cgv.html">CGV</a>
             </div>
             <div class="footer-section">
                 <h3 data-fr="Contact" data-en="Contact">Contact</h3>
@@ -117,7 +120,7 @@
             </div>
         </div>
         <div class="footer-bottom">
-            <p data-fr="&copy; 2026 TicketHub. Tous droits réservés." data-en="&copy; 2026 TicketHub. All rights reserved.">&copy; 2026 TicketHub. Tous droits réservés.</p>
+            <p data-fr="&copy; 2026 CFTickets. Tous droits réservés." data-en="&copy; 2026 CFTickets. All rights reserved.">&copy; 2026 CFTickets. Tous droits réservés.</p>
         </div>
     </footer>
 
@@ -186,7 +189,7 @@
             }
 
             // Update page title
-            document.title = `${currentEvent.name} - TicketHub`;
+            document.title = `${currentEvent.name} - CFTickets`;
 
             // Format date
             const dateObj = new Date(currentEvent.date);
@@ -530,7 +533,7 @@
 
             // Best effort: save locally
             try {
-                const leads = JSON.parse(localStorage.getItem('tickethub_leads') || '[]');
+                const leads = JSON.parse(localStorage.getItem('cftickets_leads') || '[]');
                 leads.push({
                     orderNumber: lead.orderNumber,
                     timestamp: lead.timestamp,
@@ -538,7 +541,7 @@
                     total: lead.totalPrice,
                     channel: selected
                 });
-                localStorage.setItem('tickethub_leads', JSON.stringify(leads));
+                localStorage.setItem('cftickets_leads', JSON.stringify(leads));
             } catch (_) {}
 
             // Best effort: send to Sheets (if configured)

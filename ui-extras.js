@@ -64,4 +64,42 @@
             document.body.appendChild(overlay);
         });
     }
+
+    // ── Scroll to top button ──
+    var scrollBtn = document.createElement('button');
+    scrollBtn.className = 'scroll-top-btn';
+    scrollBtn.innerHTML = '↑';
+    scrollBtn.setAttribute('aria-label', 'Retour en haut');
+    scrollBtn.onclick = function() { window.scrollTo({ top: 0, behavior: 'smooth' }); };
+    document.body.appendChild(scrollBtn);
+    window.addEventListener('scroll', function() {
+        scrollBtn.classList.toggle('visible', window.scrollY > 400);
+    });
+
+    // ── Cookie banner ──
+    if (!localStorage.getItem('cf_cookies_ok')) {
+        var banner = document.createElement('div');
+        banner.className = 'cookie-banner';
+        banner.innerHTML =
+            '<p>🍪 Ce site utilise des cookies pour améliorer votre expérience. <a href="cgv.html">En savoir plus</a></p>' +
+            '<button class="cookie-accept" onclick="this.closest(\'.cookie-banner\').remove();localStorage.setItem(\'cf_cookies_ok\',\'1\')">Accepter</button>';
+        document.body.appendChild(banner);
+    }
+
+    // ── Scroll animations ──
+    var animObserver = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                animObserver.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.1 });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.event-card, .step-card, .review-card, .trust-counter, .category-card, .faq-item').forEach(function(el) {
+            el.classList.add('fade-in-up');
+            animObserver.observe(el);
+        });
+    });
 })();

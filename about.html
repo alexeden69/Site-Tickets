@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="À propos de CFTickets — qui nous sommes, comment ça marche et nos engagements.">
+    <title>À propos - CFTickets</title>
+    <meta name="theme-color" content="#fafafa">
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="icon" href="icon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        .about-hero {
+            background: var(--gradient-1);
+            color: #fff;
+            text-align: center;
+            padding: 5rem 1.5rem 4rem;
+        }
+        .about-hero h1 {
+            font-size: 2.6rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+        .about-hero p {
+            font-size: 1.15rem;
+            opacity: 0.9;
+            max-width: 560px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        .about-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 3rem 1.5rem 5rem;
+        }
+        .about-section {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 2rem 2.25rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px var(--shadow);
+        }
+        .about-section h2 {
+            font-size: 1.4rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            color: var(--text);
+        }
+        .about-section h2 .section-icon {
+            margin-right: 0.5rem;
+        }
+        .about-section p {
+            font-size: 0.97rem;
+            line-height: 1.75;
+            color: var(--text);
+            margin-bottom: 0.75rem;
+        }
+        .about-section p:last-child {
+            margin-bottom: 0;
+        }
+        .about-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 1.25rem;
+            margin-top: 1.25rem;
+        }
+        .about-step {
+            background: var(--bg);
+            border-radius: 14px;
+            padding: 1.25rem 1rem;
+            text-align: center;
+            border: 1.5px solid var(--border);
+        }
+        .about-step .step-num {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--gradient-1);
+            color: #fff;
+            font-weight: 800;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 0.75rem;
+        }
+        .about-step .step-emoji {
+            font-size: 1.6rem;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        .about-step h3 {
+            font-size: 0.9rem;
+            font-weight: 700;
+            margin-bottom: 0.35rem;
+        }
+        .about-step p {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin: 0;
+            line-height: 1.5;
+        }
+        .about-engagement-list {
+            list-style: none;
+            padding: 0;
+            margin: 0.75rem 0 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        .about-engagement-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            font-size: 0.97rem;
+            line-height: 1.55;
+            color: var(--text);
+        }
+        .about-engagement-list li .check {
+            flex-shrink: 0;
+            width: 24px;
+            height: 24px;
+            background: var(--gradient-1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-top: 1px;
+        }
+        .about-contact-links {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 1.25rem;
+        }
+        .about-contact-links a {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--gradient-1);
+            color: #fff;
+            border-radius: 12px;
+            padding: 0.8rem 1.5rem;
+            font-weight: 700;
+            font-size: 0.97rem;
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+        .about-contact-links a.whatsapp {
+            background: linear-gradient(135deg, #25d366, #128c7e);
+        }
+        .about-contact-links a:hover { opacity: 0.88; }
+    </style>
+</head>
+<body>
+    <a class="skip-link" href="#main">Aller au contenu</a>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo">CFTickets</div>
+            <ul class="nav-links">
+                <li><a href="https://wa.me/33652051917" target="_blank" rel="noopener noreferrer" class="nav-whatsapp">💬 WhatsApp</a></li>
+                <li><a href="index.html" data-fr="Accueil" data-en="Home">Accueil</a></li>
+                <li><a href="concerts.html" data-fr="Concerts" data-en="Concerts">Concerts</a></li>
+                <li><a href="sports.html" data-fr="Sports" data-en="Sports">Sports</a></li>
+                <li>
+                    <select id="language-selector" onchange="changeLanguage(this.value)">
+                        <option value="fr">🇫🇷 FR</option>
+                        <option value="en">🇬🇧 EN</option>
+                    </select>
+                </li>
+                <li>
+                    <button class="dark-mode-toggle" onclick="toggleDarkMode()" title="Toggle Dark Mode">
+                        <span id="dark-mode-icon">🌙</span>
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Trust strip -->
+    <div class="trust-strip">
+        <span>✅ Billets garantis</span>
+        <span>⚡ Réponse sous 24h</span>
+        <span>🔒 Paiement sécurisé</span>
+        <span>📧 E-tickets</span>
+        <span>🔥 34 billets vendus ce mois</span>
+    </div>
+
+    <!-- Hero -->
+    <section class="about-hero" id="main">
+        <h1>À propos de CFTickets</h1>
+        <p>Passionnés de sport et de musique, on aide les fans à trouver des billets introuvables ailleurs.</p>
+    </section>
+
+    <!-- Content -->
+    <div class="about-content">
+
+        <div class="about-section">
+            <h2><span class="section-icon">👋</span>Qui sommes-nous ?</h2>
+            <p>CFTickets est né d'une passion commune pour les grands événements : concerts sold out, matchs de légende, finales épiques. On est des fans comme vous, et on sait à quel point c'est frustrant de voir un événement incroyable se dérouler sans pouvoir y assister parce que les billets sont épuisés en quelques minutes.</p>
+            <p>On a donc décidé de créer un espace de confiance où les fans peuvent trouver les billets qu'ils cherchent, avec un accompagnement humain et réactif. Pas de bot, pas de formulaire perdu dans le vide — juste une vraie conversation par WhatsApp ou email.</p>
+        </div>
+
+        <div class="about-section">
+            <h2><span class="section-icon">🔍</span>Comment ça marche ?</h2>
+            <p>Réserver vos billets via CFTickets n'a jamais été aussi simple. Suivez ces 4 étapes :</p>
+            <div class="about-steps">
+                <div class="about-step">
+                    <div class="step-num">1</div>
+                    <span class="step-emoji">🔍</span>
+                    <h3>Trouvez votre événement</h3>
+                    <p>Parcourez nos concerts, matchs et spectacles disponibles</p>
+                </div>
+                <div class="about-step">
+                    <div class="step-num">2</div>
+                    <span class="step-emoji">💬</span>
+                    <h3>Envoyez une demande</h3>
+                    <p>Ouvrez une conversation WhatsApp ou email pré-remplie</p>
+                </div>
+                <div class="about-step">
+                    <div class="step-num">3</div>
+                    <span class="step-emoji">✅</span>
+                    <h3>On confirme ensemble</h3>
+                    <p>On vérifie la dispo, le prix et le mode de paiement</p>
+                </div>
+                <div class="about-step">
+                    <div class="step-num">4</div>
+                    <span class="step-emoji">🎉</span>
+                    <h3>Profitez du spectacle !</h3>
+                    <p>Vivez une expérience inoubliable</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="about-section">
+            <h2><span class="section-icon">🤝</span>Notre engagement</h2>
+            <ul class="about-engagement-list">
+                <li>
+                    <div class="check">✓</div>
+                    <span><strong>Billets authentifiés</strong> — chaque billet est vérifié avant la vente. Zéro faux billet, zéro mauvaise surprise à l'entrée.</span>
+                </li>
+                <li>
+                    <div class="check">✓</div>
+                    <span><strong>Réponse sous 24h</strong> — on s'engage à vous répondre rapidement, 7j/7, pour ne pas vous faire attendre quand les places partent vite.</span>
+                </li>
+                <li>
+                    <div class="check">✓</div>
+                    <span><strong>Accompagnement personnalisé</strong> — un conseiller dédié vous guide de la demande jusqu'à la réception de votre e-ticket. On ne vous laisse jamais seul.</span>
+                </li>
+                <li>
+                    <div class="check">✓</div>
+                    <span><strong>Remboursement en cas d'annulation</strong> — si l'événement est annulé par l'organisateur, vous êtes remboursé intégralement.</span>
+                </li>
+            </ul>
+        </div>
+
+        <div class="about-section">
+            <h2><span class="section-icon">📩</span>Nous contacter</h2>
+            <p>Une question ? Un billet que vous ne trouvez pas ? Contactez-nous directement — on répond vite.</p>
+            <div class="about-contact-links">
+                <a href="https://wa.me/33652051917?text=Bonjour%2C%20je%20souhaite%20des%20informations%20sur%20CFTickets" target="_blank" rel="noopener noreferrer" class="whatsapp">
+                    💬 WhatsApp
+                </a>
+                <a href="https://mail.google.com/mail/?view=cm&fs=1&to=dzb67291@gmail.com&su=Contact%20CFTickets&body=Bonjour%2C%0D%0A%0D%0AJe%20souhaite%20vous%20contacter%20au%20sujet%20de%20%3A">
+                    ✉️ Email
+                </a>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>CFTickets</h3>
+                <p>Marketplace de confiance pour la revente de tickets premium.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Navigation</h3>
+                <a href="index.html">Accueil</a>
+                <a href="concerts.html">Concerts</a>
+                <a href="sports.html">Sports</a>
+                <a href="request.html">Faire une demande</a>
+                <a href="about.html">À propos</a>
+                <a href="cgv.html">CGV</a>
+            </div>
+            <div class="footer-section">
+                <h3>Contact</h3>
+                <a href="https://wa.me/33652051917?text=Bonjour%2C%20je%20suis%20int%C3%A9ress%C3%A9%20par%20vos%20billets" target="_blank" rel="noopener noreferrer">WhatsApp</a>
+                <a href="https://mail.google.com/mail/?view=cm&fs=1&to=dzb67291@gmail.com&su=Demande%20d%27information&body=Bonjour%2C%0D%0A%0D%0AJe%20souhaite%20obtenir%20des%20informations%20sur%20vos%20billets.">Email</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 CFTickets. Tous droits réservés.</p>
+        </div>
+    </footer>
+
+    <script src="dark-mode.js"></script>
+    <script src="language.js"></script>
+</body>
+</html>

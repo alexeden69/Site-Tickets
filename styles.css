@@ -2512,3 +2512,80 @@ body.dark-mode .ticket-count-badge { background: #2a2a4a; color: #7eb8ff; }
     box-shadow: 0 4px 20px rgba(0,0,0,0.3);
     animation: fadeIn 0.2s ease;
 }
+
+/* ===== Scroll to top ===== */
+.scroll-top-btn {
+    position: fixed;
+    bottom: 2rem;
+    right: 5rem;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--gradient-1);
+    color: #fff;
+    border: none;
+    font-size: 1.2rem;
+    font-weight: 700;
+    cursor: pointer;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s, transform 0.3s;
+    z-index: 800;
+    box-shadow: 0 4px 16px rgba(102,126,234,0.4);
+}
+.scroll-top-btn.visible { opacity: 1; pointer-events: auto; }
+.scroll-top-btn:hover { transform: translateY(-3px); }
+
+/* ===== Cookie banner ===== */
+.cookie-banner {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #1a1a2e;
+    color: #fff;
+    padding: 1rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    z-index: 9998;
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.9rem;
+    flex-wrap: wrap;
+}
+.cookie-banner a { color: #a78bfa; }
+.cookie-accept {
+    background: var(--gradient-1);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 0.5rem 1.25rem;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+/* ===== Scroll animations ===== */
+.fade-in-up {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.55s ease, transform 0.55s ease;
+}
+.fade-in-up.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ===== Nav WhatsApp button ===== */
+.nav-whatsapp {
+    background: #25d366;
+    color: #fff !important;
+    border-radius: 20px;
+    padding: 0.35rem 0.9rem !important;
+    font-weight: 700 !important;
+    font-size: 0.85rem;
+    transition: opacity 0.2s;
+}
+.nav-whatsapp:hover { opacity: 0.85; }
