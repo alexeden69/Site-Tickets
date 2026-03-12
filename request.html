@@ -265,6 +265,7 @@
                 const body    = encodeURIComponent(msg);
                 window.open('https://mail.google.com/mail/?view=cm&fs=1&to=dzb67291@gmail.com&su=' + subject + '&body=' + body);
             }
+            window.location.href = 'confirmation.html?channel=' + channel + '&event=' + encodeURIComponent(event);
             return false;
         }
     </script>

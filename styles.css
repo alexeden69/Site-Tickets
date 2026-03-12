@@ -2591,3 +2591,59 @@ body.dark-mode .ticket-count-badge { background: #2a2a4a; color: #7eb8ff; }
     transition: opacity 0.2s;
 }
 .nav-whatsapp:hover { opacity: 0.85; }
+
+/* ===== Sold recently badge on cards ===== */
+.sold-badge {
+    font-size: 0.72rem;
+    color: #16a34a;
+    font-weight: 600;
+    margin: 0.2rem 0 0.15rem;
+    letter-spacing: 0.01em;
+}
+
+/* ===== Confirmation page ===== */
+.confirmation-page {
+    max-width: 480px;
+    margin: 5rem auto;
+    padding: 0 1.5rem;
+    text-align: center;
+}
+.confirmation-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+}
+.confirmation-page h1 {
+    font-size: 1.9rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+}
+.confirmation-page p {
+    color: var(--text-muted);
+    margin-bottom: 2rem;
+    font-size: 1rem;
+    line-height: 1.6;
+}
+.confirmation-actions {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+.confirmation-actions a {
+    padding: 0.85rem 1.5rem;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    text-decoration: none;
+    transition: opacity 0.2s;
+}
+.confirmation-actions a:hover { opacity: 0.85; }
+.btn-home {
+    background: var(--gradient-1);
+    color: #fff;
+}
+.btn-back-request {
+    background: var(--card-bg);
+    border: 1.5px solid var(--border);
+    color: var(--text);
+}
