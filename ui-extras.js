@@ -68,7 +68,7 @@
     // ── Scroll to top button ──
     var scrollBtn = document.createElement('button');
     scrollBtn.className = 'scroll-top-btn';
-    scrollBtn.innerHTML = '↑';
+    scrollBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>';
     scrollBtn.setAttribute('aria-label', 'Retour en haut');
     scrollBtn.onclick = function() { window.scrollTo({ top: 0, behavior: 'smooth' }); };
     document.body.appendChild(scrollBtn);
