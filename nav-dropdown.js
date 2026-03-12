@@ -10,11 +10,11 @@
 
     function buildSportItems() {
         var STATIC = [
-            { q: 'football', label: '⚽ Football' },
-            { q: 'tennis',   label: '🎾 Tennis' },
-            { q: 'rugby',    label: '🏉 Rugby' },
+            { q: 'football', label: 'Football' },
+            { q: 'tennis',   label: 'Tennis' },
+            { q: 'rugby',    label: 'Rugby' },
         ];
-        var items = [{ href: 'sports.html', label: '🏅 Tous les sports' }];
+        var items = [{ href: 'sports.html', label: 'Tous les sports' }];
 
         if (typeof getSportsForDisplay === 'function') {
             var found = {};
@@ -38,7 +38,7 @@
     }
 
     function buildConcertItems() {
-        var items = [{ href: 'concerts.html', label: '🎵 Tous les concerts' }];
+        var items = [{ href: 'concerts.html', label: 'Tous les concerts' }];
         if (typeof getConcertsForDisplay !== 'function') return items;
 
         var seen = {};
@@ -51,7 +51,7 @@
                 seen[artist] = true;
                 items.push({
                     href: 'concerts.html?q=' + encodeURIComponent(artist.toLowerCase()),
-                    label: '🎤 ' + artist
+                    label: artist
                 });
                 count++;
             }

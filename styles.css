@@ -2033,6 +2033,16 @@ body.dark-mode footer {
     gap: 0.35rem;
     white-space: nowrap;
 }
+.trust-strip span::before {
+    content: '';
+    display: inline-block;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: currentColor;
+    opacity: 0.35;
+    flex-shrink: 0;
+}
 body.dark-mode .trust-strip {
     background: #1e1e1e;
     color: #f0f0f0;
