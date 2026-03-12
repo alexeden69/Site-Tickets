@@ -2388,7 +2388,7 @@ body.dark-mode .ticket-count-badge { background: #2a2a4a; color: #7eb8ff; }
 /* ===== Verified line on cards ===== */
 .verified-line {
     font-size: 0.72rem;
-    color: #22c55e;
+    color: #22c55e !important;
     font-weight: 600;
     padding: 0.3rem 0;
     letter-spacing: 0.01em;
