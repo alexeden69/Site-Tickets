@@ -1,7 +1,7 @@
 :root {
   --primary: #1a1a1a;
-  --secondary: #ff006e;
-  --accent: #fb5607;
+  --secondary: #4f46e5;
+  --accent: #7c3aed;
   --bg: #fafafa;
   --card-bg: #ffffff;
   --text: #1a1a1a;
@@ -9,7 +9,7 @@
   --border: #e0e0e0;
   --shadow: rgba(0, 0, 0, 0.08);
   --shadow-hover: rgba(0, 0, 0, 0.15);
-  --gradient-1: linear-gradient(135deg, #ff006e 0%, #fb5607 100%);
+  --gradient-1: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
   --gradient-2: linear-gradient(135deg, #8338ec 0%, #3a86ff 100%);
 }
 
@@ -2191,7 +2191,7 @@ body.dark-mode .trust-strip {
 
 .sticky-cta-btn {
     flex-shrink: 0;
-    background: linear-gradient(135deg, #ff006e, #fb5607);
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
     color: white;
     border: none;
     padding: 0.75rem 1.5rem;
@@ -2286,7 +2286,7 @@ body.dark-mode .trust-strip {
 .sub-event-card:hover {
     transform: translateY(-6px);
     box-shadow: 0 12px 35px rgba(0,0,0,0.15);
-    border-color: #ff006e;
+    border-color: #4f46e5;
 }
 .sub-event-card-body {
     padding: 1.4rem 1.5rem;
@@ -2321,7 +2321,7 @@ body.dark-mode .trust-strip {
 .sub-price {
     font-size: 1.2rem;
     font-weight: 800;
-    color: #ff006e;
+    color: #4f46e5;
 }
 .sub-price-label {
     font-size: 0.75rem;
@@ -2329,7 +2329,7 @@ body.dark-mode .trust-strip {
     display: block;
 }
 .sub-btn-view {
-    background: linear-gradient(135deg, #ff006e, #fb5607);
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
     color: white;
     border: none;
     padding: 0.6rem 1.4rem;
@@ -2344,7 +2344,7 @@ body.dark-mode .trust-strip {
 
 .sub-trending-badge {
     display: inline-block;
-    background: linear-gradient(135deg, #ff006e, #fb5607);
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
     color: white;
     font-size: 0.72rem;
     font-weight: 700;
@@ -2417,7 +2417,7 @@ body.dark-mode .ticket-count-badge { background: #2a2a4a; color: #7eb8ff; }
     font-size: 0.9rem;
     font-weight: 700;
     text-decoration: none;
-    box-shadow: 0 4px 20px rgba(102,126,234,0.4);
+    box-shadow: 0 4px 20px rgba(79,70,229,0.35);
     display: flex;
     align-items: center;
     gap: 0.5rem;
