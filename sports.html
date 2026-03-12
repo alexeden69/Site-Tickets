@@ -127,6 +127,7 @@
 
     <script src="dark-mode.js"></script>
     <script src="hamburger.js"></script>
+    <script src="nav-dropdown.js"></script>
     <script src="language.js"></script>
     <script src="sheets-loader.js"></script>
     <script>
@@ -152,6 +153,13 @@
             });
 
             populateCityFilter('sports-grid');
+
+            var urlQ = new URLSearchParams(window.location.search).get('q');
+            if (urlQ) {
+                var inp = document.getElementById('search-input');
+                if (inp) inp.value = urlQ;
+                filterEvents(urlQ);
+            }
         }
 
         var activeQuery = '';
@@ -159,6 +167,15 @@
 
         function normalizeText(s) {
             return (s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+        }
+
+        function getSportTypeKeyword(text) {
+            text = normalizeText(text || '');
+            if (/tennis|roland.garros|monte.carlo|queen|wimbledon|atp|wta/.test(text)) return 'tennis';
+            if (/rugby|6 nations|six nations|nations/.test(text)) return 'rugby';
+            if (/basketball|nba/.test(text)) return 'basketball';
+            if (/fifa|world cup|premier|ligue|bundesliga|liga/.test(text)) return 'football';
+            return '';
         }
 
         function soldThisWeek(id) {
@@ -234,10 +251,12 @@
             const card = document.createElement('a');
             card.href = 'group.html?id=' + group.id;
             card.className = 'event-card';
+            var allLeagues = group.events.map(e => (e.league || '') + ' ' + e.name).join(' ');
+            var sportType = getSportTypeKeyword(group.groupName + ' ' + allLeagues);
             card.dataset.search = normalizeText(
                 group.groupName + ' ' +
                 group.events.map(e => e.venue + ' ' + e.city).join(' ') + ' ' +
-                (group.category || '')
+                (group.category || '') + ' ' + sportType
             );
             card.dataset.date = group.events[0].date || '';
             card.dataset.price = group.minPrice || 9999;
@@ -312,9 +331,10 @@
             const card = document.createElement('a');
             card.href = 'event.html?id=' + event.id;
             card.className = 'event-card';
+            var sportType = getSportTypeKeyword(event.name + ' ' + (event.league || ''));
             card.dataset.search = normalizeText(
                 event.name + ' ' + event.venue + ' ' + event.city + ' ' +
-                (event.league || '') + ' ' + (event.category || '')
+                (event.league || '') + ' ' + (event.category || '') + ' ' + sportType
             );
             card.dataset.date = event.date || '';
             card.dataset.price = event.minPrice || 9999;

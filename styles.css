@@ -2648,6 +2648,68 @@ body.dark-mode .ticket-count-badge { background: #2a2a4a; color: #7eb8ff; }
     color: var(--text);
 }
 
+/* ===== Nav Dropdown ===== */
+.has-dropdown {
+    position: relative;
+}
+
+.dropdown-arrow {
+    font-size: 0.65rem;
+    opacity: 0.6;
+    margin-left: 1px;
+    pointer-events: none;
+}
+
+.nav-subdrop {
+    display: none;
+    position: absolute;
+    top: calc(100% + 0.75rem);
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 0.4rem;
+    min-width: 190px;
+    box-shadow: 0 8px 30px var(--shadow);
+    border: 1px solid var(--border);
+    z-index: 1001;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.has-dropdown:hover .nav-subdrop,
+.has-dropdown:focus-within .nav-subdrop {
+    display: flex;
+}
+
+.nav-subdrop a {
+    display: block;
+    padding: 0.55rem 0.85rem;
+    border-radius: 8px;
+    color: var(--text);
+    font-size: 0.88rem;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background 0.15s, color 0.15s;
+}
+
+.nav-subdrop a:hover {
+    background: var(--bg);
+    color: var(--secondary);
+}
+
+.nav-subdrop a:first-child {
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 0.2rem;
+    padding-bottom: 0.65rem;
+}
+
+@media (max-width: 768px) {
+    .nav-subdrop { display: none !important; }
+    .dropdown-arrow { display: none; }
+}
+
 /* ===== Hamburger Menu ===== */
 .hamburger {
     display: none;

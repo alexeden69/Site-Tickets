@@ -127,6 +127,7 @@
 
     <script src="dark-mode.js"></script>
     <script src="hamburger.js"></script>
+    <script src="nav-dropdown.js"></script>
     <script src="language.js"></script>
     <script src="sheets-loader.js"></script>
     <script>
@@ -152,6 +153,13 @@
             });
 
             populateCityFilter('concerts-grid');
+
+            var urlQ = new URLSearchParams(window.location.search).get('q');
+            if (urlQ) {
+                var inp = document.getElementById('search-input');
+                if (inp) inp.value = urlQ;
+                filterEvents(urlQ);
+            }
         }
 
         var activeQuery = '';
