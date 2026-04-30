@@ -23,29 +23,18 @@ function applyResponsiveImage(imgEl, opts) {
   // opts: { kind, id, variant, category, remoteFallback, eager }
   if (!imgEl) return;
 
-  const { kind, id, variant, category, remoteFallback, eager } = opts || {};
+  const { kind, id, variant, eager } = opts || {};
   const local = buildLocalImagePaths({ kind, id, variant });
-  const defaultImg = getDefaultImageForCategory(category);
 
-  // Use local images; if missing (404), fallback to remote, then to default svg.
   imgEl.loading = eager ? 'eager' : 'lazy';
   imgEl.decoding = 'async';
   imgEl.referrerPolicy = 'no-referrer';
 
   imgEl.src = local.src960;
 
-  let stage = 0;
   imgEl.onerror = () => {
-    stage += 1;
-    if (stage === 1 && remoteFallback) {
-      imgEl.removeAttribute('srcset');
-      imgEl.removeAttribute('sizes');
-      imgEl.src = remoteFallback;
-      return;
-    }
-    imgEl.removeAttribute('srcset');
-    imgEl.removeAttribute('sizes');
-    imgEl.src = defaultImg;
+    imgEl.onerror = null;
+    imgEl.src = 'assets/images/events/event-monte-carlo-masters-card-960.webp';
   };
 }
 
