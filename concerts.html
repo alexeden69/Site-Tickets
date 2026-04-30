@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="app.js" defer></script>
     <script src="image-utils.js" defer></script>
 </head>
@@ -263,15 +263,15 @@
             const datesLabel = lang === 'fr' ? group.events.length + ' date(s)' : group.events.length + ' date(s)';
             const totalTickets = group.events.reduce((s, e) => s + e.tickets.length, 0);
             const urgencyBadge = totalTickets === 1
-                ? '<div class="trending-badge urgent-badge">⚡ 1 billet restant</div>'
+                ? '<div class="trending-badge urgent-badge">1 billet restant</div>'
                 : totalTickets <= 3
-                    ? '<div class="trending-badge urgent-badge">⚡ ' + totalTickets + ' billets restants</div>'
+                    ? '<div class="trending-badge urgent-badge">' + totalTickets + ' billets restants</div>'
                     : totalTickets <= 8 || group.trending
-                        ? '<div class="trending-badge">🔥 Dernières places</div>'
+                        ? '<div class="trending-badge">Dernières places</div>'
                         : '';
 
             const sold = soldThisWeek(group.id);
-            const soldHtml = sold > 0 ? '<div class="sold-badge">✅ ' + sold + ' vendu' + (sold > 1 ? 's' : '') + ' cette semaine</div>' : '';
+            const soldHtml = sold > 0 ? '<div class="sold-badge">' + sold + ' vendu' + (sold > 1 ? 's' : '') + ' cette semaine</div>' : '';
 
             card.innerHTML =
                 '<div class="event-image-container">' +
@@ -337,15 +337,15 @@
             const viewText = lang === 'fr' ? 'Voir' : 'View';
             const tc = event.tickets.length;
             const urgencyBadge = tc === 1
-                ? '<div class="trending-badge urgent-badge">⚡ 1 billet restant</div>'
+                ? '<div class="trending-badge urgent-badge">1 billet restant</div>'
                 : tc <= 3
-                    ? '<div class="trending-badge urgent-badge">⚡ ' + tc + ' billets restants</div>'
+                    ? '<div class="trending-badge urgent-badge">' + tc + ' billets restants</div>'
                     : tc <= 8 || event.trending
-                        ? '<div class="trending-badge">🔥 Dernières places</div>'
+                        ? '<div class="trending-badge">Dernières places</div>'
                         : '';
 
             const sold = soldThisWeek(event.id);
-            const soldHtml = sold > 0 ? '<div class="sold-badge">✅ ' + sold + ' vendu' + (sold > 1 ? 's' : '') + ' cette semaine</div>' : '';
+            const soldHtml = sold > 0 ? '<div class="sold-badge">' + sold + ' vendu' + (sold > 1 ? 's' : '') + ' cette semaine</div>' : '';
 
             card.innerHTML =
                 '<div class="event-image-container">' +

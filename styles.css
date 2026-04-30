@@ -52,7 +52,7 @@ body.dark-mode footer {
 }
 
 body {
-  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   background: var(--bg);
   color: var(--text);
   line-height: 1.6;
@@ -646,7 +646,7 @@ body.dark-mode .hero p {
 }
 
 .event-detail-icon {
-  font-size: 1.1rem;
+  display: none;
 }
 
 .event-footer {
@@ -2020,24 +2020,12 @@ body.dark-mode .trust-strip {
 
 /* ===== Urgent badge (billets restants) ===== */
 .urgent-badge {
-    background: linear-gradient(135deg, #fb5607, #ff8c00) !important;
+    background: var(--accent) !important;
 }
 
 /* ===== Countdown tag ===== */
 .countdown-tag {
-    display: inline-block;
-    margin-left: 0.45rem;
-    padding: 0.1rem 0.5rem;
-    border-radius: 20px;
-    font-size: 0.72rem;
-    font-weight: 700;
-    background: var(--secondary);
-    color: #fff;
-    vertical-align: middle;
-    white-space: nowrap;
-}
-.countdown-tag.soon {
-    background: #fb5607;
+    display: none;
 }
 
 /* ===== Back button ===== */
@@ -2576,11 +2564,7 @@ body.dark-mode .ticket-count-badge { background: #2a2a4a; color: #7eb8ff; }
 
 /* ===== Sold recently badge on cards ===== */
 .sold-badge {
-    font-size: 0.72rem;
-    color: #16a34a;
-    font-weight: 600;
-    margin: 0.2rem 0 0.15rem;
-    letter-spacing: 0.01em;
+    display: none;
 }
 
 /* ===== Confirmation page ===== */
