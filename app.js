@@ -34,7 +34,7 @@
           io.unobserve(e.target);
         }
       });
-    }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+    }, { threshold: 0 });
 
     function observeAll() {
       document.querySelectorAll(REVEAL_SELECTOR).forEach(el => {
@@ -44,9 +44,14 @@
 
     observeAll();
 
-    // Re-run when new cards are injected dynamically
+    // Re-run when new cards are injected dynamically (sheets-loader)
     const domWatcher = new MutationObserver(observeAll);
     domWatcher.observe(document.body, { childList: true, subtree: true });
+
+    // Fallback: make everything visible after 3s in case observer misses elements
+    setTimeout(() => {
+      document.querySelectorAll(REVEAL_SELECTOR).forEach(el => el.classList.add('visible'));
+    }, 3000);
   });
 })();
 
