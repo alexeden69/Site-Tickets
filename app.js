@@ -24,6 +24,29 @@
     // If dark-mode toggles later, resync
     const observer = new MutationObserver(() => syncThemeColor());
     observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+
+    // Scroll reveal — observe cards and sections as they enter viewport
+    const REVEAL_SELECTOR = '.event-card, .category-card, .step-card, .review-card, .sub-event-card, .soldout-card, .fade-in-up';
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+    function observeAll() {
+      document.querySelectorAll(REVEAL_SELECTOR).forEach(el => {
+        if (!el.classList.contains('visible')) io.observe(el);
+      });
+    }
+
+    observeAll();
+
+    // Re-run when new cards are injected dynamically
+    const domWatcher = new MutationObserver(observeAll);
+    domWatcher.observe(document.body, { childList: true, subtree: true });
   });
 })();
 
