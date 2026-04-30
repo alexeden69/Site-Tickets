@@ -32,12 +32,6 @@ function applyResponsiveImage(imgEl, opts) {
   imgEl.decoding = 'async';
   imgEl.referrerPolicy = 'no-referrer';
 
-  // srcset only makes sense if files exist; harmless if they 404 because browser will try them.
-  imgEl.srcset = `${local.src480} 480w, ${local.src960} 960w, ${local.src1600} 1600w`;
-  imgEl.sizes = variant === 'hero'
-    ? '(max-width: 768px) 100vw, 50vw'
-    : '(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw';
-
   imgEl.src = local.src960;
 
   let stage = 0;
