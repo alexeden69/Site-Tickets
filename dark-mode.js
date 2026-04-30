@@ -1,25 +1,25 @@
-// Dark Mode System
-let darkMode = localStorage.getItem('darkMode') || 'light';
+// Theme system — dark navy is default, 'light' class switches to white mode
+// Using key 'themeV2' to avoid conflicts with old localStorage values
+let currentTheme = localStorage.getItem('themeV2') || 'dark';
 
 function toggleDarkMode() {
-    darkMode = darkMode === 'light' ? 'dark' : 'light';
-    localStorage.setItem('darkMode', darkMode);
+    currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    localStorage.setItem('themeV2', currentTheme);
     applyDarkMode();
 }
 
 function applyDarkMode() {
-    if (darkMode === 'dark') {
+    if (currentTheme === 'light') {
         document.body.classList.add('dark-mode');
         const icon = document.getElementById('dark-mode-icon');
-        if (icon) icon.textContent = '☀️';
+        if (icon) icon.textContent = '🌙';
     } else {
         document.body.classList.remove('dark-mode');
         const icon = document.getElementById('dark-mode-icon');
-        if (icon) icon.textContent = '🌙';
+        if (icon) icon.textContent = '☀️';
     }
 }
 
-// Apply dark mode on page load
 document.addEventListener('DOMContentLoaded', () => {
     applyDarkMode();
 });
