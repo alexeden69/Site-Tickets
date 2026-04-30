@@ -1,16 +1,16 @@
 :root {
-  --primary: #1a1a1a;
-  --secondary: #4f46e5;
-  --accent: #7c3aed;
-  --bg: #fafafa;
+  --primary: #111111;
+  --secondary: #111111;
+  --accent: #e63946;
+  --bg: #f5f5f5;
   --card-bg: #ffffff;
-  --text: #1a1a1a;
-  --text-muted: #666666;
-  --border: #e0e0e0;
-  --shadow: rgba(0, 0, 0, 0.08);
-  --shadow-hover: rgba(0, 0, 0, 0.15);
-  --gradient-1: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
-  --gradient-2: linear-gradient(135deg, #8338ec 0%, #3a86ff 100%);
+  --text: #111111;
+  --text-muted: #777777;
+  --border: #e8e8e8;
+  --shadow: rgba(0, 0, 0, 0.06);
+  --shadow-hover: rgba(0, 0, 0, 0.12);
+  --gradient-1: #e63946;
+  --gradient-2: #c0392b;
 }
 
 /* Dark Mode Variables */
@@ -119,10 +119,7 @@ nav {
 .logo {
   font-size: 1.8rem;
   font-weight: 800;
-  background: var(--gradient-1);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: var(--text);
   letter-spacing: -0.03em;
   text-decoration: none;
   cursor: pointer;
@@ -149,8 +146,8 @@ nav {
   bottom: -5px;
   left: 0;
   width: 0;
-  height: 3px;
-  background: var(--gradient-1);
+  height: 2px;
+  background: var(--accent);
   transition: width 0.3s ease;
 }
 
@@ -276,16 +273,7 @@ body.dark-mode .hero {
 }
 
 .hero::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: 
-    radial-gradient(circle at 20% 50%, rgba(255, 0, 110, 0.05) 0%, transparent 50%),
-    radial-gradient(circle at 80% 50%, rgba(251, 86, 7, 0.05) 0%, transparent 50%);
-  pointer-events: none;
+  display: none;
 }
 
 .hero-content {
@@ -358,10 +346,7 @@ body.dark-mode .hero p {
 .counter-number {
   font-size: 2.5rem;
   font-weight: 800;
-  background: var(--gradient-1);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: var(--accent);
   margin-bottom: 0.5rem;
 }
 
@@ -427,7 +412,7 @@ body.dark-mode .hero p {
   transform: translateX(-50%);
   width: 40px;
   height: 40px;
-  background: var(--gradient-1);
+  background: var(--accent);
   color: white;
   border-radius: 50%;
   display: flex;
@@ -435,7 +420,7 @@ body.dark-mode .hero p {
   justify-content: center;
   font-weight: 800;
   font-size: 1.2rem;
-  box-shadow: 0 4px 15px rgba(255, 0, 110, 0.3);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .step-icon {
@@ -558,9 +543,9 @@ body.dark-mode .hero p {
   position: absolute;
   bottom: -10px;
   left: 0;
-  width: 60%;
-  height: 4px;
-  background: var(--gradient-1);
+  width: 40px;
+  height: 3px;
+  background: var(--accent);
   border-radius: 2px;
 }
 
@@ -620,13 +605,12 @@ body.dark-mode .hero p {
   position: absolute;
   top: 1rem;
   right: 1rem;
-  background: var(--gradient-1);
+  background: var(--accent);
   color: white;
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
+  padding: 0.4rem 0.9rem;
+  border-radius: 6px;
   font-weight: 700;
   font-size: 0.85rem;
-  box-shadow: 0 4px 12px rgba(255, 0, 110, 0.3);
 }
 
 .event-info {
@@ -689,10 +673,7 @@ body.dark-mode .hero p {
 .price-amount {
   font-size: 1.8rem;
   font-weight: 800;
-  background: var(--gradient-1);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: var(--accent);
 }
 
 .btn-view {
@@ -710,8 +691,8 @@ body.dark-mode .hero p {
 
 .btn-view:hover {
   background: var(--gradient-2);
-  transform: scale(1.05);
-  box-shadow: 0 5px 20px rgba(255, 0, 110, 0.4);
+  transform: scale(1.03);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
 }
 
 body.dark-mode .btn-view {
@@ -729,15 +710,7 @@ body.dark-mode .btn-view {
 }
 
 .event-detail-header::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: 
-    radial-gradient(circle at 30% 50%, rgba(255, 0, 110, 0.15) 0%, transparent 50%),
-    radial-gradient(circle at 70% 50%, rgba(251, 86, 7, 0.15) 0%, transparent 50%);
+  display: none;
 }
 
 .event-detail-content {
@@ -835,9 +808,9 @@ body.dark-mode .btn-view {
 .ticket-item:nth-child(5) { animation-delay: 0.4s; }
 
 .ticket-item:hover {
-  border-color: var(--secondary);
-  transform: translateX(5px);
-  box-shadow: 0 5px 20px rgba(255, 0, 110, 0.15);
+  border-color: var(--accent);
+  transform: translateX(4px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
 }
 
 .ticket-header {
@@ -856,10 +829,7 @@ body.dark-mode .btn-view {
 .ticket-price {
   font-size: 2rem;
   font-weight: 800;
-  background: var(--gradient-1);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: var(--accent);
 }
 
 .ticket-details {
@@ -892,7 +862,7 @@ body.dark-mode .btn-view {
 
 .btn-buy:hover {
   transform: scale(1.02);
-  box-shadow: 0 10px 30px rgba(255, 0, 110, 0.3);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
 }
 
 /* Footer */
@@ -1017,17 +987,17 @@ body.dark-mode footer {
   position: absolute;
   top: 1rem;
   left: 1rem;
-  background: linear-gradient(135deg, #ff6b35 0%, #ff4500 100%);
+  background: #111111;
   color: white;
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
+  padding: 0.4rem 0.9rem;
+  border-radius: 6px;
   font-weight: 700;
-  font-size: 0.85rem;
-  box-shadow: 0 4px 12px rgba(255, 69, 0, 0.3);
+  font-size: 0.8rem;
   z-index: 2;
   display: flex;
   align-items: center;
   gap: 0.3rem;
+  letter-spacing: 0.02em;
 }
 
 /* Testimonials Section */
