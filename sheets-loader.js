@@ -321,7 +321,7 @@ const EVENT_GROUPS = [
     id: 'group-bts',
     groupName: 'BTS — World Tour',
     category: 'concert',
-    trending: false,
+    trending: true,
     eventIds: ['bts-stanford', 'bts-london-1', 'bts-london-2', 'bts-madrid', 'bts-los-angeles']
   },
   {
