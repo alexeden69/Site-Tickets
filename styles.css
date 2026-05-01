@@ -716,7 +716,7 @@ body.dark-mode .btn-view {
 .event-detail-header {
   background: linear-gradient(135deg, #0b0f1e 0%, #1a1040 60%, #0b0f1e 100%);
   color: white;
-  padding: 4rem 2rem;
+  padding: 2rem 2rem;
   position: relative;
   overflow: hidden;
 }
@@ -726,23 +726,23 @@ body.dark-mode .btn-view {
 }
 
 .event-detail-content {
-  max-width: 1400px;
+  max-width: 1100px;
   margin: 0 auto;
   position: relative;
   z-index: 1;
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 3rem;
+  grid-template-columns: 320px 1fr;
+  gap: 2.5rem;
   align-items: center;
 }
 
 .event-detail-image {
   width: 100%;
-  max-height: 500px;
-  object-fit: cover;
+  max-height: 320px;
+  object-fit: contain;
   object-position: center;
-  border-radius: 20px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  border-radius: 16px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
   animation: fadeInLeft 0.8s ease;
 }
 
@@ -751,20 +751,21 @@ body.dark-mode .btn-view {
 }
 
 .event-detail-info h1 {
-  margin-bottom: 1.5rem;
+  font-size: 2.2rem;
+  margin-bottom: 1rem;
 }
 
 .event-meta {
   display: grid;
-  gap: 1.5rem;
-  margin-bottom: 2rem;
+  gap: 0.8rem;
+  margin-bottom: 1.5rem;
 }
 
 .meta-item {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  font-size: 1.2rem;
+  gap: 0.75rem;
+  font-size: 1rem;
 }
 
 .meta-icon {
