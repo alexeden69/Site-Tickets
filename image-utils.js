@@ -11,7 +11,8 @@ function buildLocalImagePaths({ kind, id, variant }) {
   // kind: 'event' | 'group'
   // variant: 'card' | 'hero'
   // 16:9 everywhere; we provide common sizes for srcset
-  const base = `assets/images/${kind === 'group' ? 'groups' : 'events'}/${kind}-${id}-${variant}`;
+  const cleanId = id.startsWith(kind + '-') ? id.slice(kind.length + 1) : id;
+  const base = `assets/images/${kind === 'group' ? 'groups' : 'events'}/${kind}-${cleanId}-${variant}`;
   return {
     src480: `${base}-480.webp`,
     src960: `${base}-960.webp`,
