@@ -63,8 +63,9 @@
 
     <!-- Hero image du groupe -->
     <section class="group-hero" id="group-hero">
-        <img src="" alt="" class="group-hero-img" id="group-hero-img">
+        <div class="group-hero-bg" id="group-hero-bg"></div>
         <div class="group-hero-overlay"></div>
+        <img src="" alt="" class="group-hero-img" id="group-hero-img">
         <div class="group-hero-content" id="group-hero-content">
             <h1 id="group-title">Chargement...</h1>
             <div class="group-hero-meta" id="group-hero-meta"></div>
@@ -147,6 +148,10 @@
             document.getElementById('group-title').textContent = group.groupName;
 
             const heroImg = document.getElementById('group-hero-img');
+            heroImg.onload = () => {
+                const bg = document.getElementById('group-hero-bg');
+                if (bg) bg.style.backgroundImage = `url('${heroImg.src}')`;
+            };
             if (window.TicketHubImages?.applyResponsiveImage) {
                 window.TicketHubImages.applyResponsiveImage(heroImg, {
                     kind: 'group',
