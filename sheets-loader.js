@@ -135,22 +135,6 @@ function loadFallbackData() {
       ]
     },
     {
-      id: 'monte-carlo-masters',
-      name: 'Rolex Monte Carlo Masters',
-      venue: 'Monte-Carlo Country Club', city: 'Monaco',
-      date: '2026-04-04', time: '12:00',
-      image: 'https://images.unsplash.com/photo-1622279457486-62dcc4a431d6?w=800&h=450&fit=crop&q=80', category: 'sport', trending: false,
-      league: 'Tennis',
-      minPrice: 50,
-      tickets: [
-        { section: 'Catégorie 1', row: 'Rang 2', seats: 'Place 34', price: 50 },
-        { section: 'Catégorie 1', row: 'Rang 2', seats: 'Place 35', price: 50 },
-        { section: 'Catégorie 1', row: 'Rang 2', seats: 'Place 36', price: 50 },
-        { section: 'Catégorie 1', row: 'Rang 2', seats: 'Place 37', price: 50 },
-        { section: 'Catégorie 1', row: 'Rang 2', seats: 'Place 38', price: 50 },
-      ]
-    },
-    {
       id: 'roland-garros-24mai',
       name: 'Roland Garros — 1er Tour (24 mai)',
       venue: 'Roland Garros', city: 'Paris',
