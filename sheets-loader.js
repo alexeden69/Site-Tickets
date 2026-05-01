@@ -85,6 +85,29 @@ async function loadEventsFromSheet() {
     const rows = parseCSV(csvText);
     const events = groupTicketsByEvent(rows);
     calculateMinPrices(events);
+
+    // Build groups dynamically from group_id / group_name columns
+    const groupMap = {};
+    rows.forEach(row => {
+      if (!row.group_id || !row.group_name || !row.event_id) return;
+      const gId = row.group_id.trim();
+      const eId = row.event_id.trim();
+      if (!groupMap[gId]) {
+        groupMap[gId] = {
+          id: gId,
+          groupName: row.group_name.trim(),
+          category: row.category ? row.category.trim().toLowerCase() : 'concert',
+          trending: row.trending === 'TRUE' || row.trending === 'true' || row.trending === '1',
+          eventIds: []
+        };
+      }
+      if (!groupMap[gId].eventIds.includes(eId)) groupMap[gId].eventIds.push(eId);
+    });
+    if (Object.keys(groupMap).length > 0) {
+      EVENT_GROUPS.length = 0;
+      Object.values(groupMap).forEach(g => EVENT_GROUPS.push(g));
+    }
+
     eventsData.concerts = [];
     eventsData.sports = [];
     Object.values(events).forEach(event => {
