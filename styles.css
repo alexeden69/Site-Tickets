@@ -768,8 +768,16 @@ body.dark-mode .btn-view {
 }
 
 .meta-icon {
-  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
   color: var(--accent);
+  flex-shrink: 0;
+}
+
+.meta-icon svg {
+  width: 20px;
+  height: 20px;
+  stroke: var(--accent);
 }
 
 /* Tickets Section */
