@@ -34,7 +34,7 @@ function applyResponsiveImage(imgEl, opts) {
 
   imgEl.onerror = () => {
     imgEl.onerror = null;
-    imgEl.src = 'assets/images/events/event-monte-carlo-masters-card-960.webp';
+    imgEl.src = 'assets/images/events/event-roland-garros-24mai-card-960.webp';
   };
 }
 
