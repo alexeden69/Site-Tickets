@@ -117,24 +117,6 @@ function loadFallbackData() {
 
   eventsData.sports = [
     {
-      id: 'france-angleterre-6nations',
-      name: 'Tournoi des 6 Nations — France vs Angleterre',
-      venue: 'Stade de France', city: 'Saint-Denis',
-      date: '2026-03-14', time: '20:00',
-      image: 'https://images.unsplash.com/photo-1544298621-35a764872f32?w=800&h=450&fit=crop&q=80', category: 'sport', trending: true,
-      league: 'Tournoi des 6 Nations',
-      minPrice: 200,
-      tickets: [
-        { section: 'Catégorie 3', row: 'Rang 70', seats: 'Siège 29', price: 280 },
-        { section: 'Catégorie 3', row: 'Rang 70', seats: 'Siège 30', price: 280 },
-        { section: 'Catégorie 3', row: 'Rang 64', seats: 'Siège 40', price: 280 },
-        { section: 'Catégorie 3', row: 'Rang 64', seats: 'Siège 41', price: 280 },
-        { section: 'Catégorie 3', row: 'Rang 70', seats: 'Siège 35', price: 280 },
-        { section: 'Catégorie 3', row: 'Rang 70', seats: 'Siège 36', price: 280 },
-        { section: 'Catégorie 7', row: 'Rang 76', seats: 'Siège 30', price: 200 },
-      ]
-    },
-    {
       id: 'roland-garros-24mai',
       name: 'Roland Garros — 1er Tour (24 mai)',
       venue: 'Roland Garros', city: 'Paris',
@@ -272,35 +254,6 @@ function loadFallbackData() {
   ];
 
   eventsData.concerts = [
-    {
-      id: 'gunna-london',
-      name: 'Gunna — London',
-      venue: 'The O2 Arena', city: 'London',
-      date: '2026-03-31', time: '20:00',
-      image: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=800&h=450&fit=crop&q=80', category: 'concert', trending: true,
-      minPrice: 120,
-      tickets: [
-        { section: 'Section 416', row: 'Row T', seats: 'Seat 826', price: 120 },
-        { section: 'Section 416', row: 'Row T', seats: 'Seat 827', price: 120 },
-      ]
-    },
-    {
-      id: 'circoloco-ibiza',
-      name: 'Circoloco Ibiza',
-      venue: 'DC-10', city: 'Ibiza',
-      date: '2026-04-27', time: '23:00',
-      image: 'https://images.unsplash.com/photo-1571266752020-97e5e6a5e65c?w=800&h=450&fit=crop&q=80',
-      category: 'concert', trending: true,
-      minPrice: 200,
-      tickets: [
-        { section: 'General Admission', row: 'GA', seats: '1', price: 200 },
-        { section: 'General Admission', row: 'GA', seats: '2', price: 200 },
-        { section: 'General Admission', row: 'GA', seats: '3', price: 200 },
-        { section: 'General Admission', row: 'GA', seats: '4', price: 200 },
-        { section: 'General Admission', row: 'GA', seats: '5', price: 200 },
-        { section: 'General Admission', row: 'GA', seats: '6', price: 200 },
-      ]
-    },
     {
       id: 'the-neighbourhood-paris',
       name: 'The Neighbourhood — Paris',
