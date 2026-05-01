@@ -397,6 +397,10 @@ function getEventsByCategory(category) {
   return eventsData[category] || [];
 }
 
+function getGroupByEventId(eventId) {
+  return buildGroups().find(g => g.events.some(e => e.id === eventId)) || null;
+}
+
 // ─────────────────────────────────────────────
 // INIT
 // ─────────────────────────────────────────────

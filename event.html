@@ -274,13 +274,17 @@
                 day: 'numeric' 
             });
 
+            // Hero title: use group name if available
+            const parentGroup = (typeof getGroupByEventId === 'function') ? getGroupByEventId(currentEvent.id) : null;
+            const heroTitle = parentGroup ? parentGroup.groupName : currentEvent.name;
+
             // Load event header
             const eventHeader = document.getElementById('event-header');
             eventHeader.innerHTML = `
                 <div class="event-detail-content">
                     <img alt="${currentEvent.name}" class="event-detail-image">
                     <div class="event-detail-info">
-                        <h1>${currentEvent.name}</h1>
+                        <h1>${heroTitle}</h1>
                         ${currentEvent.league ? `<p style="font-size: 1.2rem; opacity: 0.9; margin-bottom: 1rem;">${currentEvent.league}</p>` : ''}
                         <div class="event-meta">
                             <div class="meta-item">
