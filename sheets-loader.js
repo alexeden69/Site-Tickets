@@ -18,12 +18,12 @@ function loadData() {
       league: 'Roland Garros 2026',
       minPrice: 0,
       tickets: [
-        { section: 'Catégorie 3', row: 'Rang 16', seats: 'Place 135', price: 0 },
-        { section: 'Catégorie 3', row: 'Rang 16', seats: 'Place 136', price: 0 },
-        { section: 'Catégorie 3', row: 'Rang 16', seats: 'Place 137', price: 0 },
-        { section: 'Catégorie 3', row: 'Rang 16', seats: 'Place 138', price: 0 },
-        { section: 'Catégorie 3', row: 'Rang 16', seats: 'Place 164', price: 0 },
-        { section: 'Catégorie 3', row: 'Rang 16', seats: 'Place 165', price: 0 },
+        { section: 'Catégorie 3', price: 0 },
+        { section: 'Catégorie 3', price: 0 },
+        { section: 'Catégorie 3', price: 0 },
+        { section: 'Catégorie 3', price: 0 },
+        { section: 'Catégorie 3', price: 0 },
+        { section: 'Catégorie 3', price: 0 },
       ]
     },
     {
@@ -35,10 +35,10 @@ function loadData() {
       league: 'Roland Garros 2026',
       minPrice: 0,
       tickets: [
-        { section: 'Catégorie 1', row: 'Rang 13', seats: 'Place 167', price: 0 },
-        { section: 'Catégorie 1', row: 'Rang 13', seats: 'Place 168', price: 0 },
-        { section: 'Catégorie 1', row: 'Rang 17', seats: 'Place 91', price: 0 },
-        { section: 'Catégorie 1', row: 'Rang 17', seats: 'Place 92', price: 0 },
+        { section: 'Catégorie 1', price: 0 },
+        { section: 'Catégorie 1', price: 0 },
+        { section: 'Catégorie 1', price: 0 },
+        { section: 'Catégorie 1', price: 0 },
       ]
     },
     {
@@ -50,12 +50,12 @@ function loadData() {
       league: 'Roland Garros 2026',
       minPrice: 0,
       tickets: [
-        { section: 'Catégorie 1', row: 'Rang 17', seats: 'Place 55', price: 0 },
-        { section: 'Catégorie 1', row: 'Rang 17', seats: 'Place 56', price: 0 },
-        { section: 'Catégorie Or', row: 'Rang 4', seats: 'Place 80', price: 0 },
-        { section: 'Catégorie Or', row: 'Rang 4', seats: 'Place 81', price: 0 },
-        { section: 'Catégorie Or', row: 'Rang 3', seats: 'Place 76', price: 0 },
-        { section: 'Catégorie Or', row: 'Rang 3', seats: 'Place 77', price: 0 },
+        { section: 'Catégorie 1', price: 0 },
+        { section: 'Catégorie 1', price: 0 },
+        { section: 'Catégorie Or', price: 0 },
+        { section: 'Catégorie Or', price: 0 },
+        { section: 'Catégorie Or', price: 0 },
+        { section: 'Catégorie Or', price: 0 },
       ]
     },
     {
@@ -67,10 +67,10 @@ function loadData() {
       league: 'Roland Garros 2026',
       minPrice: 0,
       tickets: [
-        { section: 'Catégorie 1', row: 'Rang 19', seats: 'Place 76', price: 0 },
-        { section: 'Catégorie 1', row: 'Rang 19', seats: 'Place 77', price: 0 },
-        { section: 'Catégorie 1', row: 'Rang 19', seats: 'Place 78', price: 0 },
-        { section: 'Catégorie 1', row: 'Rang 19', seats: 'Place 79', price: 0 },
+        { section: 'Catégorie 1', price: 0 },
+        { section: 'Catégorie 1', price: 0 },
+        { section: 'Catégorie 1', price: 0 },
+        { section: 'Catégorie 1', price: 0 },
       ]
     },
     {
