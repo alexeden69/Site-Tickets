@@ -400,57 +400,74 @@ body.dark-mode .hero p {
 
 .step-card {
   background: var(--card-bg);
-  padding: 2.5rem 2rem;
-  border-radius: 16px;
-  text-align: center;
-  box-shadow: 0 4px 20px var(--shadow);
-  transition: all 0.3s ease;
+  padding: 2rem 1.75rem;
+  border-radius: 20px;
+  text-align: left;
+  box-shadow: 0 2px 16px var(--shadow);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
   position: relative;
+  border: 1px solid var(--border);
+  overflow: hidden;
 }
 
-.step-card:nth-child(1) { animation-delay: 0s; }
-.step-card:nth-child(2) { animation-delay: 0.1s; }
-.step-card:nth-child(3) { animation-delay: 0.2s; }
-.step-card:nth-child(4) { animation-delay: 0.3s; }
+.step-card::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--gradient-1);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+}
+
+.step-card:hover::after { transform: scaleX(1); }
 
 .step-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 12px 40px var(--shadow-hover);
+  transform: translateY(-6px);
+  box-shadow: 0 16px 48px rgba(124, 85, 245, 0.18);
+  border-color: rgba(124, 85, 245, 0.3);
 }
 
-.step-number {
-  position: absolute;
-  top: -15px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 40px;
-  height: 40px;
-  background: var(--accent);
-  color: white;
-  border-radius: 50%;
+.step-icon-wrapper {
+  width: 50px;
+  height: 50px;
+  background: linear-gradient(135deg, rgba(124,85,245,0.15), rgba(201,75,255,0.08));
+  border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 800;
-  font-size: 1.2rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  margin-bottom: 1.25rem;
 }
 
-.step-icon {
-  font-size: 3rem;
-  margin: 1.5rem 0 1rem;
+.step-icon-wrapper svg {
+  width: 24px;
+  height: 24px;
+  stroke: var(--accent);
+}
+
+.step-number {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--accent);
+  opacity: 0.8;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 0.4rem;
+  display: block;
 }
 
 .step-card h3 {
-  font-size: 1.3rem;
-  margin-bottom: 1rem;
+  font-size: 1.15rem;
+  margin-bottom: 0.6rem;
   color: var(--text);
+  font-weight: 700;
 }
 
 .step-card p {
   color: var(--text-muted);
   line-height: 1.6;
-  font-size: 0.95rem;
+  font-size: 0.92rem;
 }
 
 /* Categories */
@@ -580,9 +597,9 @@ body.dark-mode .hero p {
 
 .event-card:hover {
   opacity: 1;
-  transform: translateY(-7px);
-  box-shadow: 0 20px 50px var(--shadow-hover);
-  border-color: rgba(124,85,245,0.45);
+  transform: translateY(-9px);
+  box-shadow: 0 24px 60px rgba(124,85,245,0.22), 0 6px 20px rgba(0,0,0,0.12);
+  border-color: rgba(124,85,245,0.55);
 }
 
 .event-image-container {
@@ -602,7 +619,7 @@ body.dark-mode .hero p {
 }
 
 .event-card:hover .event-image {
-  transform: scale(1.03);
+  transform: scale(1.07);
 }
 
 .event-badge {
@@ -1811,9 +1828,13 @@ body.dark-mode footer {
     padding: 4rem 1.5rem;
   }
   
-  .category-grid,
-  .events-grid {
+  .category-grid {
     grid-template-columns: 1fr;
+  }
+
+  .events-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
   }
   
   .event-detail-content {
@@ -1842,10 +1863,14 @@ body.dark-mode footer {
 }
 
 @media (max-width: 480px) {
+  .events-grid {
+    grid-template-columns: 1fr;
+  }
+
   .logo {
     font-size: 1.4rem;
   }
-  
+
   .nav-links {
     gap: 1rem;
   }
@@ -2616,8 +2641,8 @@ body.dark-mode .ticket-count-badge { background: rgba(124,85,245,0.12); color: #
 .sub-event-card,
 .soldout-card {
     opacity: 0;
-    transform: translateY(22px);
-    transition: opacity 0.5s ease, transform 0.5s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    transform: translateY(28px);
+    transition: opacity 0.55s cubic-bezier(0.4, 0, 0.2, 1), transform 0.55s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease, border-color 0.3s ease;
 }
 
 .event-card.visible,
