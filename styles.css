@@ -2806,12 +2806,12 @@ body.dark-mode .ticket-count-badge { background: rgba(255,255,255,0.06); color: 
 .nav-subdrop {
     display: none;
     position: absolute;
-    top: calc(100% + 0.75rem);
+    top: 100%;
     left: 50%;
     transform: translateX(-50%);
     background: var(--card-bg);
     border-radius: 12px;
-    padding: 0.4rem;
+    padding: 0.75rem 0.4rem 0.4rem;
     min-width: 190px;
     box-shadow: 0 8px 30px var(--shadow);
     border: 1px solid var(--border);
