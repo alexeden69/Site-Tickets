@@ -127,12 +127,17 @@ nav {
 }
 
 .logo {
-  font-size: 1.8rem;
-  font-weight: 800;
-  color: var(--text);
-  letter-spacing: -0.03em;
   text-decoration: none;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.logo-img {
+  height: 44px;
+  width: 44px;
+  object-fit: contain;
+  border-radius: 50%;
 }
 
 .nav-links {
