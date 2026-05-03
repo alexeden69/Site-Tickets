@@ -440,8 +440,8 @@ body.dark-mode .hero p {
 
 .step-card:hover {
   transform: translateY(-6px);
-  box-shadow: 0 16px 48px rgba(124, 85, 245, 0.18);
-  border-color: rgba(124, 85, 245, 0.3);
+  box-shadow: 0 16px 48px rgba(255,255,255,0.06);
+  border-color: rgba(255,255,255,0.15);
 }
 
 .step-icon-wrapper {
@@ -621,7 +621,7 @@ body.dark-mode .hero p {
   position: relative;
   overflow: hidden;
   height: 230px;
-  background: #0b1020;
+  background: #000000;
   flex-shrink: 0;
 }
 
@@ -725,13 +725,15 @@ body.dark-mode .hero p {
   transition: background 0.2s ease, transform 0.18s ease, box-shadow 0.2s ease;
   text-decoration: none;
   font-size: 0.875rem;
+  display: inline-flex;
+  align-items: center;
 }
 
 .btn-view:hover {
   opacity: 1;
   background: #cccccc;
   transform: scale(1.05);
-  box-shadow: 0 6px 20px rgba(124, 85, 245, 0.45);
+  box-shadow: 0 6px 20px rgba(255,255,255,0.15);
 }
 
 .btn-view:active {
@@ -741,7 +743,7 @@ body.dark-mode .hero p {
 
 body.dark-mode .btn-view {
   background: var(--gradient-1);
-  color: white;
+  color: #ffffff;
 }
 
 /* Event Detail Page */
@@ -919,7 +921,7 @@ body.dark-mode .btn-view {
 .btn-buy:hover {
   background: #cccccc;
   transform: scale(1.05);
-  box-shadow: 0 6px 20px rgba(124, 85, 245, 0.45);
+  box-shadow: 0 6px 20px rgba(255,255,255,0.15);
 }
 
 .btn-buy:active {
@@ -929,7 +931,7 @@ body.dark-mode .btn-view {
 
 /* Footer */
 footer {
-  background: #080b18;
+  background: #000000;
   color: white;
   padding: 3rem 2rem 2rem;
   margin-top: 6rem;
@@ -1739,7 +1741,7 @@ body.dark-mode footer {
 
 .submit-order-btn:hover:not(:disabled) {
   transform: scale(1.03);
-  box-shadow: 0 10px 30px rgba(124, 85, 245, 0.5);
+  box-shadow: 0 10px 30px rgba(255,255,255,0.15);
 }
 
 .submit-order-btn:active:not(:disabled) {
@@ -2229,7 +2231,7 @@ body.dark-mode .trust-strip {
 .sticky-cta-btn:hover {
     opacity: 1;
     transform: scale(1.04);
-    box-shadow: 0 6px 20px rgba(124, 85, 245, 0.45);
+    box-shadow: 0 6px 20px rgba(255,255,255,0.15);
 }
 
 .sticky-cta-btn:active {
@@ -2395,7 +2397,7 @@ body.dark-mode .trust-strip {
 .sub-btn-view:hover {
     opacity: 1;
     transform: scale(1.05);
-    box-shadow: 0 6px 20px rgba(124, 85, 245, 0.45);
+    box-shadow: 0 6px 20px rgba(255,255,255,0.15);
 }
 .sub-btn-view:active {
     transform: scale(0.95);
