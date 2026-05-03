@@ -246,12 +246,15 @@
 
         <!-- PDF viewer -->
         <div class="rg-pdf-wrapper">
-            <iframe
+            <object
                 id="pdf-frame"
                 class="rg-pdf-embed"
-                src="https://docs.google.com/viewer?url=https://alexeden69.github.io/Site-Tickets/assets/roland-garros-tarifs.pdf&embedded=true"
-                title="Roland Garros 2026 — Tarifs">
-            </iframe>
+                data="assets/roland-garros-tarifs.pdf"
+                type="application/pdf">
+                <div style="padding:2.5rem;text-align:center;color:var(--text-muted);">
+                    <p style="margin-bottom:1rem;">Votre navigateur ne peut pas afficher le PDF directement.</p>
+                </div>
+            </object>
         </div>
 
         <!-- Action buttons -->
@@ -307,12 +310,9 @@
     <script src="language.js"></script>
     <script src="ui-extras.js"></script>
     <script>
-        const BASE = 'https://alexeden69.github.io/Site-Tickets/assets/';
-        const GV = 'https://docs.google.com/viewer?url=' + BASE;
-
         const PDFS = {
             fr: {
-                src: GV + 'roland-garros-tarifs.pdf&embedded=true',
+                src: 'assets/roland-garros-tarifs.pdf',
                 download: 'assets/roland-garros-tarifs.pdf',
                 downloadName: 'Roland-Garros-Tarifs-2026.pdf',
                 title: 'Tarifs & Disponibilités',
@@ -322,7 +322,7 @@
                 waText: 'Bonjour%2C%20je%20suis%20int%C3%A9ress%C3%A9%20par%20des%20billets%20Roland%20Garros%202026.%20Pouvez-vous%20me%20donner%20les%20disponibilit%C3%A9s%20%3F'
             },
             en: {
-                src: GV + 'roland-garros-pricing.pdf&embedded=true',
+                src: 'assets/roland-garros-pricing.pdf',
                 download: 'assets/roland-garros-pricing.pdf',
                 downloadName: 'Roland-Garros-Pricing-2026.pdf',
                 title: 'Pricing & Availability',
@@ -335,7 +335,7 @@
 
         function switchLang(lang) {
             const data = PDFS[lang];
-            document.getElementById('pdf-frame').src = data.src;
+            document.getElementById('pdf-frame').data = data.src;
             document.getElementById('btn-download').href = data.download;
             document.getElementById('btn-download').download = data.downloadName;
             document.getElementById('btn-download-text').textContent = data.btnDownload;

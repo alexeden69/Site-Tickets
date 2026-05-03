@@ -217,7 +217,7 @@
             const viewText = lang === 'fr' ? 'Voir' : 'View';
             const tbdText = lang === 'fr' ? 'Prix à confirmer' : 'Price TBD';
             const tc = event.tickets.length;
-            const urgencyBadge = tc === 1
+            const urgencyBadge = minPrice === null ? '' : tc === 1
                 ? '<div class="trending-badge urgent-badge">⚡ 1 billet restant</div>'
                 : tc <= 3
                     ? '<div class="trending-badge urgent-badge">⚡ ' + tc + ' billets restants</div>'
@@ -229,9 +229,7 @@
                 '<div class="event-image-container">' +
                 urgencyBadge +
                 '<img alt="' + event.name + '" class="event-image">' +
-                (minPrice !== null
-                    ? '<div class="event-badge">' + fromText + ' ' + minPrice + '€</div>'
-                    : '<div class="event-badge">' + tbdText + '</div>') +
+                (minPrice !== null ? '<div class="event-badge">' + fromText + ' ' + minPrice + '€</div>' : '') +
                 '</div>' +
                 '<div class="event-info">' +
                 '<h3 class="event-name">' + event.name + '</h3>' +
