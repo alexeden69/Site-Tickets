@@ -1,34 +1,36 @@
 :root {
-  --primary: #7c55f5;
-  --secondary: #7c55f5;
-  --accent: #7c55f5;
-  --bg: #0b0f1e;
-  --card-bg: #131929;
-  --text: #f0f2f8;
-  --text-muted: #7a85a0;
-  --border: rgba(255,255,255,0.08);
-  --shadow: rgba(0,0,0,0.4);
-  --shadow-hover: rgba(124,85,245,0.25);
-  --gradient-1: #7c55f5;
-  --gradient-2: #5e35d4;
-  --price-color: #7c55f5;
+  --primary: #ffffff;
+  --secondary: #ffffff;
+  --accent: #ffffff;
+  --bg: #080808;
+  --card-bg: #111111;
+  --text: #f5f5f5;
+  --text-muted: #888888;
+  --border: rgba(255,255,255,0.1);
+  --shadow: rgba(0,0,0,0.5);
+  --shadow-hover: rgba(255,255,255,0.06);
+  --gradient-1: #ffffff;
+  --gradient-2: #cccccc;
+  --price-color: #ffffff;
+  --btn-text: #080808;
 }
 
 /* Light Mode Variables (toggle) */
 body.dark-mode {
-  --primary: #7c55f5;
-  --secondary: #7c55f5;
-  --accent: #7c55f5;
-  --bg: #f8f8fc;
-  --card-bg: #ffffff;
-  --text: #111111;
-  --text-muted: #888888;
-  --border: #e8e0f8;
-  --shadow: rgba(0,0,0,0.06);
-  --shadow-hover: rgba(124,85,245,0.15);
-  --gradient-1: #7c55f5;
-  --gradient-2: #5e35d4;
-  --price-color: #7c55f5;
+  --primary: #000000;
+  --secondary: #000000;
+  --accent: #000000;
+  --bg: #ffffff;
+  --card-bg: #f2f2f2;
+  --text: #0a0a0a;
+  --text-muted: #666666;
+  --border: rgba(0,0,0,0.1);
+  --shadow: rgba(0,0,0,0.08);
+  --shadow-hover: rgba(0,0,0,0.12);
+  --gradient-1: #000000;
+  --gradient-2: #333333;
+  --price-color: #000000;
+  --btn-text: #ffffff;
 }
 
 body.dark-mode {
@@ -108,7 +110,7 @@ h3 { font-size: clamp(1.5rem, 3vw, 2rem); }
 
 /* Navigation */
 nav {
-  background: rgba(11,15,30,0.88);
+  background: rgba(0,0,0,0.92);
   padding: 1.25rem 2rem;
   box-shadow: none;
   border-bottom: 1px solid var(--border);
@@ -134,8 +136,8 @@ nav {
 }
 
 .logo-img {
-  height: 44px;
-  width: 44px;
+  height: 56px;
+  width: 56px;
   object-fit: contain;
   border-radius: 50%;
 }
@@ -300,7 +302,7 @@ body.dark-mode .hero {
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse at 50% -10%, rgba(124,85,245,0.2) 0%, transparent 65%);
+  background: radial-gradient(ellipse at 50% -10%, rgba(255,255,255,0.08) 0%, transparent 65%);
   pointer-events: none;
 }
 
@@ -445,7 +447,7 @@ body.dark-mode .hero p {
 .step-icon-wrapper {
   width: 50px;
   height: 50px;
-  background: linear-gradient(135deg, rgba(124,85,245,0.15), rgba(201,75,255,0.08));
+  background: linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0.04));
   border-radius: 14px;
   display: flex;
   align-items: center;
@@ -611,8 +613,8 @@ body.dark-mode .hero p {
 .event-card:hover {
   opacity: 1;
   transform: translateY(-9px);
-  box-shadow: 0 24px 60px rgba(124,85,245,0.22), 0 6px 20px rgba(0,0,0,0.12);
-  border-color: rgba(124,85,245,0.55);
+  box-shadow: 0 24px 60px rgba(255,255,255,0.12), 0 6px 20px rgba(0,0,0,0.2);
+  border-color: rgba(255,255,255,0.4);
 }
 
 .event-image-container {
@@ -715,7 +717,7 @@ body.dark-mode .hero p {
 .btn-view {
   padding: 0.55rem 1.35rem;
   background: var(--primary);
-  color: white;
+  color: var(--btn-text);
   border: none;
   border-radius: 50px;
   font-weight: 700;
@@ -727,7 +729,7 @@ body.dark-mode .hero p {
 
 .btn-view:hover {
   opacity: 1;
-  background: #6a43e0;
+  background: #cccccc;
   transform: scale(1.05);
   box-shadow: 0 6px 20px rgba(124, 85, 245, 0.45);
 }
@@ -744,7 +746,7 @@ body.dark-mode .btn-view {
 
 /* Event Detail Page */
 .event-detail-header {
-  background: linear-gradient(135deg, #0b0f1e 0%, #1a1040 60%, #0b0f1e 100%);
+  background: linear-gradient(135deg, #000000 0%, #111111 60%, #000000 100%);
   color: white;
   padding: 2rem 2rem;
   position: relative;
@@ -857,8 +859,8 @@ body.dark-mode .btn-view {
 }
 
 .ticket-item:hover {
-  border-color: rgba(124,85,245,0.5);
-  box-shadow: 0 0 0 1px rgba(124,85,245,0.2);
+  border-color: rgba(255,255,255,0.4);
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.08);
 }
 
 .ticket-header {
@@ -901,7 +903,7 @@ body.dark-mode .btn-view {
   grid-row: 1 / 3;
   padding: 0.5rem 1.2rem;
   background: var(--gradient-1);
-  color: white;
+  color: var(--btn-text);
   border: none;
   border-radius: 50px;
   font-weight: 700;
@@ -915,7 +917,7 @@ body.dark-mode .btn-view {
 }
 
 .btn-buy:hover {
-  background: #6a43e0;
+  background: #cccccc;
   transform: scale(1.05);
   box-shadow: 0 6px 20px rgba(124, 85, 245, 0.45);
 }
@@ -1417,7 +1419,7 @@ body.dark-mode footer {
   width: 100%;
   padding: 1rem 2rem;
   background: var(--gradient-1);
-  color: white;
+  color: var(--btn-text);
   border: none;
   border-radius: 30px;
   font-weight: 700;
@@ -1723,7 +1725,7 @@ body.dark-mode footer {
   width: 100%;
   padding: 1.25rem 2rem;
   background: var(--gradient-1);
-  color: white;
+  color: var(--btn-text);
   border: none;
   border-radius: 30px;
   font-weight: 700;
@@ -2046,7 +2048,7 @@ body.dark-mode footer {
 
 /* ===== Trust strip ===== */
 .trust-strip {
-    background: rgba(124,85,245,0.1);
+    background: rgba(255,255,255,0.05);
     color: var(--text-muted);
     border-bottom: 1px solid var(--border);
     padding: 0.55rem 1.5rem;
@@ -2076,7 +2078,7 @@ body.dark-mode footer {
     flex-shrink: 0;
 }
 body.dark-mode .trust-strip {
-    background: rgba(124,85,245,0.06);
+    background: rgba(255,255,255,0.04);
     color: #888888;
 }
 
@@ -2212,8 +2214,8 @@ body.dark-mode .trust-strip {
 
 .sticky-cta-btn {
     flex-shrink: 0;
-    background: #7c55f5;
-    color: white;
+    background: #ffffff;
+    color: #000000;
     border: none;
     padding: 0.75rem 1.5rem;
     border-radius: 50px;
@@ -2335,8 +2337,8 @@ body.dark-mode .trust-strip {
 }
 .sub-event-card:hover {
     transform: translateY(-6px);
-    box-shadow: 0 12px 35px rgba(124,85,245,0.25);
-    border-color: #7c55f5;
+    box-shadow: 0 12px 35px rgba(255,255,255,0.1);
+    border-color: #ffffff;
 }
 .sub-event-card-body {
     padding: 1.4rem 1.5rem;
@@ -2371,7 +2373,7 @@ body.dark-mode .trust-strip {
 .sub-price {
     font-size: 1.2rem;
     font-weight: 800;
-    color: #7c55f5;
+    color: #ffffff;
 }
 .sub-price-label {
     font-size: 0.75rem;
@@ -2379,8 +2381,8 @@ body.dark-mode .trust-strip {
     display: block;
 }
 .sub-btn-view {
-    background: #7c55f5;
-    color: white;
+    background: #ffffff;
+    color: #000000;
     border: none;
     padding: 0.6rem 1.4rem;
     border-radius: 50px;
@@ -2402,7 +2404,7 @@ body.dark-mode .trust-strip {
 
 .sub-trending-badge {
     display: inline-block;
-    background: rgba(124,85,245,0.18);
+    background: rgba(255,255,255,0.08);
     color: #a78bfa;
     font-size: 0.72rem;
     font-weight: 700;
@@ -2412,7 +2414,7 @@ body.dark-mode .trust-strip {
 }
 
 .ticket-count-badge {
-    background: rgba(124,85,245,0.15);
+    background: rgba(255,255,255,0.06);
     color: #a78bfa;
     font-size: 0.75rem;
     font-weight: 700;
@@ -2423,7 +2425,7 @@ body.dark-mode .trust-strip {
 body.dark-mode .sub-event-card { background: #ffffff; border-color: #e8e0f8; }
 body.dark-mode .sub-event-name { color: #111111; }
 body.dark-mode .sub-event-footer { border-color: #e8e0f8; }
-body.dark-mode .ticket-count-badge { background: rgba(124,85,245,0.12); color: #7c55f5; }
+body.dark-mode .ticket-count-badge { background: rgba(255,255,255,0.06); color: #ffffff; }
 
 @media (max-width: 600px) {
     .group-hero-content h1 { font-size: 1.6rem; }
@@ -2748,7 +2750,7 @@ body.dark-mode .ticket-count-badge { background: rgba(124,85,245,0.12); color: #
 }
 
 .page-header--concerts {
-    background: linear-gradient(135deg, #1a0a45 0%, #7c55f5 60%, #3a86ff 100%);
+    background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
 }
 
 .page-header--sports {
