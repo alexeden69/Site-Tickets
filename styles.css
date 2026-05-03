@@ -266,6 +266,14 @@ nav {
   background: linear-gradient(135deg, #1a73e8 0%, #1557b0 100%);
 }
 
+.insta-btn {
+  background: linear-gradient(135deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+}
+
+.insta-btn:hover {
+  background: linear-gradient(135deg, #e6683c 0%, #dc2743 50%, #bc1888 100%);
+}
+
 
 /* Hero Section */
 .hero {
