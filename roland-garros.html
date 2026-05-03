@@ -105,36 +105,15 @@
 
         .rg-pdf-embed {
             width: 100%;
-            height: 75vh;
+            height: 80vh;
             min-height: 500px;
             border: none;
             display: block;
         }
 
-        .rg-mobile-notice {
-            display: none;
-            padding: 2.5rem 1.5rem;
-            text-align: center;
-        }
-
-        .rg-mobile-notice svg {
-            width: 48px;
-            height: 48px;
-            stroke: var(--accent);
-            margin-bottom: 1rem;
-        }
-
-        .rg-mobile-notice p {
-            color: var(--text-muted);
-            margin-bottom: 1.5rem;
-            font-size: 0.95rem;
-            line-height: 1.6;
-        }
-
         @media (max-width: 768px) {
-            .rg-pdf-embed { display: none; }
-            .rg-mobile-notice { display: block; }
             .rg-hero h1 { font-size: 2rem; }
+            .rg-pdf-embed { height: 70vh; min-height: 400px; }
         }
 
         .rg-actions {
@@ -270,19 +249,9 @@
             <iframe
                 id="pdf-frame"
                 class="rg-pdf-embed"
-                src="assets/roland-garros-tarifs.pdf"
+                src="https://docs.google.com/viewer?url=https://alexeden69.github.io/Site-Tickets/assets/roland-garros-tarifs.pdf&embedded=true"
                 title="Roland Garros 2026 — Tarifs">
             </iframe>
-            <!-- Mobile fallback -->
-            <div class="rg-mobile-notice">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                    <polyline points="14 2 14 8 20 8"/>
-                    <line x1="12" y1="18" x2="12" y2="12"/>
-                    <line x1="9" y1="15" x2="15" y2="15"/>
-                </svg>
-                <p id="mobile-notice-text">Le flyer s'affiche mieux sur ordinateur.<br>Télécharge-le pour le consulter sur ton téléphone.</p>
-            </div>
         </div>
 
         <!-- Action buttons -->
@@ -338,27 +307,28 @@
     <script src="language.js"></script>
     <script src="ui-extras.js"></script>
     <script>
+        const BASE = 'https://alexeden69.github.io/Site-Tickets/assets/';
+        const GV = 'https://docs.google.com/viewer?url=' + BASE;
+
         const PDFS = {
             fr: {
-                src: 'assets/roland-garros-tarifs.pdf',
+                src: GV + 'roland-garros-tarifs.pdf&embedded=true',
                 download: 'assets/roland-garros-tarifs.pdf',
                 downloadName: 'Roland-Garros-Tarifs-2026.pdf',
                 title: 'Tarifs & Disponibilités',
                 subtitle: 'Consultez nos offres — réservation par WhatsApp ou email',
                 btnDownload: 'Télécharger le flyer',
                 btnWa: 'Réserver par WhatsApp',
-                mobileNotice: 'Le flyer s\'affiche mieux sur ordinateur.<br>Télécharge-le pour le consulter sur ton téléphone.',
                 waText: 'Bonjour%2C%20je%20suis%20int%C3%A9ress%C3%A9%20par%20des%20billets%20Roland%20Garros%202026.%20Pouvez-vous%20me%20donner%20les%20disponibilit%C3%A9s%20%3F'
             },
             en: {
-                src: 'assets/roland-garros-pricing.pdf',
+                src: GV + 'roland-garros-pricing.pdf&embedded=true',
                 download: 'assets/roland-garros-pricing.pdf',
                 downloadName: 'Roland-Garros-Pricing-2026.pdf',
                 title: 'Pricing & Availability',
                 subtitle: 'Browse our offers — book via WhatsApp or email',
                 btnDownload: 'Download the flyer',
                 btnWa: 'Book via WhatsApp',
-                mobileNotice: 'The flyer displays better on desktop.<br>Download it to view on your phone.',
                 waText: 'Hello%2C%20I%20am%20interested%20in%20Roland%20Garros%202026%20tickets.%20Can%20you%20share%20availability%20%3F'
             }
         };
@@ -373,7 +343,6 @@
             document.getElementById('btn-wa-text').textContent = data.btnWa;
             document.getElementById('rg-title').textContent = data.title;
             document.getElementById('rg-subtitle').textContent = data.subtitle;
-            document.getElementById('mobile-notice-text').innerHTML = data.mobileNotice;
             document.getElementById('btn-fr').classList.toggle('active', lang === 'fr');
             document.getElementById('btn-en').classList.toggle('active', lang === 'en');
         }
