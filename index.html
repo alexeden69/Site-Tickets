@@ -143,12 +143,29 @@
                 </div>
             </div>
         </div>
+        <div class="hero-scroll-indicator" onclick="document.querySelector('.trending-section').scrollIntoView({behavior:'smooth'})">
+            <span data-fr="Défiler" data-en="Scroll">Défiler</span>
+            <svg class="hero-scroll-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </div>
     </section>
 
     <!-- Trending Section -->
     <section class="trending-section">
         <div class="trending-grid" id="trending-grid">
-            <!-- Events loaded here -->
+            <!-- Skeleton placeholders -->
+            <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line"></div><div class="skeleton-line short"></div><div class="skeleton-line xshort"></div></div></div>
+            <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line"></div><div class="skeleton-line short"></div><div class="skeleton-line xshort"></div></div></div>
+            <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line"></div><div class="skeleton-line short"></div><div class="skeleton-line xshort"></div></div></div>
+            <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line"></div><div class="skeleton-line short"></div><div class="skeleton-line xshort"></div></div></div>
+            <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line"></div><div class="skeleton-line short"></div><div class="skeleton-line xshort"></div></div></div>
+            <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line"></div><div class="skeleton-line short"></div><div class="skeleton-line xshort"></div></div></div>
+            <!-- Empty state -->
+            <div class="search-empty-state" id="search-empty">
+                <div class="search-empty-icon">🔍</div>
+                <div class="search-empty-title">Aucun résultat</div>
+                <div class="search-empty-sub">On n'a pas trouvé cet événement — mais on peut s'en occuper.</div>
+                <a href="https://wa.me/?text=Bonjour%2C%20je%20cherche%20des%20billets%20pour%20" target="_blank" class="search-empty-cta">Faire une demande</a>
+            </div>
         </div>
     </section>
 
@@ -399,11 +416,22 @@
 
         function filterTrending(query) {
             const words = normalizeText(query).trim().split(/\s+/).filter(Boolean);
+            let anyVisible = false;
             document.querySelectorAll('#trending-grid .event-card').forEach(card => {
                 const haystack = card.dataset.search || normalizeText(card.querySelector('.event-name')?.textContent || '');
                 const visible = words.length === 0 || words.every(w => haystack.includes(w));
                 card.style.display = visible ? '' : 'none';
+                if (visible) anyVisible = true;
             });
+            const emptyState = document.getElementById('search-empty');
+            if (emptyState) {
+                const hasQuery = words.length > 0;
+                emptyState.classList.toggle('visible', hasQuery && !anyVisible);
+                if (hasQuery && !anyVisible) {
+                    const cta = emptyState.querySelector('.search-empty-cta');
+                    if (cta) cta.href = `https://wa.me/?text=${encodeURIComponent('Bonjour, je cherche des billets pour ' + query)}`;
+                }
+            }
         }
 
         function displaySoldOut() {
@@ -432,6 +460,8 @@
 
         function displayTrendingEvents() {
             const grid = document.getElementById('trending-grid');
+            // Remove skeletons
+            grid.querySelectorAll('.skeleton-card').forEach(s => s.remove());
             const allItems = getAllForDisplay();
             const trending = allItems.filter(item => item.trending);
 

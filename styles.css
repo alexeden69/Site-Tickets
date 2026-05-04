@@ -2740,6 +2740,152 @@ body.dark-mode .ticket-count-badge { background: rgba(255,255,255,0.06); color: 
     animation: fadeIn 0.2s ease;
 }
 
+/* ===== Skeleton loading ===== */
+@keyframes skeleton-shimmer {
+  0% { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+.skeleton-card {
+  background: var(--card-bg);
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+.skeleton-img {
+  width: 100%;
+  aspect-ratio: 4/3;
+  background: linear-gradient(90deg, var(--card-bg) 25%, rgba(255,255,255,0.06) 50%, var(--card-bg) 75%);
+  background-size: 400px 100%;
+  animation: skeleton-shimmer 1.4s ease infinite;
+}
+body.dark-mode .skeleton-img {
+  background: linear-gradient(90deg, var(--card-bg) 25%, rgba(0,0,0,0.06) 50%, var(--card-bg) 75%);
+  background-size: 400px 100%;
+  animation: skeleton-shimmer 1.4s ease infinite;
+}
+.skeleton-body { padding: 1.1rem; display: flex; flex-direction: column; gap: 0.6rem; }
+.skeleton-line {
+  height: 14px;
+  border-radius: 6px;
+  background: linear-gradient(90deg, var(--border) 25%, rgba(255,255,255,0.08) 50%, var(--border) 75%);
+  background-size: 400px 100%;
+  animation: skeleton-shimmer 1.4s ease infinite;
+}
+body.dark-mode .skeleton-line {
+  background: linear-gradient(90deg, var(--border) 25%, rgba(0,0,0,0.06) 50%, var(--border) 75%);
+  background-size: 400px 100%;
+  animation: skeleton-shimmer 1.4s ease infinite;
+}
+.skeleton-line.short { width: 60%; }
+.skeleton-line.xshort { width: 40%; }
+
+/* ===== Empty state search ===== */
+.search-empty-state {
+  display: none;
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 4rem 2rem;
+}
+.search-empty-state.visible { display: block; }
+.search-empty-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  opacity: 0.4;
+}
+.search-empty-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 0.5rem;
+}
+.search-empty-sub {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  margin-bottom: 1.5rem;
+}
+.search-empty-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: var(--gradient-1);
+  color: var(--btn-text);
+  border-radius: 50px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+.search-empty-cta:hover { opacity: 0.85; }
+
+/* ===== Scroll indicator hero ===== */
+.hero-scroll-indicator {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  z-index: 2;
+  opacity: 0.6;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.hero-scroll-indicator:hover { opacity: 1; }
+.hero-scroll-indicator span {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #fff;
+  font-weight: 600;
+}
+body.dark-mode .hero-scroll-indicator span { color: #0a0a0a; }
+@keyframes bounce-arrow {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(5px); }
+}
+.hero-scroll-arrow {
+  animation: bounce-arrow 1.6s ease infinite;
+  color: #fff;
+}
+body.dark-mode .hero-scroll-arrow { color: #0a0a0a; }
+
+/* ===== App toast ===== */
+.app-toast {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(0);
+  background: #1a1a1a;
+  color: #fff;
+  padding: 0.85rem 1.6rem;
+  border-radius: 50px;
+  font-size: 0.92rem;
+  font-weight: 600;
+  z-index: 9999;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.35);
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  white-space: nowrap;
+  animation: toast-in 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.app-toast.success { background: #1a1a1a; border-left: 3px solid #4ade80; }
+.app-toast.error { background: #1a1a1a; border-left: 3px solid #f87171; }
+body.dark-mode .app-toast { background: #fff; color: #0a0a0a; box-shadow: 0 8px 30px rgba(0,0,0,0.12); }
+body.dark-mode .app-toast.success { border-left-color: #16a34a; }
+@keyframes toast-in {
+  from { opacity: 0; transform: translateX(-50%) translateY(12px); }
+  to { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+@keyframes toast-out {
+  from { opacity: 1; transform: translateX(-50%) translateY(0); }
+  to { opacity: 0; transform: translateX(-50%) translateY(12px); }
+}
+.app-toast.hiding { animation: toast-out 0.25s ease forwards; }
+
 /* ===== Scroll to top ===== */
 .scroll-top-btn {
     position: fixed;

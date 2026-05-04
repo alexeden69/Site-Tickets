@@ -721,6 +721,8 @@
         function openWhatsAppLead(lead) {
             const url = `https://wa.me/${window.TicketHubCheckout.CONFIG.WHATSAPP}?text=${lead.getSellerWhatsAppMessage()}`;
             window.open(url, '_blank', 'noopener,noreferrer');
+            const isFr = (lead.customer.language || 'fr') === 'fr';
+            setTimeout(() => window.showAppToast?.(isFr ? 'Demande envoyée via WhatsApp' : 'Request sent via WhatsApp', 'success'), 800);
         }
 
         function openEmailLead(lead) {
@@ -750,7 +752,9 @@
             ].filter(Boolean);
 
             const mailto = `mailto:${encodeURIComponent(window.TicketHubCheckout.CONFIG.EMAIL.support)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(bodyLines.join('\n'))}`;
-            window.location.href = mailto;
+            const isFr2 = (lead.customer.language || 'fr') === 'fr';
+            window.showAppToast?.(isFr2 ? 'Email prêt à envoyer' : 'Email ready to send', 'success');
+            setTimeout(() => { window.location.href = mailto; }, 400);
         }
 
         // Share current page
