@@ -297,8 +297,8 @@
                 '<div class="event-info">' +
                 '<h3 class="event-name">' + group.groupName + '</h3>' +
                 '<div class="event-details">' +
-                '<div class="event-detail"><span class="event-detail-icon">📅</span><span>' + dateRange + '</span>' + countdownHtml(group.events[0].date) + '</div>' +
-                '<div class="event-detail"><span class="event-detail-icon">🎫</span><span>' + datesLabel + ' disponibles</span></div>' +
+                '<div class="event-detail"><span>' + dateRange + '</span>' + countdownHtml(group.events[0].date) + '</div>' +
+                '<div class="event-detail"><span>' + datesLabel + ' disponibles</span></div>' +
                 '</div>' +
                 '<div class="verified-line">✓ Billet authentifié · Garanti CFTickets</div>' +
                 soldHtml +
@@ -372,9 +372,9 @@
                 '<div class="event-info">' +
                 '<h3 class="event-name">' + event.name + '</h3>' +
                 '<div class="event-details">' +
-                '<div class="event-detail"><span class="event-detail-icon">📍</span><span>' + event.venue + ', ' + event.city + '</span></div>' +
-                '<div class="event-detail"><span class="event-detail-icon">📅</span><span>' + formattedDate + '</span>' + countdownHtml(event.date) + '</div>' +
-                '<div class="event-detail"><span class="event-detail-icon">🕐</span><span>' + event.time + '</span></div>' +
+                '<div class="event-detail"><span>' + event.venue + ', ' + event.city + '</span></div>' +
+                '<div class="event-detail"><span>' + formattedDate + '</span>' + countdownHtml(event.date) + '</div>' +
+                '<div class="event-detail"><span>' + event.time + '</span></div>' +
                 '</div>' +
                 '<div class="verified-line">✓ Billet authentifié · Garanti CFTickets</div>' +
                 soldHtml +

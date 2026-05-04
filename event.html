@@ -165,7 +165,7 @@
     <div class="modal-overlay" id="checkoutModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 id="modal-title">🎫 Finaliser la commande</h2>
+                <h2 id="modal-title">Finaliser la commande</h2>
                 <button class="modal-close" onclick="closeCheckoutModal()">×</button>
             </div>
             <div class="modal-body" id="modal-body">
@@ -256,7 +256,7 @@
                 document.getElementById('sticky-cta').style.display = 'none';
                 document.querySelector('.tickets-section').innerHTML = `
                     <div style="max-width:520px;margin:6rem auto;padding:0 1.5rem;text-align:center;">
-                        <div style="font-size:4rem;margin-bottom:1.25rem;">🎫</div>
+                        <div style="font-size:4rem;margin-bottom:1.25rem;"></div>
                         <h1 style="font-size:1.8rem;font-weight:800;margin-bottom:0.75rem;">Événement introuvable</h1>
                         <p style="color:var(--text-muted);margin-bottom:2rem;line-height:1.6;">Cet événement n'est plus disponible ou a été retiré.<br>Vous cherchez un billet spécifique ? On peut s'en occuper.</p>
                         <a href="request.html" style="display:inline-flex;align-items:center;justify-content:center;gap:0.5rem;background:var(--gradient-1);color:#fff;border-radius:12px;padding:1rem 1.75rem;font-weight:700;font-size:1rem;text-decoration:none;margin-bottom:1rem;">Faire une demande →</a>
@@ -455,7 +455,7 @@
                     <img class="related-card-img" alt="${event.name}" loading="lazy">
                     <div class="related-card-body">
                         <div class="related-card-name">${event.name}</div>
-                        <div class="related-card-date">📅 ${dateStr}</div>
+                        <div class="related-card-date">${dateStr}</div>
                         <div class="related-card-price">${fromText} ${event.minPrice}€</div>
                     </div>
                 `;
@@ -549,7 +549,7 @@
                     </div>
                     
                     <div class="form-section">
-                        <h3>🎫 ${quantityLabel}</h3>
+                        <h3>${quantityLabel}</h3>
                         <div class="quantity-selector">
                             <button type="button" class="qty-btn" onclick="updateQuantity(-1)">−</button>
                             <div class="qty-display" id="quantity-display">1</div>

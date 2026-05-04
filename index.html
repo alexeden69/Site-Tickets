@@ -27,7 +27,33 @@
     <link rel="manifest" href="manifest.webmanifest">
     <link rel="icon" href="icon.svg" type="image/svg+xml">
 
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css?v=4">
+    <script>
+      (async () => {
+        const regs = await navigator.serviceWorker?.getRegistrations() ?? [];
+        await Promise.all(regs.map(r => r.unregister()));
+        const keys = await caches.keys();
+        await Promise.all(keys.map(k => caches.delete(k)));
+        if (regs.length || keys.length) location.reload();
+      })();
+    </script>
+    <style>
+      .hero{position:relative;min-height:88vh;display:flex;align-items:center;justify-content:center;text-align:center;overflow:hidden;padding:8rem 2rem 5rem}
+      .hero-bg-img{position:absolute;inset:0;background-image:url('https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?w=1600&q=80');background-size:cover;background-position:center 30%}
+      .hero-bg-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,.55) 0%,rgba(0,0,0,.35) 40%,rgba(0,0,0,.75) 100%)}
+      .hero-content{max-width:800px;margin:0 auto;position:relative;z-index:1}
+      .hero-badge{display:inline-block;padding:.4rem 1.1rem;border:1px solid rgba(255,255,255,.35);border-radius:50px;font-size:.8rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.9);margin-bottom:1.8rem;background:rgba(255,255,255,.08)}
+      .hero h1{font-size:clamp(2.4rem,5.5vw,4.2rem);font-weight:800;line-height:1.1;color:#fff!important;margin-bottom:1.2rem;letter-spacing:-.02em}
+      .hero p{font-size:1.15rem;margin-bottom:2.4rem;color:rgba(255,255,255,.8)!important}
+      .hero-search-wrap{position:relative;max-width:560px;margin:0 auto 2.8rem}
+      .hero-search-icon{position:absolute;left:1.1rem;top:50%;transform:translateY(-50%);width:20px;height:20px;color:#888;pointer-events:none}
+      .hero-search-input{width:100%;padding:1rem 1.4rem 1rem 3rem;font-size:1rem;font-family:inherit;border-radius:50px;border:none;background:rgba(255,255,255,.97);color:#0a0a0a;box-shadow:0 8px 32px rgba(0,0,0,.35);outline:none}
+      .hero-stats{display:flex;align-items:center;justify-content:center;gap:2rem}
+      .hero-stat{display:flex;flex-direction:column;align-items:center;gap:.2rem}
+      .hero-stat-num{font-size:1.5rem;font-weight:800;color:#fff;line-height:1}
+      .hero-stat-label{font-size:.75rem;text-transform:uppercase;letter-spacing:.06em;color:rgba(255,255,255,.6);font-weight:500}
+      .hero-stat-sep{width:1px;height:2.5rem;background:rgba(255,255,255,.2)}
+    </style>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -90,17 +116,37 @@
 
     <!-- Hero Section -->
     <section class="hero" id="main">
+        <div class="hero-bg-img"></div>
+        <div class="hero-bg-overlay"></div>
         <div class="hero-content">
-            <h1 data-fr="Billets pour les événements qui affichent complet" data-en="Tickets for sold-out events">Billets pour les événements qui affichent complet</h1>
-            <p data-fr="Concerts, matchs, spectacles — réservez directement par WhatsApp ou email." data-en="Concerts, matches, shows — book directly via WhatsApp or email.">Concerts, matchs, spectacles — réservez directement par WhatsApp ou email.</p>
+            <div class="hero-badge" data-fr="Billets premium · Garantis authentiques" data-en="Premium tickets · Authenticity guaranteed">Billets premium · Garantis authentiques</div>
+            <h1 data-fr="Trouvez vos billets pour les événements complets" data-en="Find tickets for sold-out events">Trouvez vos billets pour les événements complets</h1>
+            <p data-fr="Concerts, matchs, spectacles — réponse en moins de 2h, 7j/7." data-en="Concerts, matches, shows — reply within 2h, 7 days a week.">Concerts, matchs, spectacles — réponse en moins de 2h, 7j/7.</p>
+            <div class="hero-search-wrap">
+                <svg class="hero-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <input type="search" id="search-input" class="hero-search-input" placeholder="Artiste, événement, ville…" oninput="filterTrending(this.value)" autocomplete="off">
+            </div>
+            <div class="hero-stats">
+                <div class="hero-stat">
+                    <span class="hero-stat-num">500+</span>
+                    <span class="hero-stat-label" data-fr="billets vendus" data-en="tickets sold">billets vendus</span>
+                </div>
+                <div class="hero-stat-sep"></div>
+                <div class="hero-stat">
+                    <span class="hero-stat-num">2h</span>
+                    <span class="hero-stat-label" data-fr="délai de réponse" data-en="response time">délai de réponse</span>
+                </div>
+                <div class="hero-stat-sep"></div>
+                <div class="hero-stat">
+                    <span class="hero-stat-num">100%</span>
+                    <span class="hero-stat-label" data-fr="billets vérifiés" data-en="verified tickets">billets vérifiés</span>
+                </div>
+            </div>
         </div>
     </section>
 
     <!-- Trending Section -->
     <section class="trending-section">
-        <div class="search-bar-wrapper">
-            <input type="search" id="search-input" class="search-bar" placeholder="Rechercher un événement, un artiste…" oninput="filterTrending(this.value)" autocomplete="off">
-        </div>
         <div class="trending-grid" id="trending-grid">
             <!-- Events loaded here -->
         </div>
@@ -436,8 +482,8 @@
                 '<div class="event-info">' +
                 '<h3 class="event-name">' + group.groupName + '</h3>' +
                 '<div class="event-details">' +
-                '<div class="event-detail"><span class="event-detail-icon">📅</span><span>' + dateRange + '</span>' + countdownHtml(group.events[0].date) + '</div>' +
-                '<div class="event-detail"><span class="event-detail-icon">🎫</span><span>' + datesLabel + ' disponibles</span></div>' +
+                '<div class="event-detail"><span>' + dateRange + '</span>' + countdownHtml(group.events[0].date) + '</div>' +
+                '<div class="event-detail"><span>' + datesLabel + ' disponibles</span></div>' +
                 '</div>' +
                 '<div class="verified-line">✓ Billet authentifié · Garanti CFTickets</div>' +
                 '<div class="event-footer">' +
@@ -503,15 +549,12 @@
                     <h3 class="event-name">${event.name}</h3>
                     <div class="event-details">
                         <div class="event-detail">
-                            <span class="event-detail-icon">📍</span>
                             <span>${event.venue}, ${event.city}</span>
                         </div>
                         <div class="event-detail">
-                            <span class="event-detail-icon">📅</span>
                             <span>${formattedDate}</span>${countdownHtml(event.date)}
                         </div>
                         <div class="event-detail">
-                            <span class="event-detail-icon">🕐</span>
                             <span>${event.time}</span>
                         </div>
                     </div>

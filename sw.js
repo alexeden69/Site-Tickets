@@ -1,5 +1,5 @@
 // TicketHub Service Worker (simple cache-first for static assets)
-const CACHE_NAME = 'tickethub-v2';
+const CACHE_NAME = 'tickethub-v4';
 
 const PRECACHE_URLS = [
   './',
@@ -42,6 +42,21 @@ self.addEventListener('fetch', (event) => {
 
   const url = new URL(req.url);
   if (url.origin !== self.location.origin) return;
+
+  const isHTML = req.headers.get('accept')?.includes('text/html') || req.url.endsWith('.html');
+
+  if (isHTML) {
+    event.respondWith(
+      fetch(req)
+        .then((res) => {
+          const copy = res.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(req, copy)).catch(() => {});
+          return res;
+        })
+        .catch(() => caches.match(req).then((c) => c || caches.match('./index.html')))
+    );
+    return;
+  }
 
   event.respondWith(
     caches.match(req).then((cached) => {
