@@ -426,10 +426,12 @@
             const emptyState = document.getElementById('search-empty');
             if (emptyState) {
                 const hasQuery = words.length > 0;
+                const wasHidden = !emptyState.classList.contains('visible');
                 emptyState.classList.toggle('visible', hasQuery && !anyVisible);
                 if (hasQuery && !anyVisible) {
                     const cta = emptyState.querySelector('.search-empty-cta');
                     if (cta) cta.href = `https://wa.me/?text=${encodeURIComponent('Bonjour, je cherche des billets pour ' + query)}`;
+                    if (wasHidden) emptyState.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }
             }
         }
