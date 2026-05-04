@@ -1,13 +1,8 @@
 // TicketHub Service Worker (simple cache-first for static assets)
-const CACHE_NAME = 'tickethub-v4';
+const CACHE_NAME = 'tickethub-v5';
 
+// HTML pages intentionally excluded — always fetched from network
 const PRECACHE_URLS = [
-  './',
-  './index.html',
-  './concerts.html',
-  './sports.html',
-  './event.html',
-  './group.html',
   './styles.css',
   './dark-mode.js',
   './language.js',
@@ -15,8 +10,7 @@ const PRECACHE_URLS = [
   './checkout-handler.js',
   './app.js',
   './manifest.webmanifest',
-  './icon.svg',
-  './drake.png'
+  './icon.svg'
 ];
 
 self.addEventListener('install', (event) => {
