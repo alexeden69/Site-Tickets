@@ -15,6 +15,111 @@
     <script src="app.js" defer></script>
     <script src="image-utils.js"></script>
     <style>
+        /* ── Seat view immersive panel ── */
+        .tickets-section-inner {
+            display: flex;
+            gap: 2rem;
+            align-items: flex-start;
+        }
+        .tickets-section .tickets-container {
+            flex: 1;
+            min-width: 0;
+        }
+        .seat-view-panel {
+            width: 310px;
+            flex-shrink: 0;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 24px var(--shadow);
+            position: sticky;
+            top: 82px;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.35s ease, transform 0.35s ease;
+            pointer-events: none;
+        }
+        .seat-view-panel.visible {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+        .seat-view-img-wrap {
+            position: relative;
+        }
+        .seat-view-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 2;
+            background: rgba(0,0,0,0.58);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            color: #fff;
+            font-size: 0.62rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            padding: 4px 10px;
+            border-radius: 30px;
+        }
+        .seat-view-img {
+            width: 100%;
+            aspect-ratio: 16/10;
+            object-fit: cover;
+            display: block;
+            transition: opacity 0.3s ease;
+        }
+        .seat-view-img.fading { opacity: 0; }
+        .seat-view-body {
+            padding: 0.85rem 1.1rem 1rem;
+        }
+        .seat-view-section-name {
+            font-size: 0.92rem;
+            font-weight: 700;
+            margin-bottom: 0.15rem;
+        }
+        .seat-view-desc {
+            font-size: 0.76rem;
+            color: var(--text-muted);
+        }
+        .seat-view-hint {
+            padding: 1.75rem 1.25rem 1.5rem;
+            text-align: center;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            line-height: 1.55;
+        }
+        .seat-view-hint svg {
+            display: block;
+            margin: 0 auto 0.6rem;
+            opacity: 0.35;
+        }
+        .ticket-item { cursor: pointer; }
+        .ticket-item.seat-active {
+            border-color: var(--accent) !important;
+            box-shadow: 0 0 0 2px rgba(99,102,241,0.25) !important;
+        }
+        @media (max-width: 900px) {
+            .tickets-section-inner {
+                flex-direction: column-reverse;
+            }
+            .seat-view-panel {
+                width: 100%;
+                position: static;
+                max-height: 0;
+                border-radius: 14px;
+                transition: opacity 0.35s ease, max-height 0.4s ease, transform 0.35s ease;
+            }
+            .seat-view-panel.visible {
+                max-height: 260px;
+            }
+            .seat-view-img {
+                aspect-ratio: 21/9;
+            }
+        }
+
         .related-section {
             max-width: 1100px;
             margin: 0 auto 4rem;
@@ -135,14 +240,31 @@
 
     <!-- Tickets Section -->
     <section class="tickets-section">
-        <div class="tickets-container">
-            <div class="tickets-header">
-                <h2 data-fr="Billets Disponibles" data-en="Available Tickets">Billets Disponibles</h2>
-                <p class="tickets-subtext" data-fr="Sélectionnez vos places" data-en="Select your seats">Sélectionnez vos places</p>
+        <div class="tickets-section-inner">
+            <div class="tickets-container">
+                <div class="tickets-header">
+                    <h2 data-fr="Billets Disponibles" data-en="Available Tickets">Billets Disponibles</h2>
+                    <p class="tickets-subtext" data-fr="Sélectionnez vos places" data-en="Select your seats">Sélectionnez vos places</p>
+                </div>
+                <div class="tickets-list" id="tickets-list">
+                    <!-- Tickets will be dynamically loaded -->
+                </div>
             </div>
-            <div class="tickets-list" id="tickets-list">
-                <!-- Tickets will be dynamically loaded -->
-            </div>
+            <!-- Immersive seat view panel -->
+            <aside class="seat-view-panel" id="seat-view-panel" aria-live="polite">
+                <div class="seat-view-img-wrap">
+                    <span class="seat-view-badge" data-fr="Vue depuis votre place" data-en="View from your seat">Vue depuis votre place</span>
+                    <img id="seat-view-img" class="seat-view-img" src="" alt="" loading="lazy">
+                </div>
+                <div class="seat-view-body" id="seat-view-body" style="display:none">
+                    <div class="seat-view-section-name" id="seat-view-section-name"></div>
+                    <div class="seat-view-desc" id="seat-view-desc"></div>
+                </div>
+                <div class="seat-view-hint" id="seat-view-hint">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    <span data-fr="Cliquez sur un billet pour voir la vue depuis votre place" data-en="Click a ticket to preview the view from your seat">Cliquez sur un billet pour voir la vue depuis votre place</span>
+                </div>
+            </aside>
         </div>
     </section>
 
@@ -394,6 +516,108 @@
                 ticketItem.style.animationDelay = `${index * 0.1}s`;
                 ticketsList.appendChild(ticketItem);
             });
+
+            // Auto-preview first ticket's view
+            if (tickets.length > 0) {
+                setTimeout(() => updateSeatView(tickets[0], ticketsList.firstChild), 400);
+            }
+        }
+
+        // ── Seat view mapping ──
+        const SEAT_VIEW_MAP = [
+            {
+                keys: ['fosse', 'pit', 'floor', 'debout', 'standing'],
+                img: 'https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?w=900&h=560&fit=crop&q=80',
+                fr: 'Vue depuis la fosse — au cœur de l\'action',
+                en: 'Floor/pit view — right in the action'
+            },
+            {
+                keys: ['vip', 'carré or', 'carre or', 'platine', 'platinum', 'premium', 'gold', 'or '],
+                img: 'https://images.unsplash.com/photo-1501386761578-eac5c94b800a?w=900&h=560&fit=crop&q=80',
+                fr: 'Vue VIP — premiers rangs face à la scène',
+                en: 'VIP view — front rows, facing the stage'
+            },
+            {
+                keys: ['cat 1', 'cat1', 'catégorie 1', 'categorie 1', 'category 1', 'parterre', 'orchestre', 'stall'],
+                img: 'https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=900&h=560&fit=crop&q=80',
+                fr: 'Catégorie 1 — vue rapprochée excellente',
+                en: 'Category 1 — excellent close-up view'
+            },
+            {
+                keys: ['cat 2', 'cat2', 'catégorie 2', 'categorie 2', 'category 2', 'argent', 'silver'],
+                img: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=900&h=560&fit=crop&q=80',
+                fr: 'Catégorie 2 — vue médiane équilibrée',
+                en: 'Category 2 — balanced mid-venue view'
+            },
+            {
+                keys: ['cat 3', 'cat3', 'catégorie 3', 'categorie 3', 'category 3', 'balcon', 'upper', 'bronze', 'hauteur'],
+                img: 'https://images.unsplash.com/photo-1524368535928-5b5e00ddc76b?w=900&h=560&fit=crop&q=80',
+                fr: 'Catégorie 3 — vue panoramique complète',
+                en: 'Category 3 — full panoramic overview'
+            },
+            {
+                keys: ['tribune', 'grandstand', 'latéral', 'lateral', 'côté', 'cote'],
+                img: 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=900&h=560&fit=crop&q=80',
+                fr: 'Tribune — vue latérale sur le terrain',
+                en: 'Grandstand — lateral view of the field'
+            },
+            {
+                keys: ['pelouse', 'gazon', 'terrain', 'field', 'lawn'],
+                img: 'https://images.unsplash.com/photo-1556056504-5c7696c4c28d?w=900&h=560&fit=crop&q=80',
+                fr: 'Pelouse — atmosphère unique au niveau du terrain',
+                en: 'Pitch-side — unique atmosphere at field level'
+            }
+        ];
+
+        const SEAT_VIEW_DEFAULT = {
+            img: 'https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?w=900&h=560&fit=crop&q=80',
+            fr: 'Vue depuis votre place',
+            en: 'View from your seat'
+        };
+
+        function getSeatViewInfo(sectionName) {
+            const s = (sectionName || '').toLowerCase();
+            for (const entry of SEAT_VIEW_MAP) {
+                if (entry.keys.some(k => s.includes(k))) return entry;
+            }
+            return SEAT_VIEW_DEFAULT;
+        }
+
+        let _activeSeatItem = null;
+
+        function updateSeatView(ticket, itemEl) {
+            const panel = document.getElementById('seat-view-panel');
+            const img = document.getElementById('seat-view-img');
+            const sectionName = document.getElementById('seat-view-section-name');
+            const desc = document.getElementById('seat-view-desc');
+            const body = document.getElementById('seat-view-body');
+            const hint = document.getElementById('seat-view-hint');
+            if (!panel || !img) return;
+
+            // Highlight active ticket
+            if (_activeSeatItem) _activeSeatItem.classList.remove('seat-active');
+            _activeSeatItem = itemEl;
+            if (itemEl) itemEl.classList.add('seat-active');
+
+            const info = getSeatViewInfo(ticket.section);
+            const isFr = currentLanguage === 'fr';
+            const label = isFr ? info.fr : info.en;
+
+            // Crossfade the image
+            img.classList.add('fading');
+            setTimeout(() => {
+                img.src = info.img;
+                img.alt = label;
+                img.onload = () => img.classList.remove('fading');
+                img.onerror = () => img.classList.remove('fading');
+            }, 150);
+
+            if (sectionName) sectionName.textContent = ticket.section;
+            if (desc) desc.textContent = label;
+            if (body) body.style.display = '';
+            if (hint) hint.style.display = 'none';
+
+            panel.classList.add('visible');
         }
 
         function createTicketItem(ticket) {
@@ -422,6 +646,12 @@
                     ${buyNowText}
                 </button>
             `;
+
+            // Seat view on hover (desktop) and click
+            item.addEventListener('mouseenter', () => updateSeatView(ticket, item));
+            item.addEventListener('click', (e) => {
+                if (!e.target.closest('.btn-buy')) updateSeatView(ticket, item);
+            });
 
             return item;
         }
