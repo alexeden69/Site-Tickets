@@ -239,7 +239,7 @@
                 '<div class="event-detail"><span>' + event.venue + ', ' + event.city + '</span></div>' +
                 '<div class="event-detail"><span>' + formattedDate + '</span></div>' +
                 '<div class="event-detail"><span>' + event.time + '</span></div>' +
-                '<div class="event-detail"><span>' + tc + ' billet' + (tc > 1 ? 's' : '') + ' disponible' + (tc > 1 ? 's' : '') + '</span></div>' +
+                '<div class="event-detail"><span>' + tc + ' ' + (lang === 'fr' ? ('billet' + (tc > 1 ? 's' : '') + ' disponible' + (tc > 1 ? 's' : '')) : ('ticket' + (tc > 1 ? 's' : '') + ' available')) + '</span></div>' +
                 '</div>' +
                 '<div class="verified-line">✓ Billet authentifié · Garanti CFTickets</div>' +
                 '<div class="event-footer">' +

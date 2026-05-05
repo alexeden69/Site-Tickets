@@ -137,6 +137,11 @@
             loadSports();
         });
 
+        window.renderCards = function() {
+            const grid = document.getElementById('sports-grid');
+            if (grid) { grid.innerHTML = ''; loadSports(); }
+        };
+
         function loadSports() {
             const grid = document.getElementById('sports-grid');
             const loader = document.getElementById('loading-state');
@@ -275,7 +280,7 @@
 
             const fromText = lang === 'fr' ? 'À partir de' : 'From';
             const viewText = lang === 'fr' ? 'Voir' : 'View';
-            const datesLabel = lang === 'fr' ? group.events.length + ' date(s)' : group.events.length + ' date(s)';
+            const datesLabel = group.events.length + ' ' + (lang === 'fr' ? 'date(s) disponibles' : 'date(s) available');
             const totalTickets = group.events.reduce((s, e) => s + e.tickets.length, 0);
             const urgencyBadge = totalTickets === 1
                 ? '<div class="trending-badge urgent-badge">1 billet restant</div>'
@@ -298,7 +303,7 @@
                 '<h3 class="event-name">' + group.groupName + '</h3>' +
                 '<div class="event-details">' +
                 '<div class="event-detail"><span>' + dateRange + '</span>' + countdownHtml(group.events[0].date) + '</div>' +
-                '<div class="event-detail"><span>' + datesLabel + ' disponibles</span></div>' +
+                '<div class="event-detail"><span>' + datesLabel + '</span></div>' +
                 '</div>' +
                 '<div class="verified-line">✓ Billet authentifié · Garanti CFTickets</div>' +
                 soldHtml +

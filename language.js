@@ -40,6 +40,8 @@ function changeLanguage(lang) {
     currentLanguage = lang;
     localStorage.setItem('language', lang);
     updatePageLanguage();
+    // Re-render dynamic cards if the page has a render function
+    if (typeof window.renderCards === 'function') window.renderCards();
 }
 
 function updatePageLanguage() {
