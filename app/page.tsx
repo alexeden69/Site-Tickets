@@ -75,6 +75,7 @@ const fromRow = (row: TicketRow): Ticket => ({
 
 const STOCK_STATUSES: TicketStatus[] = ['achete', 'listed'];
 const SOLD_STATUSES: TicketStatus[] = ['vendu', 'livre'];
+const PURCHASER_OPTIONS = ['Alexandre', 'Charles', 'Commun'];
 
 const COLORS = {
   bg: '#000000',
@@ -167,7 +168,7 @@ export default function HomePage() {
     qty: '',
     buyUsd: '',
     sellUsd: '',
-    purchasedBy: '',
+    purchasedBy: 'Commun',
     category: '',
     bloc: '',
     rang: '',
@@ -187,7 +188,7 @@ export default function HomePage() {
     qty: '',
     buyUsd: '',
     sellUsd: '',
-    purchasedBy: '',
+    purchasedBy: 'Commun',
     category: '',
     bloc: '',
     rang: '',
@@ -282,6 +283,11 @@ export default function HomePage() {
     [events, tickets]
   );
 
+  const purchaserOptions = useMemo(
+    () => Array.from(new Set([...PURCHASER_OPTIONS, ...tickets.map((ticket) => ticket.purchasedBy)])),
+    [tickets]
+  );
+
   const filteredTickets = useMemo(() => {
     const startOfToday = new Date();
     startOfToday.setHours(0, 0, 0, 0);
@@ -358,7 +364,7 @@ export default function HomePage() {
       buy_usd: buyUsd,
       sell_usd: Number.isNaN(sellUsd) ? 0 : sellUsd,
       status: 'achete',
-      purchased_by: form.purchasedBy || 'commun',
+      purchased_by: form.purchasedBy,
       category: form.category || null,
       bloc: form.bloc || null,
       rang: form.rang || null,
@@ -377,7 +383,7 @@ export default function HomePage() {
       qty: '',
       buyUsd: '',
       sellUsd: '',
-      purchasedBy: '',
+      purchasedBy: 'Commun',
       category: '',
       bloc: '',
       rang: '',
@@ -445,7 +451,7 @@ export default function HomePage() {
         qty,
         buy_usd: buyUsd,
         sell_usd: Number.isNaN(sellUsd) ? 0 : sellUsd,
-        purchased_by: editForm.purchasedBy || 'commun',
+        purchased_by: editForm.purchasedBy,
         category: editForm.category || null,
         bloc: editForm.bloc || null,
         rang: editForm.rang || null,
@@ -610,7 +616,11 @@ export default function HomePage() {
                 <input type="number" min="1" value={form.qty} onChange={(event) => setForm((prev) => ({ ...prev, qty: event.target.value }))} placeholder="Qté" style={inputStyle} />
                 <input type="number" min="0" value={form.buyUsd} onChange={(event) => setForm((prev) => ({ ...prev, buyUsd: event.target.value }))} placeholder="Achat / u." style={inputStyle} />
                 <input type="number" min="0" value={form.sellUsd} onChange={(event) => setForm((prev) => ({ ...prev, sellUsd: event.target.value }))} placeholder="Revente / u." style={inputStyle} />
-                <input value={form.purchasedBy} onChange={(event) => setForm((prev) => ({ ...prev, purchasedBy: event.target.value }))} placeholder="Acheteur" style={inputStyle} />
+                <select value={form.purchasedBy} onChange={(event) => setForm((prev) => ({ ...prev, purchasedBy: event.target.value }))} style={inputStyle}>
+                  {purchaserOptions.map((name) => (
+                    <option key={name} value={name} style={optionStyle}>{name}</option>
+                  ))}
+                </select>
               </div>
 
               <div style={{ fontSize: 11, color: COLORS.textMuted, marginTop: 4 }}>Détails billet (optionnel)</div>
@@ -733,7 +743,11 @@ export default function HomePage() {
                       <td style={{ ...cellStyle, fontFamily: 'IBM Plex Mono, monospace', color: COLORS.textMuted }}>{revenue ? fmtUSD(revenue) : '—'}</td>
                       <td style={{ ...cellStyle, color: COLORS.textMuted }}>—</td>
                       <td style={cellStyle}>
-                        <input value={editForm.purchasedBy} onChange={(event) => setEditForm((prev) => ({ ...prev, purchasedBy: event.target.value }))} style={{ ...editInputStyle, width: 80 }} />
+                        <select value={editForm.purchasedBy} onChange={(event) => setEditForm((prev) => ({ ...prev, purchasedBy: event.target.value }))} style={{ ...editInputStyle, width: 90 }}>
+                          {purchaserOptions.map((name) => (
+                            <option key={name} value={name} style={optionStyle}>{name}</option>
+                          ))}
+                        </select>
                       </td>
                       <td style={cellStyle}>
                         <div style={{ display: 'grid', gap: 4 }}>
