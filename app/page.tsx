@@ -141,6 +141,7 @@ export default function HomePage() {
     sellUsd: '',
     purchasedBy: '',
   });
+  const [eventFilter, setEventFilter] = useState('all');
 
   useEffect(() => {
     let isMounted = true;
@@ -175,9 +176,19 @@ export default function HomePage() {
     };
   }, []);
 
+  const eventOptions = useMemo(
+    () => Array.from(new Set(tickets.map((ticket) => ticket.event))).sort((a, b) => a.localeCompare(b)),
+    [tickets]
+  );
+
+  const filteredTickets = useMemo(
+    () => (eventFilter === 'all' ? tickets : tickets.filter((ticket) => ticket.event === eventFilter)),
+    [tickets, eventFilter]
+  );
+
   const byEvent = useMemo(() => {
     const map: Record<string, { event: string; achat: number; revente: number; qty: number; profit: number }> = {};
-    tickets.forEach((ticket) => {
+    filteredTickets.forEach((ticket) => {
       if (!map[ticket.event]) {
         map[ticket.event] = { event: ticket.event, achat: 0, revente: 0, qty: 0, profit: 0 };
       }
@@ -189,27 +200,27 @@ export default function HomePage() {
       }
     });
     return Object.values(map);
-  }, [tickets]);
+  }, [filteredTickets]);
 
   const stats = useMemo(() => {
-    const bought = tickets.reduce((sum, ticket) => sum + ticket.qty, 0);
-    const soldQty = tickets.filter((ticket) => SOLD_STATUSES.includes(ticket.status)).reduce((sum, ticket) => sum + ticket.qty, 0);
-    const stockQty = tickets.filter((ticket) => STOCK_STATUSES.includes(ticket.status)).reduce((sum, ticket) => sum + ticket.qty, 0);
-    const revenue = tickets.filter((ticket) => SOLD_STATUSES.includes(ticket.status)).reduce((sum, ticket) => sum + ticket.qty * (ticket.sellUsd || 0), 0);
-    const cost = tickets.filter((ticket) => SOLD_STATUSES.includes(ticket.status)).reduce((sum, ticket) => sum + ticket.qty * ticket.buyUsd, 0);
+    const bought = filteredTickets.reduce((sum, ticket) => sum + ticket.qty, 0);
+    const soldQty = filteredTickets.filter((ticket) => SOLD_STATUSES.includes(ticket.status)).reduce((sum, ticket) => sum + ticket.qty, 0);
+    const stockQty = filteredTickets.filter((ticket) => STOCK_STATUSES.includes(ticket.status)).reduce((sum, ticket) => sum + ticket.qty, 0);
+    const revenue = filteredTickets.filter((ticket) => SOLD_STATUSES.includes(ticket.status)).reduce((sum, ticket) => sum + ticket.qty * (ticket.sellUsd || 0), 0);
+    const cost = filteredTickets.filter((ticket) => SOLD_STATUSES.includes(ticket.status)).reduce((sum, ticket) => sum + ticket.qty * ticket.buyUsd, 0);
     const profit = revenue - cost;
     const roi = cost > 0 ? (profit / cost) * 100 : 0;
     return { bought, soldQty, stockQty, revenue, profit, roi };
-  }, [tickets]);
+  }, [filteredTickets]);
 
   const statusData = useMemo(() => {
-    const sold = tickets.filter((ticket) => SOLD_STATUSES.includes(ticket.status)).reduce((sum, ticket) => sum + ticket.qty, 0);
-    const stock = tickets.filter((ticket) => STOCK_STATUSES.includes(ticket.status)).reduce((sum, ticket) => sum + ticket.qty, 0);
+    const sold = filteredTickets.filter((ticket) => SOLD_STATUSES.includes(ticket.status)).reduce((sum, ticket) => sum + ticket.qty, 0);
+    const stock = filteredTickets.filter((ticket) => STOCK_STATUSES.includes(ticket.status)).reduce((sum, ticket) => sum + ticket.qty, 0);
     return [
       { name: 'Vendues', value: sold, color: COLORS.green },
       { name: 'En stock', value: stock, color: COLORS.yellow },
     ].filter((entry) => entry.value > 0);
-  }, [tickets]);
+  }, [filteredTickets]);
 
   const alerts = useMemo(() => {
     const now = new Date();
@@ -286,7 +297,22 @@ export default function HomePage() {
         ) : (
         <>
 
-        <div style={{ marginBottom: 10, fontFamily: 'IBM Plex Mono, monospace', fontSize: 11, letterSpacing: '0.1em', color: COLORS.textMuted, textTransform: 'uppercase' }}>Synthèse opération</div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10, flexWrap: 'wrap', gap: 10 }}>
+          <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 11, letterSpacing: '0.1em', color: COLORS.textMuted, textTransform: 'uppercase' }}>Synthèse opération</div>
+          <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, color: COLORS.textMuted }}>
+            Filtrer par événement
+            <select
+              value={eventFilter}
+              onChange={(event) => setEventFilter(event.target.value)}
+              style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${COLORS.line}`, color: COLORS.text, borderRadius: 8, padding: '6px 10px', fontSize: 12, outline: 'none' }}
+            >
+              <option value="all">Tous les événements</option>
+              {eventOptions.map((eventName) => (
+                <option key={eventName} value={eventName}>{eventName}</option>
+              ))}
+            </select>
+          </label>
+        </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 14, marginBottom: 28 }}>
           <StatCard icon="🎟️" label="Billets achetés" value={String(stats.bought)} accent={COLORS.amber} />
           <StatCard icon="✅" label="Billets vendus" value={String(stats.soldQty)} accent={COLORS.green} />
@@ -381,7 +407,7 @@ export default function HomePage() {
               </tr>
             </thead>
             <tbody>
-              {tickets.map((ticket) => {
+              {filteredTickets.map((ticket) => {
                 const costTotal = ticket.qty * ticket.buyUsd;
                 const revenue = ticket.qty * (ticket.sellUsd || 0);
                 const profit = SOLD_STATUSES.includes(ticket.status) ? revenue - costTotal : null;
