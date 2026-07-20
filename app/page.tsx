@@ -330,9 +330,9 @@ export default function HomePage() {
               onChange={(event) => setEventFilter(event.target.value)}
               style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${COLORS.line}`, color: COLORS.text, borderRadius: 8, padding: '6px 10px', fontSize: 12, outline: 'none' }}
             >
-              <option value="all">Tous les événements</option>
+              <option value="all" style={optionStyle}>Tous les événements</option>
               {eventOptions.map((eventName) => (
-                <option key={eventName} value={eventName}>{eventName}</option>
+                <option key={eventName} value={eventName} style={optionStyle}>{eventName}</option>
               ))}
             </select>
           </label>
@@ -370,9 +370,9 @@ export default function HomePage() {
                   onChange={(event) => setForm((prev) => ({ ...prev, event: event.target.value }))}
                   style={inputStyle}
                 >
-                  <option value="">-- Choisir un événement --</option>
+                  <option value="" style={optionStyle}>-- Choisir un événement --</option>
                   {eventOptions.map((eventName) => (
-                    <option key={eventName} value={eventName}>{eventName}</option>
+                    <option key={eventName} value={eventName} style={optionStyle}>{eventName}</option>
                   ))}
                 </select>
                 <input type="date" value={form.eventDate} onChange={(event) => setForm((prev) => ({ ...prev, eventDate: event.target.value }))} style={inputStyle} />
@@ -502,6 +502,11 @@ const inputStyle: React.CSSProperties = {
   padding: '10px 12px',
   fontSize: 12,
   outline: 'none',
+};
+
+const optionStyle: React.CSSProperties = {
+  color: COLORS.bg,
+  background: COLORS.text,
 };
 
 const actionButtonStyle: React.CSSProperties = {
