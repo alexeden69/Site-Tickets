@@ -177,6 +177,7 @@ export default function HomePage() {
     accountPassword: '',
   });
   const [eventFilter, setEventFilter] = useState('all');
+  const [timeFilter, setTimeFilter] = useState<'all' | 'past' | 'upcoming'>('all');
   const [events, setEvents] = useState<string[]>([]);
   const [newEventName, setNewEventName] = useState('');
   const [editingId, setEditingId] = useState<number | null>(null);
@@ -281,10 +282,18 @@ export default function HomePage() {
     [events, tickets]
   );
 
-  const filteredTickets = useMemo(
-    () => (eventFilter === 'all' ? tickets : tickets.filter((ticket) => ticket.event === eventFilter)),
-    [tickets, eventFilter]
-  );
+  const filteredTickets = useMemo(() => {
+    const startOfToday = new Date();
+    startOfToday.setHours(0, 0, 0, 0);
+
+    return tickets
+      .filter((ticket) => eventFilter === 'all' || ticket.event === eventFilter)
+      .filter((ticket) => {
+        if (timeFilter === 'all') return true;
+        const isPast = new Date(ticket.eventDate) < startOfToday;
+        return timeFilter === 'past' ? isPast : !isPast;
+      });
+  }, [tickets, eventFilter, timeFilter]);
 
   const byEvent = useMemo(() => {
     const map: Record<string, { event: string; achat: number; revente: number; qty: number; profit: number }> = {};
@@ -531,19 +540,33 @@ export default function HomePage() {
 
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10, flexWrap: 'wrap', gap: 10 }}>
           <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 11, letterSpacing: '0.1em', color: COLORS.textMuted, textTransform: 'uppercase' }}>Synthèse opération</div>
-          <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, color: COLORS.textMuted }}>
-            Filtrer par événement
-            <select
-              value={eventFilter}
-              onChange={(event) => setEventFilter(event.target.value)}
-              style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${COLORS.line}`, color: COLORS.text, borderRadius: 8, padding: '6px 10px', fontSize: 12, outline: 'none' }}
-            >
-              <option value="all" style={optionStyle}>Tous les événements</option>
-              {eventOptions.map((eventName) => (
-                <option key={eventName} value={eventName} style={optionStyle}>{eventName}</option>
-              ))}
-            </select>
-          </label>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
+            <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, color: COLORS.textMuted }}>
+              Filtrer par événement
+              <select
+                value={eventFilter}
+                onChange={(event) => setEventFilter(event.target.value)}
+                style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${COLORS.line}`, color: COLORS.text, borderRadius: 8, padding: '6px 10px', fontSize: 12, outline: 'none' }}
+              >
+                <option value="all" style={optionStyle}>Tous les événements</option>
+                {eventOptions.map((eventName) => (
+                  <option key={eventName} value={eventName} style={optionStyle}>{eventName}</option>
+                ))}
+              </select>
+            </label>
+            <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, color: COLORS.textMuted }}>
+              Période
+              <select
+                value={timeFilter}
+                onChange={(event) => setTimeFilter(event.target.value as 'all' | 'past' | 'upcoming')}
+                style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${COLORS.line}`, color: COLORS.text, borderRadius: 8, padding: '6px 10px', fontSize: 12, outline: 'none' }}
+              >
+                <option value="all" style={optionStyle}>Tous</option>
+                <option value="upcoming" style={optionStyle}>Événements à venir</option>
+                <option value="past" style={optionStyle}>Événements passés</option>
+              </select>
+            </label>
+          </div>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 14, marginBottom: 28 }}>
           <StatCard icon="🎟️" label="Billets achetés" value={String(stats.bought)} accent={COLORS.amber} />
@@ -778,6 +801,7 @@ export default function HomePage() {
                         <button onClick={() => updateTicketStatus(ticket.id, 'achete')} style={actionButtonStyle}>Acheté</button>
                         <button onClick={() => updateTicketStatus(ticket.id, 'listed')} style={actionButtonStyle}>Listé</button>
                         <button onClick={() => updateTicketStatus(ticket.id, 'vendu')} style={actionButtonStyle}>Vendu</button>
+                        <button onClick={() => updateTicketStatus(ticket.id, 'livre')} style={actionButtonStyle}>Livré</button>
                         <button onClick={() => removeTicket(ticket.id)} style={{ ...actionButtonStyle, border: `1px solid ${COLORS.line}` }}>Suppr.</button>
                       </div>
                     </td>
