@@ -107,9 +107,9 @@ export default function HomePage() {
   };
 
   return (
-    <main className="min-h-screen p-4 text-slate-100 sm:p-6 lg:p-8">
+    <main className="min-h-screen bg-[#050816] p-4 text-slate-100 sm:p-6 lg:p-8">
       <div className="mx-auto flex max-w-7xl flex-col gap-4 lg:flex-row">
-        <aside className="w-full rounded-[28px] border border-white/10 bg-slate-900/75 p-5 shadow-[0_20px_60px_rgba(0,0,0,0.28)] backdrop-blur-xl lg:w-72">
+        <aside className="w-full rounded-[32px] border border-white/10 bg-slate-900/70 p-5 shadow-[0_20px_60px_rgba(0,0,0,0.35)] backdrop-blur-xl lg:w-72">
           <div className="flex items-center gap-3">
             <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-emerald-400 text-lg font-semibold text-white">
               G
@@ -144,7 +144,7 @@ export default function HomePage() {
         </aside>
 
         <div className="flex-1 space-y-4">
-          <header className="rounded-[28px] border border-white/10 bg-slate-900/70 p-5 shadow-[0_20px_60px_rgba(0,0,0,0.25)] backdrop-blur-xl">
+          <header className="rounded-[32px] border border-white/10 bg-gradient-to-br from-slate-900 to-slate-800/90 p-6 shadow-[0_20px_70px_rgba(0,0,0,0.3)] backdrop-blur-xl">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
               <div>
                 <p className="text-sm font-medium uppercase tracking-[0.35em] text-slate-400">Suivi opérationnel</p>
@@ -174,7 +174,7 @@ export default function HomePage() {
           </section>
 
           <section className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
-            <div className="rounded-[28px] border border-white/10 bg-slate-900/70 p-5 shadow-[0_16px_50px_rgba(0,0,0,0.24)] backdrop-blur-xl">
+            <div className="rounded-[28px] border border-white/10 bg-slate-900/70 p-5 shadow-[0_14px_40px_rgba(0,0,0,0.2)] backdrop-blur-xl">
               <div className="mb-4 flex items-center justify-between">
                 <div>
                   <h2 className="text-xl font-semibold text-white">Tickets en stock</h2>
@@ -211,7 +211,7 @@ export default function HomePage() {
             </div>
 
             <div className="space-y-6">
-              <form onSubmit={addTicket} className="rounded-[28px] border border-white/10 bg-slate-900/70 p-5 shadow-[0_16px_50px_rgba(0,0,0,0.24)] backdrop-blur-xl">
+              <form onSubmit={addTicket} className="rounded-[28px] border border-white/10 bg-slate-900/70 p-5 shadow-[0_14px_40px_rgba(0,0,0,0.2)] backdrop-blur-xl">
                 <h2 className="text-xl font-semibold text-white">Ajouter un ticket</h2>
                 <div className="mt-4 grid gap-3 md:grid-cols-2">
                   <input value={form.event} onChange={(e) => setForm((prev) => ({ ...prev, event: e.target.value }))} placeholder="Événement" className="rounded-2xl border border-white/10 bg-slate-950/80 px-3 py-2.5 text-sm text-white outline-none" />
@@ -224,7 +224,7 @@ export default function HomePage() {
                 <button type="submit" className="mt-4 rounded-2xl bg-white px-4 py-2.5 font-semibold text-slate-950">Ajouter</button>
               </form>
 
-              <div className="rounded-[28px] border border-white/10 bg-slate-900/70 p-5 shadow-[0_16px_50px_rgba(0,0,0,0.24)] backdrop-blur-xl">
+              <div className="rounded-[28px] border border-white/10 bg-slate-900/70 p-5 shadow-[0_14px_40px_rgba(0,0,0,0.2)] backdrop-blur-xl">
                 <h2 className="text-xl font-semibold text-white">Résumé</h2>
                 <ul className="mt-4 space-y-2 text-sm text-slate-300">
                   <li>• Données enregistrées localement dans le navigateur.</li>
