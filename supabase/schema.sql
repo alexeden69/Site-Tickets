@@ -1,5 +1,7 @@
 -- À copier-coller dans Supabase > SQL Editor > New query > Run.
--- Crée la table qui remplace le stockage local (localStorage) du dashboard.
+-- Schéma complet du dashboard (utile si tu recrées un projet Supabase
+-- de zéro). Si ta base existe déjà, utilise plutôt les scripts
+-- d'évolution donnés au fil des mises à jour.
 
 create table if not exists public.tickets (
   id bigint generated always as identity primary key,
@@ -10,26 +12,33 @@ create table if not exists public.tickets (
   sell_usd numeric not null default 0,
   status text not null default 'achete' check (status in ('achete', 'listed', 'vendu', 'livre', 'passe')),
   purchased_by text not null default 'commun',
+  category text,
+  bloc text,
+  rang text,
+  seats text,
+  listing_number text,
+  account_email text,
+  account_password text,
   created_at timestamptz not null default now()
 );
 
 -- Active la sécurité au niveau des lignes (obligatoire sur Supabase).
 alter table public.tickets enable row level security;
 
--- Pas d'authentification pour l'instant : on autorise tout le monde
--- (n'importe qui possédant l'URL + la clé publique du projet) à lire et écrire.
--- À restreindre plus tard si une authentification est ajoutée.
-create policy "public read access" on public.tickets
-  for select using (true);
+-- Réservé aux comptes connectés (Supabase Auth), puisque des identifiants
+-- de plateforme (email/mot de passe) sont maintenant stockés dans cette
+-- table : un accès public rendrait ces identifiants lisibles par n'importe qui.
+create policy "authenticated read access" on public.tickets
+  for select using (auth.role() = 'authenticated');
 
-create policy "public insert access" on public.tickets
-  for insert with check (true);
+create policy "authenticated insert access" on public.tickets
+  for insert with check (auth.role() = 'authenticated');
 
-create policy "public update access" on public.tickets
-  for update using (true) with check (true);
+create policy "authenticated update access" on public.tickets
+  for update using (auth.role() = 'authenticated') with check (auth.role() = 'authenticated');
 
-create policy "public delete access" on public.tickets
-  for delete using (true);
+create policy "authenticated delete access" on public.tickets
+  for delete using (auth.role() = 'authenticated');
 
 -- Active le suivi en temps réel (pour que les 2 comptes voient les mêmes
 -- données se mettre à jour sans recharger la page).
@@ -45,10 +54,10 @@ create table if not exists public.events (
 
 alter table public.events enable row level security;
 
-create policy "public read access" on public.events
-  for select using (true);
+create policy "authenticated read access" on public.events
+  for select using (auth.role() = 'authenticated');
 
-create policy "public insert access" on public.events
-  for insert with check (true);
+create policy "authenticated insert access" on public.events
+  for insert with check (auth.role() = 'authenticated');
 
 alter publication supabase_realtime add table public.events;

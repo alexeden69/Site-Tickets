@@ -14,6 +14,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
+import type { Session } from '@supabase/supabase-js';
 import { supabase } from '../lib/supabaseClient';
 
 type TicketStatus = 'achete' | 'listed' | 'vendu' | 'livre' | 'passe';
@@ -27,6 +28,13 @@ type Ticket = {
   sellUsd: number;
   status: TicketStatus;
   purchasedBy: string;
+  category: string;
+  bloc: string;
+  rang: string;
+  seats: string;
+  listingNumber: string;
+  accountEmail: string;
+  accountPassword: string;
 };
 
 type TicketRow = {
@@ -38,6 +46,13 @@ type TicketRow = {
   sell_usd: number;
   status: TicketStatus;
   purchased_by: string;
+  category: string | null;
+  bloc: string | null;
+  rang: string | null;
+  seats: string | null;
+  listing_number: string | null;
+  account_email: string | null;
+  account_password: string | null;
 };
 
 const fromRow = (row: TicketRow): Ticket => ({
@@ -49,6 +64,13 @@ const fromRow = (row: TicketRow): Ticket => ({
   sellUsd: row.sell_usd,
   status: row.status,
   purchasedBy: row.purchased_by,
+  category: row.category || '',
+  bloc: row.bloc || '',
+  rang: row.rang || '',
+  seats: row.seats || '',
+  listingNumber: row.listing_number || '',
+  accountEmail: row.account_email || '',
+  accountPassword: row.account_password || '',
 });
 
 const STOCK_STATUSES: TicketStatus[] = ['achete', 'listed'];
@@ -130,6 +152,12 @@ function StatusBadge({ status }: { status: TicketStatus }) {
 }
 
 export default function HomePage() {
+  const [session, setSession] = useState<Session | null>(null);
+  const [authChecked, setAuthChecked] = useState(false);
+  const [loginForm, setLoginForm] = useState({ email: '', password: '' });
+  const [loginError, setLoginError] = useState<string | null>(null);
+  const [loggingIn, setLoggingIn] = useState(false);
+
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -140,6 +168,13 @@ export default function HomePage() {
     buyUsd: '',
     sellUsd: '',
     purchasedBy: '',
+    category: '',
+    bloc: '',
+    rang: '',
+    seats: '',
+    listingNumber: '',
+    accountEmail: '',
+    accountPassword: '',
   });
   const [eventFilter, setEventFilter] = useState('all');
   const [events, setEvents] = useState<string[]>([]);
@@ -152,15 +187,59 @@ export default function HomePage() {
     buyUsd: '',
     sellUsd: '',
     purchasedBy: '',
+    category: '',
+    bloc: '',
+    rang: '',
+    seats: '',
+    listingNumber: '',
+    accountEmail: '',
+    accountPassword: '',
   });
+  const [revealedPasswords, setRevealedPasswords] = useState<Set<number>>(new Set());
 
   useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => {
+      setSession(data.session);
+      setAuthChecked(true);
+    });
+
+    const { data: authListener } = supabase.auth.onAuthStateChange((_event, newSession) => {
+      setSession(newSession);
+    });
+
+    return () => {
+      authListener.subscription.unsubscribe();
+    };
+  }, []);
+
+  const handleLogin = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setLoginError(null);
+    setLoggingIn(true);
+    const { error } = await supabase.auth.signInWithPassword({
+      email: loginForm.email,
+      password: loginForm.password,
+    });
+    setLoggingIn(false);
+    if (error) {
+      setLoginError(error.message);
+      return;
+    }
+    setLoginForm({ email: '', password: '' });
+  };
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+  };
+
+  useEffect(() => {
+    if (!session) return;
     let isMounted = true;
 
     const loadTickets = async () => {
       const { data, error } = await supabase
         .from('tickets')
-        .select('id, event, event_date, qty, buy_usd, sell_usd, status, purchased_by')
+        .select('id, event, event_date, qty, buy_usd, sell_usd, status, purchased_by, category, bloc, rang, seats, listing_number, account_email, account_password')
         .order('event_date', { ascending: true });
       if (!isMounted) return;
       if (error) {
@@ -195,7 +274,7 @@ export default function HomePage() {
       isMounted = false;
       supabase.removeChannel(channel);
     };
-  }, []);
+  }, [session]);
 
   const eventOptions = useMemo(
     () => Array.from(new Set([...events, ...tickets.map((ticket) => ticket.event)])).sort((a, b) => a.localeCompare(b)),
@@ -271,12 +350,33 @@ export default function HomePage() {
       sell_usd: Number.isNaN(sellUsd) ? 0 : sellUsd,
       status: 'achete',
       purchased_by: form.purchasedBy || 'commun',
+      category: form.category || null,
+      bloc: form.bloc || null,
+      rang: form.rang || null,
+      seats: form.seats || null,
+      listing_number: form.listingNumber || null,
+      account_email: form.accountEmail || null,
+      account_password: form.accountPassword || null,
     });
     if (error) {
       setErrorMessage(error.message);
       return;
     }
-    setForm({ event: '', eventDate: '', qty: '', buyUsd: '', sellUsd: '', purchasedBy: '' });
+    setForm({
+      event: '',
+      eventDate: '',
+      qty: '',
+      buyUsd: '',
+      sellUsd: '',
+      purchasedBy: '',
+      category: '',
+      bloc: '',
+      rang: '',
+      seats: '',
+      listingNumber: '',
+      accountEmail: '',
+      accountPassword: '',
+    });
   };
 
   const addEvent = async () => {
@@ -310,6 +410,13 @@ export default function HomePage() {
       buyUsd: String(ticket.buyUsd),
       sellUsd: String(ticket.sellUsd),
       purchasedBy: ticket.purchasedBy,
+      category: ticket.category,
+      bloc: ticket.bloc,
+      rang: ticket.rang,
+      seats: ticket.seats,
+      listingNumber: ticket.listingNumber,
+      accountEmail: ticket.accountEmail,
+      accountPassword: ticket.accountPassword,
     });
   };
 
@@ -330,6 +437,13 @@ export default function HomePage() {
         buy_usd: buyUsd,
         sell_usd: Number.isNaN(sellUsd) ? 0 : sellUsd,
         purchased_by: editForm.purchasedBy || 'commun',
+        category: editForm.category || null,
+        bloc: editForm.bloc || null,
+        rang: editForm.rang || null,
+        seats: editForm.seats || null,
+        listing_number: editForm.listingNumber || null,
+        account_email: editForm.accountEmail || null,
+        account_password: editForm.accountPassword || null,
       })
       .eq('id', id);
     if (error) {
@@ -337,6 +451,15 @@ export default function HomePage() {
       return;
     }
     setEditingId(null);
+  };
+
+  const togglePasswordReveal = (id: number) => {
+    setRevealedPasswords((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
   };
 
   return (
@@ -350,8 +473,11 @@ export default function HomePage() {
               <div style={{ fontSize: 12, color: COLORS.textMuted }}>Tableau de bord opérationnel</div>
             </div>
           </div>
-          <div style={{ textAlign: 'right' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             <span style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 11, padding: '4px 10px', borderRadius: 20, background: 'rgba(232,150,60,0.15)', color: COLORS.amber }}>● Suivi en cours</span>
+            {session ? (
+              <button onClick={handleLogout} style={{ ...actionButtonStyle, background: 'transparent' }}>Se déconnecter</button>
+            ) : null}
           </div>
         </div>
 
@@ -361,7 +487,42 @@ export default function HomePage() {
           </div>
         ) : null}
 
-        {loading ? (
+        {!authChecked ? (
+          <div style={{ padding: '40px 0', textAlign: 'center', color: COLORS.textMuted, fontSize: 13 }}>
+            Chargement…
+          </div>
+        ) : !session ? (
+          <div style={{ maxWidth: 360, margin: '40px auto', background: COLORS.panel, borderRadius: 10, padding: 24 }}>
+            <div style={{ fontFamily: 'Oswald, sans-serif', fontSize: 16, marginBottom: 4 }}>Connexion</div>
+            <div style={{ fontSize: 12, color: COLORS.textMuted, marginBottom: 16 }}>Accès réservé aux comptes autorisés.</div>
+            <form onSubmit={handleLogin} style={{ display: 'grid', gap: 10 }}>
+              <input
+                type="email"
+                required
+                value={loginForm.email}
+                onChange={(event) => setLoginForm((prev) => ({ ...prev, email: event.target.value }))}
+                placeholder="Email"
+                style={inputStyle}
+              />
+              <input
+                type="password"
+                required
+                value={loginForm.password}
+                onChange={(event) => setLoginForm((prev) => ({ ...prev, password: event.target.value }))}
+                placeholder="Mot de passe"
+                style={inputStyle}
+              />
+              {loginError ? <div style={{ color: COLORS.red, fontSize: 12 }}>{loginError}</div> : null}
+              <button
+                type="submit"
+                disabled={loggingIn}
+                style={{ padding: '10px 14px', borderRadius: 8, background: COLORS.amber, color: '#1a1206', fontWeight: 700, border: 'none', cursor: 'pointer', opacity: loggingIn ? 0.6 : 1 }}
+              >
+                {loggingIn ? 'Connexion…' : 'Se connecter'}
+              </button>
+            </form>
+          </div>
+        ) : loading ? (
           <div style={{ padding: '40px 0', textAlign: 'center', color: COLORS.textMuted, fontSize: 13 }}>
             Chargement des billets…
           </div>
@@ -428,6 +589,22 @@ export default function HomePage() {
                 <input type="number" min="0" value={form.sellUsd} onChange={(event) => setForm((prev) => ({ ...prev, sellUsd: event.target.value }))} placeholder="Revente / u." style={inputStyle} />
                 <input value={form.purchasedBy} onChange={(event) => setForm((prev) => ({ ...prev, purchasedBy: event.target.value }))} placeholder="Acheteur" style={inputStyle} />
               </div>
+
+              <div style={{ fontSize: 11, color: COLORS.textMuted, marginTop: 4 }}>Détails billet (optionnel)</div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(110px, 1fr))', gap: 10 }}>
+                <input value={form.category} onChange={(event) => setForm((prev) => ({ ...prev, category: event.target.value }))} placeholder="Catégorie" style={inputStyle} />
+                <input value={form.bloc} onChange={(event) => setForm((prev) => ({ ...prev, bloc: event.target.value }))} placeholder="Bloc" style={inputStyle} />
+                <input value={form.rang} onChange={(event) => setForm((prev) => ({ ...prev, rang: event.target.value }))} placeholder="Rang" style={inputStyle} />
+                <input value={form.seats} onChange={(event) => setForm((prev) => ({ ...prev, seats: event.target.value }))} placeholder="Sièges" style={inputStyle} />
+                <input value={form.listingNumber} onChange={(event) => setForm((prev) => ({ ...prev, listingNumber: event.target.value }))} placeholder="N° Listing" style={inputStyle} />
+              </div>
+
+              <div style={{ fontSize: 11, color: COLORS.textMuted, marginTop: 4 }}>Compte plateforme (optionnel)</div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: 10 }}>
+                <input type="email" value={form.accountEmail} onChange={(event) => setForm((prev) => ({ ...prev, accountEmail: event.target.value }))} placeholder="Email du compte" style={inputStyle} />
+                <input type="password" value={form.accountPassword} onChange={(event) => setForm((prev) => ({ ...prev, accountPassword: event.target.value }))} placeholder="Mot de passe" style={inputStyle} />
+              </div>
+
               <button type="submit" style={{ padding: '10px 14px', borderRadius: 8, background: COLORS.amber, color: '#1a1206', fontWeight: 700, border: 'none', cursor: 'pointer' }}>Ajouter le lot</button>
             </form>
           </Panel>
@@ -492,11 +669,11 @@ export default function HomePage() {
         </div>
 
         <div style={{ marginBottom: 10, fontFamily: 'IBM Plex Mono, monospace', fontSize: 11, letterSpacing: '0.1em', color: COLORS.textMuted, textTransform: 'uppercase' }}>Détail des opérations</div>
-        <div style={{ background: COLORS.panel, borderRadius: 10, overflow: 'hidden' }}>
+        <div style={{ background: COLORS.panel, borderRadius: 10, overflowX: 'auto' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
             <thead>
               <tr>
-                {['Événement', 'Date', 'Qté', 'Achat/u.', 'Revente/u.', 'Coût total', 'Recette', 'Bénéfice net', 'Acheteur', 'Statut', 'Actions'].map((header) => (
+                {['Événement', 'Date', 'Qté', 'Achat/u.', 'Revente/u.', 'Coût total', 'Recette', 'Bénéfice net', 'Acheteur', 'Placement', 'Compte', 'Statut', 'Actions'].map((header) => (
                   <th key={header} style={{ textAlign: 'left', padding: '10px 14px', fontFamily: 'IBM Plex Mono, monospace', fontSize: 10, letterSpacing: '0.05em', textTransform: 'uppercase', color: COLORS.textMuted, borderBottom: `1px solid ${COLORS.line}` }}>{header}</th>
                 ))}
               </tr>
@@ -535,6 +712,21 @@ export default function HomePage() {
                       <td style={cellStyle}>
                         <input value={editForm.purchasedBy} onChange={(event) => setEditForm((prev) => ({ ...prev, purchasedBy: event.target.value }))} style={{ ...editInputStyle, width: 80 }} />
                       </td>
+                      <td style={cellStyle}>
+                        <div style={{ display: 'grid', gap: 4 }}>
+                          <input value={editForm.category} onChange={(event) => setEditForm((prev) => ({ ...prev, category: event.target.value }))} placeholder="Catégorie" style={{ ...editInputStyle, width: 100 }} />
+                          <input value={editForm.bloc} onChange={(event) => setEditForm((prev) => ({ ...prev, bloc: event.target.value }))} placeholder="Bloc" style={{ ...editInputStyle, width: 100 }} />
+                          <input value={editForm.rang} onChange={(event) => setEditForm((prev) => ({ ...prev, rang: event.target.value }))} placeholder="Rang" style={{ ...editInputStyle, width: 100 }} />
+                          <input value={editForm.seats} onChange={(event) => setEditForm((prev) => ({ ...prev, seats: event.target.value }))} placeholder="Sièges" style={{ ...editInputStyle, width: 100 }} />
+                          <input value={editForm.listingNumber} onChange={(event) => setEditForm((prev) => ({ ...prev, listingNumber: event.target.value }))} placeholder="N° Listing" style={{ ...editInputStyle, width: 100 }} />
+                        </div>
+                      </td>
+                      <td style={cellStyle}>
+                        <div style={{ display: 'grid', gap: 4 }}>
+                          <input type="email" value={editForm.accountEmail} onChange={(event) => setEditForm((prev) => ({ ...prev, accountEmail: event.target.value }))} placeholder="Email" style={{ ...editInputStyle, width: 130 }} />
+                          <input type="password" value={editForm.accountPassword} onChange={(event) => setEditForm((prev) => ({ ...prev, accountPassword: event.target.value }))} placeholder="Mot de passe" style={{ ...editInputStyle, width: 130 }} />
+                        </div>
+                      </td>
                       <td style={cellStyle}><StatusBadge status={ticket.status} /></td>
                       <td style={cellStyle}>
                         <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
@@ -557,6 +749,28 @@ export default function HomePage() {
                     <td style={{ ...cellStyle, fontFamily: 'IBM Plex Mono, monospace' }}>{revenue ? fmtUSD(revenue) : '—'}</td>
                     <td style={{ ...cellStyle, fontFamily: 'IBM Plex Mono, monospace', color: profit == null ? COLORS.textMuted : profit >= 0 ? COLORS.green : COLORS.red }}>{profit == null ? '—' : `${profit >= 0 ? '+' : ''}${fmtUSD(profit)}`}</td>
                     <td style={cellStyle}>{ticket.purchasedBy}</td>
+                    <td style={{ ...cellStyle, fontSize: 12, color: COLORS.textMuted }}>
+                      {[ticket.category, ticket.bloc && `Bloc ${ticket.bloc}`, ticket.rang && `Rang ${ticket.rang}`, ticket.seats && `Sièges ${ticket.seats}`, ticket.listingNumber && `#${ticket.listingNumber}`]
+                        .filter(Boolean)
+                        .join(' · ') || '—'}
+                    </td>
+                    <td style={cellStyle}>
+                      {ticket.accountEmail || ticket.accountPassword ? (
+                        <div style={{ fontSize: 12 }}>
+                          <div>{ticket.accountEmail || '—'}</div>
+                          <div style={{ color: COLORS.textMuted, display: 'flex', alignItems: 'center', gap: 6 }}>
+                            <span style={{ fontFamily: 'IBM Plex Mono, monospace' }}>
+                              {revealedPasswords.has(ticket.id) ? (ticket.accountPassword || '—') : '••••••••'}
+                            </span>
+                            {ticket.accountPassword ? (
+                              <button onClick={() => togglePasswordReveal(ticket.id)} style={{ ...actionButtonStyle, padding: '2px 6px' }}>
+                                {revealedPasswords.has(ticket.id) ? 'Cacher' : 'Voir'}
+                              </button>
+                            ) : null}
+                          </div>
+                        </div>
+                      ) : '—'}
+                    </td>
                     <td style={cellStyle}><StatusBadge status={ticket.status} /></td>
                     <td style={cellStyle}>
                       <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
