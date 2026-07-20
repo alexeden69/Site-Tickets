@@ -5,8 +5,9 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  basePath: '/Site-Tickets',
-  assetPrefix: '/Site-Tickets/',
+  trailingSlash: true,
+  basePath: process.env.GITHUB_ACTIONS ? '/Site-Tickets' : '',
+  assetPrefix: process.env.GITHUB_ACTIONS ? '/Site-Tickets/' : '',
 };
 
 module.exports = nextConfig;

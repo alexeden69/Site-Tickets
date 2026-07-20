@@ -1,255 +1,441 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { type FormEvent, useEffect, useMemo, useState } from 'react';
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Cell,
+  Legend,
+  Pie,
+  PieChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from 'recharts';
+import { supabase } from '../lib/supabaseClient';
 
-type TicketStatus = 'En stock' | 'Vendu' | 'Expiré';
+type TicketStatus = 'achete' | 'listed' | 'vendu' | 'livre' | 'passe';
 
 type Ticket = {
   id: number;
   event: string;
-  section: string;
-  seats: string;
-  price: number;
-  salePrice: number;
+  eventDate: string;
+  qty: number;
+  buyUsd: number;
+  sellUsd: number;
   status: TicketStatus;
-  notes: string;
-  createdAt: string;
+  purchasedBy: string;
 };
 
-type Settings = {
-  associateName: string;
+type TicketRow = {
+  id: number;
+  event: string;
+  event_date: string;
+  qty: number;
+  buy_usd: number;
+  sell_usd: number;
+  status: TicketStatus;
+  purchased_by: string;
 };
 
-const initialTickets: Ticket[] = [
-  {
-    id: 1,
-    event: 'Concert',
-    section: 'P1',
-    seats: 'A12',
-    price: 90,
-    salePrice: 120,
-    status: 'En stock',
-    notes: 'À suivre',
-    createdAt: new Date().toISOString(),
-  },
-];
+const fromRow = (row: TicketRow): Ticket => ({
+  id: row.id,
+  event: row.event,
+  eventDate: row.event_date,
+  qty: row.qty,
+  buyUsd: row.buy_usd,
+  sellUsd: row.sell_usd,
+  status: row.status,
+  purchasedBy: row.purchased_by,
+});
 
-const storageKey = 'guichet-dashboard-state';
+const STOCK_STATUSES: TicketStatus[] = ['achete', 'listed'];
+const SOLD_STATUSES: TicketStatus[] = ['vendu', 'livre'];
+
+const COLORS = {
+  bg: '#12151c',
+  panel: '#191d26',
+  line: 'rgba(240,238,230,0.08)',
+  text: '#f0eee6',
+  textMuted: '#8d94a3',
+  amber: '#e8963c',
+  green: '#3fae6a',
+  red: '#d95f4a',
+  blue: '#4f9fd1',
+  yellow: '#e0c04a',
+};
+
+const fmtUSD = (value: number) =>
+  (value || 0).toLocaleString('fr-FR', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
+
+function StatCard({ label, value, sub, accent, icon }: { label: string; value: string; sub?: string; accent: string; icon: string }) {
+  return (
+    <div
+      style={{
+        background: COLORS.panel,
+        borderRadius: 10,
+        padding: '18px 18px 16px',
+        borderTop: `3px solid ${accent}`,
+        boxShadow: '0 1px 0 rgba(255,255,255,0.02) inset',
+      }}
+    >
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 14 }}>
+        <span style={{ fontSize: 15 }}>{icon}</span>
+        <span style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 11, letterSpacing: '0.04em', color: COLORS.textMuted }}>{label}</span>
+      </div>
+      <div style={{ fontFamily: 'Oswald, sans-serif', fontWeight: 700, fontSize: 26, color: COLORS.text, lineHeight: 1.05 }}>{value}</div>
+      {sub ? <div style={{ fontSize: 11, color: COLORS.textMuted, marginTop: 6, fontFamily: 'IBM Plex Mono, monospace' }}>{sub}</div> : null}
+    </div>
+  );
+}
+
+function Panel({ title, subtitle, children }: { title: string; subtitle?: string; children: React.ReactNode }) {
+  return (
+    <div style={{ background: COLORS.panel, borderRadius: 10, padding: 18, flex: 1, minWidth: 280 }}>
+      <div style={{ marginBottom: 14 }}>
+        <div style={{ fontFamily: 'Oswald, sans-serif', fontSize: 14, color: COLORS.text, textTransform: 'uppercase', letterSpacing: '0.03em' }}>{title}</div>
+        {subtitle ? <div style={{ fontSize: 11, color: COLORS.textMuted, marginTop: 2 }}>{subtitle}</div> : null}
+      </div>
+      {children}
+    </div>
+  );
+}
+
+function StatusBadge({ status }: { status: TicketStatus }) {
+  const map: Record<TicketStatus, { label: string; color: string }> = {
+    achete: { label: 'Acheté', color: COLORS.textMuted },
+    listed: { label: 'Listé', color: COLORS.amber },
+    vendu: { label: 'Vendu', color: COLORS.green },
+    livre: { label: 'Livré', color: COLORS.blue },
+    passe: { label: 'Passé', color: COLORS.red },
+  };
+  const current = map[status] || map.achete;
+  return (
+    <span
+      style={{
+        fontFamily: 'IBM Plex Mono, monospace',
+        fontSize: 10,
+        textTransform: 'uppercase',
+        padding: '3px 9px',
+        borderRadius: 20,
+        border: `1px solid ${current.color}55`,
+        color: current.color,
+      }}
+    >
+      {current.label}
+    </span>
+  );
+}
 
 export default function HomePage() {
-  const [tickets, setTickets] = useState<Ticket[]>(initialTickets);
-  const [settings, setSettings] = useState<Settings>({ associateName: '' });
+  const [tickets, setTickets] = useState<Ticket[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [form, setForm] = useState({
     event: '',
-    section: '',
-    seats: '',
-    price: '',
-    salePrice: '',
-    notes: '',
+    eventDate: '',
+    qty: '',
+    buyUsd: '',
+    sellUsd: '',
+    purchasedBy: '',
   });
 
   useEffect(() => {
-    if (typeof window === 'undefined') return;
-    const raw = window.localStorage.getItem(storageKey);
-    if (!raw) return;
-    try {
-      const parsed = JSON.parse(raw);
-      if (parsed.tickets) setTickets(parsed.tickets);
-      if (parsed.settings) setSettings(parsed.settings);
-    } catch {
-      // ignore
-    }
+    let isMounted = true;
+
+    const loadTickets = async () => {
+      const { data, error } = await supabase
+        .from('tickets')
+        .select('id, event, event_date, qty, buy_usd, sell_usd, status, purchased_by')
+        .order('event_date', { ascending: true });
+      if (!isMounted) return;
+      if (error) {
+        setErrorMessage(error.message);
+      } else {
+        setTickets((data as TicketRow[]).map(fromRow));
+        setErrorMessage(null);
+      }
+      setLoading(false);
+    };
+
+    loadTickets();
+
+    const channel = supabase
+      .channel('tickets-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'tickets' }, () => {
+        loadTickets();
+      })
+      .subscribe();
+
+    return () => {
+      isMounted = false;
+      supabase.removeChannel(channel);
+    };
   }, []);
 
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    window.localStorage.setItem(storageKey, JSON.stringify({ tickets, settings }));
-  }, [tickets, settings]);
-
-  const filteredTickets = useMemo(() => {
-    return tickets.filter((ticket) => ticket.status !== 'Vendu');
+  const byEvent = useMemo(() => {
+    const map: Record<string, { event: string; achat: number; revente: number; qty: number; profit: number }> = {};
+    tickets.forEach((ticket) => {
+      if (!map[ticket.event]) {
+        map[ticket.event] = { event: ticket.event, achat: 0, revente: 0, qty: 0, profit: 0 };
+      }
+      map[ticket.event].achat += ticket.buyUsd * ticket.qty;
+      map[ticket.event].revente += (ticket.sellUsd || 0) * ticket.qty;
+      map[ticket.event].qty += ticket.qty;
+      if (SOLD_STATUSES.includes(ticket.status)) {
+        map[ticket.event].profit += ticket.qty * ((ticket.sellUsd || 0) - ticket.buyUsd);
+      }
+    });
+    return Object.values(map);
   }, [tickets]);
 
   const stats = useMemo(() => {
-    const active = tickets.filter((t) => t.status === 'En stock').length;
-    const sold = tickets.filter((t) => t.status === 'Vendu').length;
-    const expired = tickets.filter((t) => t.status === 'Expiré').length;
-    const totalMargin = tickets.reduce((sum, ticket) => sum + Math.max(0, ticket.salePrice - ticket.price), 0);
-    return { active, sold, expired, totalMargin };
+    const bought = tickets.reduce((sum, ticket) => sum + ticket.qty, 0);
+    const soldQty = tickets.filter((ticket) => SOLD_STATUSES.includes(ticket.status)).reduce((sum, ticket) => sum + ticket.qty, 0);
+    const stockQty = tickets.filter((ticket) => STOCK_STATUSES.includes(ticket.status)).reduce((sum, ticket) => sum + ticket.qty, 0);
+    const revenue = tickets.filter((ticket) => SOLD_STATUSES.includes(ticket.status)).reduce((sum, ticket) => sum + ticket.qty * (ticket.sellUsd || 0), 0);
+    const cost = tickets.filter((ticket) => SOLD_STATUSES.includes(ticket.status)).reduce((sum, ticket) => sum + ticket.qty * ticket.buyUsd, 0);
+    const profit = revenue - cost;
+    const roi = cost > 0 ? (profit / cost) * 100 : 0;
+    return { bought, soldQty, stockQty, revenue, profit, roi };
   }, [tickets]);
 
-  const addTicket = (event: React.FormEvent) => {
+  const statusData = useMemo(() => {
+    const sold = tickets.filter((ticket) => SOLD_STATUSES.includes(ticket.status)).reduce((sum, ticket) => sum + ticket.qty, 0);
+    const stock = tickets.filter((ticket) => STOCK_STATUSES.includes(ticket.status)).reduce((sum, ticket) => sum + ticket.qty, 0);
+    return [
+      { name: 'Vendues', value: sold, color: COLORS.green },
+      { name: 'En stock', value: stock, color: COLORS.yellow },
+    ].filter((entry) => entry.value > 0);
+  }, [tickets]);
+
+  const alerts = useMemo(() => {
+    const now = new Date();
+    return tickets
+      .filter((ticket) => !SOLD_STATUSES.includes(ticket.status))
+      .map((ticket) => {
+        const eventDate = new Date(ticket.eventDate);
+        const daysLeft = Math.ceil((eventDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+        return { ...ticket, daysLeft };
+      })
+      .filter((ticket) => ticket.daysLeft >= 0 && ticket.daysLeft <= 7)
+      .sort((a, b) => a.daysLeft - b.daysLeft);
+  }, [tickets]);
+
+  const addTicket = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const price = Number(form.price);
-    const salePrice = Number(form.salePrice);
-    if (!form.event || !form.section || !form.seats || Number.isNaN(price) || Number.isNaN(salePrice)) return;
-    const newTicket: Ticket = {
-      id: Date.now(),
+    const qty = Number(form.qty);
+    const buyUsd = Number(form.buyUsd);
+    const sellUsd = Number(form.sellUsd);
+    if (!form.event || !form.eventDate || Number.isNaN(qty) || Number.isNaN(buyUsd)) return;
+
+    const { error } = await supabase.from('tickets').insert({
       event: form.event,
-      section: form.section,
-      seats: form.seats,
-      price,
-      salePrice,
-      status: 'En stock',
-      notes: form.notes,
-      createdAt: new Date().toISOString(),
-    };
-    setTickets((prev) => [newTicket, ...prev]);
-    setForm({ event: '', section: '', seats: '', price: '', salePrice: '', notes: '' });
+      event_date: form.eventDate,
+      qty,
+      buy_usd: buyUsd,
+      sell_usd: Number.isNaN(sellUsd) ? 0 : sellUsd,
+      status: 'achete',
+      purchased_by: form.purchasedBy || 'commun',
+    });
+    if (error) {
+      setErrorMessage(error.message);
+      return;
+    }
+    setForm({ event: '', eventDate: '', qty: '', buyUsd: '', sellUsd: '', purchasedBy: '' });
   };
 
-  const updateTicketStatus = (id: number, status: TicketStatus) => {
-    setTickets((prev) => prev.map((ticket) => (ticket.id === id ? { ...ticket, status } : ticket)));
+  const updateTicketStatus = async (id: number, status: TicketStatus) => {
+    const { error } = await supabase.from('tickets').update({ status }).eq('id', id);
+    if (error) setErrorMessage(error.message);
   };
 
-  const removeTicket = (id: number) => {
-    setTickets((prev) => prev.filter((ticket) => ticket.id !== id));
+  const removeTicket = async (id: number) => {
+    const { error } = await supabase.from('tickets').delete().eq('id', id);
+    if (error) setErrorMessage(error.message);
   };
 
   return (
-    <main className="min-h-screen bg-[#030712] p-4 text-slate-100 sm:p-6 lg:p-8">
-      <div className="mx-auto flex max-w-7xl flex-col gap-6 xl:flex-row">
-        <aside className="w-full rounded-[30px] border border-white/10 bg-slate-900/80 p-5 shadow-[0_24px_80px_rgba(0,0,0,0.35)] backdrop-blur-xl xl:w-72">
-          <div className="flex items-center gap-3">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-emerald-400 text-lg font-semibold text-white">
-              G
-            </div>
+    <main style={{ minHeight: '100vh', background: COLORS.bg, color: COLORS.text, fontFamily: 'Inter, sans-serif', padding: 28, borderRadius: 12 }}>
+      <div style={{ maxWidth: 1400, margin: '0 auto' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 24, flexWrap: 'wrap', gap: 12 }}>
+          <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+            <div style={{ width: 40, height: 40, borderRadius: 10, background: COLORS.amber, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Oswald, sans-serif', fontWeight: 700, color: '#1a1206', fontSize: 18 }}>G</div>
             <div>
-              <p className="text-sm font-semibold text-white">Guichet</p>
-              <p className="text-xs text-slate-400">Operations</p>
+              <div style={{ fontFamily: 'Oswald, sans-serif', fontWeight: 700, fontSize: 20, letterSpacing: '0.01em' }}>Guichet</div>
+              <div style={{ fontSize: 12, color: COLORS.textMuted }}>Tableau de bord opérationnel</div>
             </div>
           </div>
-
-          <nav className="mt-8 space-y-2 text-sm">
-            {['Vue d’ensemble', 'Tickets', 'Marge', 'Historique'].map((item, index) => (
-              <button
-                key={item}
-                className={`flex w-full items-center justify-between rounded-2xl px-3 py-2.5 text-left transition ${index === 0 ? 'bg-white/10 text-white' : 'text-slate-400 hover:bg-white/5 hover:text-white'}`}
-              >
-                <span>{item}</span>
-                <span className="text-xs text-slate-500">0{index + 1}</span>
-              </button>
-            ))}
-          </nav>
-
-          <div className="mt-8 rounded-2xl border border-white/10 bg-slate-800/70 p-4">
-            <p className="text-xs uppercase tracking-[0.3em] text-slate-400">Associé</p>
-            <input
-              value={settings.associateName}
-              onChange={(e) => setSettings((prev) => ({ ...prev, associateName: e.target.value }))}
-              placeholder="Nom"
-              className="mt-2 w-full rounded-xl border border-white/10 bg-slate-900/80 px-3 py-2 text-sm text-white outline-none"
-            />
+          <div style={{ textAlign: 'right' }}>
+            <span style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 11, padding: '4px 10px', borderRadius: 20, background: 'rgba(232,150,60,0.15)', color: COLORS.amber }}>● Suivi en cours</span>
           </div>
-        </aside>
-
-        <div className="flex-1 space-y-6">
-          <header className="rounded-[30px] border border-white/10 bg-gradient-to-br from-slate-900 via-slate-900 to-slate-800/95 p-6 shadow-[0_24px_80px_rgba(0,0,0,0.3)] backdrop-blur-xl">
-            <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-              <div>
-                <p className="text-sm font-medium uppercase tracking-[0.35em] text-slate-400">Operations Hub</p>
-                <h1 className="mt-2 text-3xl font-semibold tracking-tight text-white sm:text-4xl">Ticket Operations</h1>
-                <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-300 sm:text-base">
-                  Un tableau de bord clair pour suivre les offres, les marges et l’état des tickets sans complications.
-                </p>
-              </div>
-              <div className="rounded-2xl border border-emerald-400/20 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-300">
-                Sync active
-              </div>
-            </div>
-          </header>
-
-          <section className="grid gap-4 lg:grid-cols-[1.2fr_0.8fr]">
-            <div className="rounded-[28px] border border-white/10 bg-slate-900/70 p-5 shadow-[0_16px_50px_rgba(0,0,0,0.22)] backdrop-blur-xl">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-slate-400">Performance</p>
-                  <h2 className="mt-1 text-xl font-semibold text-white">Résumé du jour</h2>
-                </div>
-                <div className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-sm text-slate-300">
-                  +12% ce mois
-                </div>
-              </div>
-
-              <div className="mt-5 grid gap-4 md:grid-cols-2">
-                {[
-                  { label: 'En stock', value: stats.active, color: 'text-emerald-300' },
-                  { label: 'Vendus', value: stats.sold, color: 'text-sky-300' },
-                  { label: 'Expirés', value: stats.expired, color: 'text-rose-300' },
-                  { label: 'Marge', value: `${stats.totalMargin} €`, color: 'text-amber-300' },
-                ].map((card) => (
-                  <div key={card.label} className="rounded-2xl border border-white/10 bg-slate-800/70 p-4">
-                    <p className="text-sm text-slate-400">{card.label}</p>
-                    <p className={`mt-3 text-2xl font-semibold ${card.color}`}>{card.value}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <form onSubmit={addTicket} className="rounded-[28px] border border-white/10 bg-slate-900/70 p-5 shadow-[0_16px_50px_rgba(0,0,0,0.22)] backdrop-blur-xl">
-              <h2 className="text-xl font-semibold text-white">Ajouter un ticket</h2>
-              <div className="mt-4 grid gap-3">
-                <input value={form.event} onChange={(e) => setForm((prev) => ({ ...prev, event: e.target.value }))} placeholder="Événement" className="rounded-2xl border border-white/10 bg-slate-950/80 px-3 py-2.5 text-sm text-white outline-none" />
-                <input value={form.section} onChange={(e) => setForm((prev) => ({ ...prev, section: e.target.value }))} placeholder="Section" className="rounded-2xl border border-white/10 bg-slate-950/80 px-3 py-2.5 text-sm text-white outline-none" />
-                <input value={form.seats} onChange={(e) => setForm((prev) => ({ ...prev, seats: e.target.value }))} placeholder="Sièges" className="rounded-2xl border border-white/10 bg-slate-950/80 px-3 py-2.5 text-sm text-white outline-none" />
-                <div className="grid gap-3 sm:grid-cols-2">
-                  <input type="number" value={form.price} onChange={(e) => setForm((prev) => ({ ...prev, price: e.target.value }))} placeholder="Prix d’achat" className="rounded-2xl border border-white/10 bg-slate-950/80 px-3 py-2.5 text-sm text-white outline-none" />
-                  <input type="number" value={form.salePrice} onChange={(e) => setForm((prev) => ({ ...prev, salePrice: e.target.value }))} placeholder="Prix de vente" className="rounded-2xl border border-white/10 bg-slate-950/80 px-3 py-2.5 text-sm text-white outline-none" />
-                </div>
-                <input value={form.notes} onChange={(e) => setForm((prev) => ({ ...prev, notes: e.target.value }))} placeholder="Notes" className="rounded-2xl border border-white/10 bg-slate-950/80 px-3 py-2.5 text-sm text-white outline-none" />
-              </div>
-              <button type="submit" className="mt-4 rounded-2xl bg-white px-4 py-2.5 font-semibold text-slate-950">Ajouter</button>
-            </form>
-          </section>
-
-          <section className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
-            <div className="rounded-[28px] border border-white/10 bg-slate-900/70 p-5 shadow-[0_16px_50px_rgba(0,0,0,0.22)] backdrop-blur-xl">
-              <div className="mb-4 flex items-center justify-between">
-                <div>
-                  <h2 className="text-xl font-semibold text-white">Tickets en stock</h2>
-                  <p className="mt-1 text-sm text-slate-400">{filteredTickets.length} visibles • suivi actif</p>
-                </div>
-              </div>
-
-              <div className="space-y-3">
-                {filteredTickets.map((ticket) => (
-                  <article key={ticket.id} className="rounded-2xl border border-white/10 bg-slate-800/70 p-4">
-                    <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-                      <div>
-                        <div className="flex flex-wrap items-center gap-2">
-                          <h3 className="font-semibold text-white">{ticket.event}</h3>
-                          <span className="rounded-full border border-white/10 bg-white/10 px-2.5 py-1 text-[11px] uppercase tracking-[0.25em] text-slate-300">
-                            {ticket.section}
-                          </span>
-                        </div>
-                        <p className="mt-2 text-sm text-slate-400">Sièges {ticket.seats}</p>
-                        <p className="mt-2 text-sm text-slate-300">Achat {ticket.price} € • Vente {ticket.salePrice} €</p>
-                        {ticket.notes ? <p className="mt-2 text-sm text-slate-400">{ticket.notes}</p> : null}
-                      </div>
-
-                      <div className="flex flex-wrap gap-2">
-                        <button onClick={() => updateTicketStatus(ticket.id, 'En stock')} className="rounded-xl border border-emerald-500/20 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-300">En stock</button>
-                        <button onClick={() => updateTicketStatus(ticket.id, 'Vendu')} className="rounded-xl border border-sky-500/20 bg-sky-500/10 px-3 py-2 text-sm text-sky-300">Vendu</button>
-                        <button onClick={() => updateTicketStatus(ticket.id, 'Expiré')} className="rounded-xl border border-rose-500/20 bg-rose-500/10 px-3 py-2 text-sm text-rose-300">Expiré</button>
-                        <button onClick={() => removeTicket(ticket.id)} className="rounded-xl border border-white/10 bg-slate-700/80 px-3 py-2 text-sm text-slate-200">Supprimer</button>
-                      </div>
-                    </div>
-                  </article>
-                ))}
-              </div>
-            </div>
-
-            <div className="rounded-[28px] border border-white/10 bg-slate-900/70 p-5 shadow-[0_16px_50px_rgba(0,0,0,0.22)] backdrop-blur-xl">
-              <h2 className="text-xl font-semibold text-white">Résumé</h2>
-              <ul className="mt-4 space-y-3 text-sm text-slate-300">
-                <li className="rounded-2xl border border-white/10 bg-slate-800/70 p-3">• Données enregistrées localement dans le navigateur.</li>
-                <li className="rounded-2xl border border-white/10 bg-slate-800/70 p-3">• Interface pensée pour un usage rapide et propre.</li>
-                <li className="rounded-2xl border border-white/10 bg-slate-800/70 p-3">• À utiliser comme centre de suivi quotidien.</li>
-              </ul>
-            </div>
-          </section>
         </div>
+
+        {errorMessage ? (
+          <div style={{ marginBottom: 20, padding: '12px 16px', borderRadius: 8, background: 'rgba(217,95,74,0.12)', border: `1px solid ${COLORS.red}55`, color: COLORS.red, fontSize: 13 }}>
+            Erreur de connexion à la base : {errorMessage}
+          </div>
+        ) : null}
+
+        {loading ? (
+          <div style={{ padding: '40px 0', textAlign: 'center', color: COLORS.textMuted, fontSize: 13 }}>
+            Chargement des billets…
+          </div>
+        ) : (
+        <>
+
+        <div style={{ marginBottom: 10, fontFamily: 'IBM Plex Mono, monospace', fontSize: 11, letterSpacing: '0.1em', color: COLORS.textMuted, textTransform: 'uppercase' }}>Synthèse opération</div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 14, marginBottom: 28 }}>
+          <StatCard icon="🎟️" label="Billets achetés" value={String(stats.bought)} accent={COLORS.amber} />
+          <StatCard icon="✅" label="Billets vendus" value={String(stats.soldQty)} accent={COLORS.green} />
+          <StatCard icon="📦" label="En stock" value={String(stats.stockQty)} accent={COLORS.yellow} />
+          <StatCard icon="💰" label="Recettes réalisées" value={fmtUSD(stats.revenue)} accent={COLORS.blue} />
+          <StatCard icon="📈" label="Bénéfice net" value={fmtUSD(stats.profit)} accent={stats.profit >= 0 ? COLORS.green : COLORS.red} />
+          <StatCard icon="⚡" label="ROI" value={`${stats.roi.toFixed(0)}%`} accent={COLORS.amber} sub="Bénéfice / coût d'achat" />
+        </div>
+
+        <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', marginBottom: 28 }}>
+          <Panel title="Ajout / suivi" subtitle="Créer un nouveau lot et gérer son état">
+            <form onSubmit={addTicket} style={{ display: 'grid', gap: 10 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: 10 }}>
+                <input value={form.event} onChange={(event) => setForm((prev) => ({ ...prev, event: event.target.value }))} placeholder="Événement" style={inputStyle} />
+                <input type="date" value={form.eventDate} onChange={(event) => setForm((prev) => ({ ...prev, eventDate: event.target.value }))} style={inputStyle} />
+                <input type="number" min="1" value={form.qty} onChange={(event) => setForm((prev) => ({ ...prev, qty: event.target.value }))} placeholder="Qté" style={inputStyle} />
+                <input type="number" min="0" value={form.buyUsd} onChange={(event) => setForm((prev) => ({ ...prev, buyUsd: event.target.value }))} placeholder="Achat / u." style={inputStyle} />
+                <input type="number" min="0" value={form.sellUsd} onChange={(event) => setForm((prev) => ({ ...prev, sellUsd: event.target.value }))} placeholder="Revente / u." style={inputStyle} />
+                <input value={form.purchasedBy} onChange={(event) => setForm((prev) => ({ ...prev, purchasedBy: event.target.value }))} placeholder="Acheteur" style={inputStyle} />
+              </div>
+              <button type="submit" style={{ padding: '10px 14px', borderRadius: 8, background: COLORS.amber, color: '#1a1206', fontWeight: 700, border: 'none', cursor: 'pointer' }}>Ajouter le lot</button>
+            </form>
+          </Panel>
+
+          <Panel title="Alertes d’échéance" subtitle="Événements à surveiller dans les 7 prochains jours">
+            <div style={{ display: 'grid', gap: 8 }}>
+              {alerts.length > 0 ? alerts.map((ticket) => (
+                <div key={ticket.id} style={{ background: 'rgba(255,255,255,0.03)', borderRadius: 8, padding: '10px 12px', fontSize: 12 }}>
+                  <div style={{ color: COLORS.text, fontWeight: 600 }}>{ticket.event}</div>
+                  <div style={{ color: COLORS.textMuted, marginTop: 2 }}>J-{ticket.daysLeft} • {ticket.qty} billet{ticket.qty > 1 ? 's' : ''}</div>
+                </div>
+              )) : <div style={{ color: COLORS.textMuted, fontSize: 12 }}>Aucune alerte à venir.</div>}
+            </div>
+          </Panel>
+        </div>
+
+        <div style={{ marginBottom: 10, fontFamily: 'IBM Plex Mono, monospace', fontSize: 11, letterSpacing: '0.1em', color: COLORS.textMuted, textTransform: 'uppercase' }}>Analyse par événement</div>
+        <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', marginBottom: 28 }}>
+          <Panel title="Coût vs recette" subtitle="Prix d'achat / prix de revente, par événement">
+            <ResponsiveContainer width="100%" height={220}>
+              <BarChart data={byEvent}>
+                <CartesianGrid stroke={COLORS.line} vertical={false} />
+                <XAxis dataKey="event" tick={{ fill: COLORS.textMuted, fontSize: 10 }} axisLine={{ stroke: COLORS.line }} tickLine={false} />
+                <YAxis tick={{ fill: COLORS.textMuted, fontSize: 10 }} axisLine={{ stroke: COLORS.line }} tickLine={false} />
+                <Tooltip contentStyle={{ background: COLORS.bg, border: `1px solid ${COLORS.line}`, fontSize: 12 }} />
+                <Legend wrapperStyle={{ fontSize: 11 }} />
+                <Bar dataKey="achat" name="Achat total" fill={COLORS.red} radius={[3, 3, 0, 0]} />
+                <Bar dataKey="revente" name="Revente réalisée" fill={COLORS.green} radius={[3, 3, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </Panel>
+
+          <Panel title="Statut des billets" subtitle="Répartition vendues / en stock">
+            <ResponsiveContainer width="100%" height={220}>
+              <PieChart>
+                <Pie data={statusData} dataKey="value" nameKey="name" innerRadius={55} outerRadius={80} paddingAngle={2}>
+                  {statusData.map((entry, index) => (
+                    <Cell key={index} fill={entry.color} stroke={COLORS.panel} strokeWidth={2} />
+                  ))}
+                </Pie>
+                <Tooltip contentStyle={{ background: COLORS.bg, border: `1px solid ${COLORS.line}`, fontSize: 12 }} />
+                <Legend wrapperStyle={{ fontSize: 11 }} />
+              </PieChart>
+            </ResponsiveContainer>
+          </Panel>
+
+          <Panel title="Bénéfice par événement" subtitle="Profit net réalisé, par lot">
+            <ResponsiveContainer width="100%" height={220}>
+              <BarChart data={byEvent} layout="vertical" margin={{ left: 10 }}>
+                <CartesianGrid stroke={COLORS.line} horizontal={false} />
+                <XAxis type="number" tick={{ fill: COLORS.textMuted, fontSize: 10 }} axisLine={{ stroke: COLORS.line }} tickLine={false} />
+                <YAxis type="category" dataKey="event" tick={{ fill: COLORS.textMuted, fontSize: 10 }} axisLine={{ stroke: COLORS.line }} tickLine={false} width={100} />
+                <Tooltip contentStyle={{ background: COLORS.bg, border: `1px solid ${COLORS.line}`, fontSize: 12 }} />
+                <Bar dataKey="profit" name="Bénéfice ($)" radius={[0, 3, 3, 0]}>
+                  {byEvent.map((entry, index) => (
+                    <Cell key={index} fill={entry.profit >= 0 ? COLORS.green : COLORS.red} />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </Panel>
+        </div>
+
+        <div style={{ marginBottom: 10, fontFamily: 'IBM Plex Mono, monospace', fontSize: 11, letterSpacing: '0.1em', color: COLORS.textMuted, textTransform: 'uppercase' }}>Détail des opérations</div>
+        <div style={{ background: COLORS.panel, borderRadius: 10, overflow: 'hidden' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
+            <thead>
+              <tr>
+                {['Événement', 'Date', 'Qté', 'Achat/u.', 'Revente/u.', 'Coût total', 'Recette', 'Bénéfice net', 'Statut', 'Actions'].map((header) => (
+                  <th key={header} style={{ textAlign: 'left', padding: '10px 14px', fontFamily: 'IBM Plex Mono, monospace', fontSize: 10, letterSpacing: '0.05em', textTransform: 'uppercase', color: COLORS.textMuted, borderBottom: `1px solid ${COLORS.line}` }}>{header}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {tickets.map((ticket) => {
+                const costTotal = ticket.qty * ticket.buyUsd;
+                const revenue = ticket.qty * (ticket.sellUsd || 0);
+                const profit = SOLD_STATUSES.includes(ticket.status) ? revenue - costTotal : null;
+                return (
+                  <tr key={ticket.id}>
+                    <td style={cellStyle}>{ticket.event}</td>
+                    <td style={cellStyle}>{new Date(ticket.eventDate).toLocaleDateString('fr-FR')}</td>
+                    <td style={{ ...cellStyle, fontFamily: 'IBM Plex Mono, monospace' }}>{ticket.qty}</td>
+                    <td style={{ ...cellStyle, fontFamily: 'IBM Plex Mono, monospace' }}>{fmtUSD(ticket.buyUsd)}</td>
+                    <td style={{ ...cellStyle, fontFamily: 'IBM Plex Mono, monospace' }}>{ticket.sellUsd ? fmtUSD(ticket.sellUsd) : '—'}</td>
+                    <td style={{ ...cellStyle, fontFamily: 'IBM Plex Mono, monospace' }}>{fmtUSD(costTotal)}</td>
+                    <td style={{ ...cellStyle, fontFamily: 'IBM Plex Mono, monospace' }}>{revenue ? fmtUSD(revenue) : '—'}</td>
+                    <td style={{ ...cellStyle, fontFamily: 'IBM Plex Mono, monospace', color: profit == null ? COLORS.textMuted : profit >= 0 ? COLORS.green : COLORS.red }}>{profit == null ? '—' : `${profit >= 0 ? '+' : ''}${fmtUSD(profit)}`}</td>
+                    <td style={cellStyle}><StatusBadge status={ticket.status} /></td>
+                    <td style={cellStyle}>
+                      <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                        <button onClick={() => updateTicketStatus(ticket.id, 'achete')} style={actionButtonStyle}>Acheté</button>
+                        <button onClick={() => updateTicketStatus(ticket.id, 'listed')} style={actionButtonStyle}>Listé</button>
+                        <button onClick={() => updateTicketStatus(ticket.id, 'vendu')} style={actionButtonStyle}>Vendu</button>
+                        <button onClick={() => removeTicket(ticket.id)} style={{ ...actionButtonStyle, border: `1px solid ${COLORS.line}` }}>Suppr.</button>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+        </>
+        )}
       </div>
     </main>
   );
 }
+
+const cellStyle = { padding: '10px 14px', borderBottom: `1px solid ${COLORS.line}` };
+
+const inputStyle: React.CSSProperties = {
+  width: '100%',
+  background: 'rgba(255,255,255,0.03)',
+  border: `1px solid ${COLORS.line}`,
+  color: COLORS.text,
+  borderRadius: 8,
+  padding: '10px 12px',
+  fontSize: 12,
+  outline: 'none',
+};
+
+const actionButtonStyle: React.CSSProperties = {
+  padding: '4px 8px',
+  borderRadius: 999,
+  fontSize: 10,
+  border: `1px solid ${COLORS.line}`,
+  background: 'rgba(255,255,255,0.04)',
+  color: COLORS.text,
+  cursor: 'pointer',
+};
