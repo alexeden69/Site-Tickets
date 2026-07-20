@@ -107,16 +107,16 @@ export default function HomePage() {
   };
 
   return (
-    <main className="min-h-screen bg-[#050816] p-4 text-slate-100 sm:p-6 lg:p-8">
-      <div className="mx-auto flex max-w-7xl flex-col gap-6 lg:flex-row">
-        <aside className="w-full rounded-[32px] border border-white/10 bg-slate-900/75 p-6 shadow-[0_24px_80px_rgba(0,0,0,0.35)] backdrop-blur-xl lg:w-72">
+    <main className="min-h-screen bg-[#030712] p-4 text-slate-100 sm:p-6 lg:p-8">
+      <div className="mx-auto flex max-w-7xl flex-col gap-6 xl:flex-row">
+        <aside className="w-full rounded-[30px] border border-white/10 bg-slate-900/80 p-5 shadow-[0_24px_80px_rgba(0,0,0,0.35)] backdrop-blur-xl xl:w-72">
           <div className="flex items-center gap-3">
             <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-emerald-400 text-lg font-semibold text-white">
               G
             </div>
             <div>
               <p className="text-sm font-semibold text-white">Guichet</p>
-              <p className="text-xs text-slate-400">Dashboard</p>
+              <p className="text-xs text-slate-400">Operations</p>
             </div>
           </div>
 
@@ -143,14 +143,14 @@ export default function HomePage() {
           </div>
         </aside>
 
-        <div className="flex-1 space-y-5">
-          <header className="rounded-[32px] border border-white/10 bg-gradient-to-br from-slate-900 via-slate-900 to-slate-800/90 p-6 shadow-[0_24px_80px_rgba(0,0,0,0.3)] backdrop-blur-xl">
+        <div className="flex-1 space-y-6">
+          <header className="rounded-[30px] border border-white/10 bg-gradient-to-br from-slate-900 via-slate-900 to-slate-800/95 p-6 shadow-[0_24px_80px_rgba(0,0,0,0.3)] backdrop-blur-xl">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
               <div>
-                <p className="text-sm font-medium uppercase tracking-[0.35em] text-slate-400">Suivi opérationnel</p>
-                <h1 className="mt-2 text-3xl font-semibold tracking-tight text-white sm:text-4xl">Tableau de bord tickets</h1>
+                <p className="text-sm font-medium uppercase tracking-[0.35em] text-slate-400">Operations Hub</p>
+                <h1 className="mt-2 text-3xl font-semibold tracking-tight text-white sm:text-4xl">Ticket Operations</h1>
                 <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-300 sm:text-base">
-                  Vue claire pour suivre les offres, analyser les marges et garder un œil sur les ventes en temps réel.
+                  Un tableau de bord clair pour suivre les offres, les marges et l’état des tickets sans complications.
                 </p>
               </div>
               <div className="rounded-2xl border border-emerald-400/20 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-300">
@@ -159,21 +159,50 @@ export default function HomePage() {
             </div>
           </header>
 
-          <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-            {[
-              { label: 'En stock', value: stats.active, accent: 'text-emerald-300', glow: 'from-emerald-500/15 to-emerald-400/5' },
-              { label: 'Vendus', value: stats.sold, accent: 'text-sky-300', glow: 'from-sky-500/15 to-sky-400/5' },
-              { label: 'Expirés', value: stats.expired, accent: 'text-rose-300', glow: 'from-rose-500/15 to-rose-400/5' },
-              { label: 'Marge', value: `${stats.totalMargin} €`, accent: 'text-amber-300', glow: 'from-amber-500/15 to-amber-400/5' },
-            ].map((card) => (
-              <div key={card.label} className={`rounded-[24px] border border-white/10 bg-gradient-to-br ${card.glow} p-4 shadow-[0_12px_35px_rgba(0,0,0,0.2)]`}>
-                <p className="text-sm text-slate-400">{card.label}</p>
-                <p className={`mt-3 text-3xl font-semibold ${card.accent}`}>{card.value}</p>
+          <section className="grid gap-4 lg:grid-cols-[1.2fr_0.8fr]">
+            <div className="rounded-[28px] border border-white/10 bg-slate-900/70 p-5 shadow-[0_16px_50px_rgba(0,0,0,0.22)] backdrop-blur-xl">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-slate-400">Performance</p>
+                  <h2 className="mt-1 text-xl font-semibold text-white">Résumé du jour</h2>
+                </div>
+                <div className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-sm text-slate-300">
+                  +12% ce mois
+                </div>
               </div>
-            ))}
+
+              <div className="mt-5 grid gap-4 md:grid-cols-2">
+                {[
+                  { label: 'En stock', value: stats.active, color: 'text-emerald-300' },
+                  { label: 'Vendus', value: stats.sold, color: 'text-sky-300' },
+                  { label: 'Expirés', value: stats.expired, color: 'text-rose-300' },
+                  { label: 'Marge', value: `${stats.totalMargin} €`, color: 'text-amber-300' },
+                ].map((card) => (
+                  <div key={card.label} className="rounded-2xl border border-white/10 bg-slate-800/70 p-4">
+                    <p className="text-sm text-slate-400">{card.label}</p>
+                    <p className={`mt-3 text-2xl font-semibold ${card.color}`}>{card.value}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <form onSubmit={addTicket} className="rounded-[28px] border border-white/10 bg-slate-900/70 p-5 shadow-[0_16px_50px_rgba(0,0,0,0.22)] backdrop-blur-xl">
+              <h2 className="text-xl font-semibold text-white">Ajouter un ticket</h2>
+              <div className="mt-4 grid gap-3">
+                <input value={form.event} onChange={(e) => setForm((prev) => ({ ...prev, event: e.target.value }))} placeholder="Événement" className="rounded-2xl border border-white/10 bg-slate-950/80 px-3 py-2.5 text-sm text-white outline-none" />
+                <input value={form.section} onChange={(e) => setForm((prev) => ({ ...prev, section: e.target.value }))} placeholder="Section" className="rounded-2xl border border-white/10 bg-slate-950/80 px-3 py-2.5 text-sm text-white outline-none" />
+                <input value={form.seats} onChange={(e) => setForm((prev) => ({ ...prev, seats: e.target.value }))} placeholder="Sièges" className="rounded-2xl border border-white/10 bg-slate-950/80 px-3 py-2.5 text-sm text-white outline-none" />
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <input type="number" value={form.price} onChange={(e) => setForm((prev) => ({ ...prev, price: e.target.value }))} placeholder="Prix d’achat" className="rounded-2xl border border-white/10 bg-slate-950/80 px-3 py-2.5 text-sm text-white outline-none" />
+                  <input type="number" value={form.salePrice} onChange={(e) => setForm((prev) => ({ ...prev, salePrice: e.target.value }))} placeholder="Prix de vente" className="rounded-2xl border border-white/10 bg-slate-950/80 px-3 py-2.5 text-sm text-white outline-none" />
+                </div>
+                <input value={form.notes} onChange={(e) => setForm((prev) => ({ ...prev, notes: e.target.value }))} placeholder="Notes" className="rounded-2xl border border-white/10 bg-slate-950/80 px-3 py-2.5 text-sm text-white outline-none" />
+              </div>
+              <button type="submit" className="mt-4 rounded-2xl bg-white px-4 py-2.5 font-semibold text-slate-950">Ajouter</button>
+            </form>
           </section>
 
-          <section className="grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
+          <section className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
             <div className="rounded-[28px] border border-white/10 bg-slate-900/70 p-5 shadow-[0_16px_50px_rgba(0,0,0,0.22)] backdrop-blur-xl">
               <div className="mb-4 flex items-center justify-between">
                 <div>
@@ -210,28 +239,13 @@ export default function HomePage() {
               </div>
             </div>
 
-            <div className="space-y-6">
-              <form onSubmit={addTicket} className="rounded-[28px] border border-white/10 bg-slate-900/70 p-5 shadow-[0_16px_50px_rgba(0,0,0,0.22)] backdrop-blur-xl">
-                <h2 className="text-xl font-semibold text-white">Ajouter un ticket</h2>
-                <div className="mt-4 grid gap-3 md:grid-cols-2">
-                  <input value={form.event} onChange={(e) => setForm((prev) => ({ ...prev, event: e.target.value }))} placeholder="Événement" className="rounded-2xl border border-white/10 bg-slate-950/80 px-3 py-2.5 text-sm text-white outline-none" />
-                  <input value={form.section} onChange={(e) => setForm((prev) => ({ ...prev, section: e.target.value }))} placeholder="Section" className="rounded-2xl border border-white/10 bg-slate-950/80 px-3 py-2.5 text-sm text-white outline-none" />
-                  <input value={form.seats} onChange={(e) => setForm((prev) => ({ ...prev, seats: e.target.value }))} placeholder="Sièges" className="rounded-2xl border border-white/10 bg-slate-950/80 px-3 py-2.5 text-sm text-white outline-none" />
-                  <input type="number" value={form.price} onChange={(e) => setForm((prev) => ({ ...prev, price: e.target.value }))} placeholder="Prix d’achat" className="rounded-2xl border border-white/10 bg-slate-950/80 px-3 py-2.5 text-sm text-white outline-none" />
-                  <input type="number" value={form.salePrice} onChange={(e) => setForm((prev) => ({ ...prev, salePrice: e.target.value }))} placeholder="Prix de vente" className="rounded-2xl border border-white/10 bg-slate-950/80 px-3 py-2.5 text-sm text-white outline-none" />
-                  <input value={form.notes} onChange={(e) => setForm((prev) => ({ ...prev, notes: e.target.value }))} placeholder="Notes" className="rounded-2xl border border-white/10 bg-slate-950/80 px-3 py-2.5 text-sm text-white outline-none" />
-                </div>
-                <button type="submit" className="mt-4 rounded-2xl bg-white px-4 py-2.5 font-semibold text-slate-950">Ajouter</button>
-              </form>
-
-              <div className="rounded-[28px] border border-white/10 bg-slate-900/70 p-5 shadow-[0_16px_50px_rgba(0,0,0,0.22)] backdrop-blur-xl">
-                <h2 className="text-xl font-semibold text-white">Résumé</h2>
-                <ul className="mt-4 space-y-2 text-sm text-slate-300">
-                  <li>• Données enregistrées localement dans le navigateur.</li>
-                  <li>• Interface pensée pour un usage rapide et propre.</li>
-                  <li>• À utiliser comme centre de suivi quotidien.</li>
-                </ul>
-              </div>
+            <div className="rounded-[28px] border border-white/10 bg-slate-900/70 p-5 shadow-[0_16px_50px_rgba(0,0,0,0.22)] backdrop-blur-xl">
+              <h2 className="text-xl font-semibold text-white">Résumé</h2>
+              <ul className="mt-4 space-y-3 text-sm text-slate-300">
+                <li className="rounded-2xl border border-white/10 bg-slate-800/70 p-3">• Données enregistrées localement dans le navigateur.</li>
+                <li className="rounded-2xl border border-white/10 bg-slate-800/70 p-3">• Interface pensée pour un usage rapide et propre.</li>
+                <li className="rounded-2xl border border-white/10 bg-slate-800/70 p-3">• À utiliser comme centre de suivi quotidien.</li>
+              </ul>
             </div>
           </section>
         </div>
