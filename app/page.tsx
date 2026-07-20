@@ -77,16 +77,16 @@ const STOCK_STATUSES: TicketStatus[] = ['achete', 'listed'];
 const SOLD_STATUSES: TicketStatus[] = ['vendu', 'livre'];
 
 const COLORS = {
-  bg: '#12151c',
-  panel: '#191d26',
-  line: 'rgba(240,238,230,0.08)',
-  text: '#f0eee6',
-  textMuted: '#8d94a3',
-  amber: '#e8963c',
-  green: '#3fae6a',
-  red: '#d95f4a',
-  blue: '#4f9fd1',
-  yellow: '#e0c04a',
+  bg: '#000000',
+  panel: '#0e0e14',
+  line: 'rgba(255,255,255,0.09)',
+  text: '#ffffff',
+  textMuted: '#9a9aa8',
+  amber: '#ff7a1a',
+  green: '#00e676',
+  red: '#ff2d55',
+  blue: '#00c8ff',
+  yellow: '#ffd60a',
 };
 
 const fmtUSD = (value: number) =>
