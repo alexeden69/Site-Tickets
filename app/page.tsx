@@ -326,7 +326,18 @@ export default function HomePage() {
           <Panel title="Ajout / suivi" subtitle="Créer un nouveau lot et gérer son état">
             <form onSubmit={addTicket} style={{ display: 'grid', gap: 10 }}>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: 10 }}>
-                <input value={form.event} onChange={(event) => setForm((prev) => ({ ...prev, event: event.target.value }))} placeholder="Événement" style={inputStyle} />
+                <input
+                  list="event-list"
+                  value={form.event}
+                  onChange={(event) => setForm((prev) => ({ ...prev, event: event.target.value }))}
+                  placeholder="Événement (choisir ou en taper un nouveau)"
+                  style={inputStyle}
+                />
+                <datalist id="event-list">
+                  {eventOptions.map((eventName) => (
+                    <option key={eventName} value={eventName} />
+                  ))}
+                </datalist>
                 <input type="date" value={form.eventDate} onChange={(event) => setForm((prev) => ({ ...prev, eventDate: event.target.value }))} style={inputStyle} />
                 <input type="number" min="1" value={form.qty} onChange={(event) => setForm((prev) => ({ ...prev, qty: event.target.value }))} placeholder="Qté" style={inputStyle} />
                 <input type="number" min="0" value={form.buyUsd} onChange={(event) => setForm((prev) => ({ ...prev, buyUsd: event.target.value }))} placeholder="Achat / u." style={inputStyle} />
