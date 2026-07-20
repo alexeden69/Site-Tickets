@@ -107,65 +107,83 @@ export default function HomePage() {
   };
 
   return (
-    <main className="min-h-screen bg-[radial-gradient(circle_at_top_left,_rgba(148,163,184,0.08),_transparent_24%)] p-6 text-slate-100">
+    <main className="min-h-screen p-4 text-slate-100 sm:p-6 lg:p-8">
       <div className="mx-auto flex max-w-7xl flex-col gap-6">
-        <header className="rounded-[28px] border border-slate-700/70 bg-slate-900/80 p-6 shadow-[0_8px_30px_rgba(0,0,0,0.35)] backdrop-blur">
-          <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-            <div>
-              <p className="text-sm uppercase tracking-[0.4em] text-slate-400">Guichet</p>
-              <h1 className="text-3xl font-semibold text-white">Tableau de bord tickets</h1>
-              <p className="mt-2 max-w-2xl text-sm text-slate-300">Application séparée du bot Viagogo, pensée pour suivre les offres, les ventes et les marges.</p>
-            </div>
-            <div className="rounded-2xl border border-slate-700/70 bg-slate-950/80 px-4 py-3 shadow-[0_4px_18px_rgba(0,0,0,0.25)]">
-              <label className="text-xs uppercase tracking-[0.2em] text-slate-400">Associé</label>
-              <input
-                value={settings.associateName}
-                onChange={(e) => setSettings((prev) => ({ ...prev, associateName: e.target.value }))}
-                placeholder="Nom"
-                className="mt-1 w-48 rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-white outline-none ring-0"
-              />
+        <header className="overflow-hidden rounded-[32px] border border-white/10 bg-slate-900/70 shadow-[0_20px_60px_rgba(0,0,0,0.35)] backdrop-blur-xl">
+          <div className="bg-gradient-to-r from-indigo-500/25 via-slate-900 to-emerald-500/20 p-6 sm:p-8">
+            <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+              <div className="max-w-2xl">
+                <p className="text-sm font-medium uppercase tracking-[0.35em] text-slate-400">Guichet • Ops</p>
+                <h1 className="mt-2 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+                  Tableau de bord tickets
+                </h1>
+                <p className="mt-3 text-sm leading-6 text-slate-300 sm:text-base">
+                  Vue claire pour suivre les offres, analyser les marges et garder un œil sur les ventes sans dépendre du bot.
+                </p>
+              </div>
+
+              <div className="rounded-2xl border border-white/10 bg-slate-950/70 px-4 py-3 shadow-lg shadow-black/20">
+                <label className="text-[11px] uppercase tracking-[0.3em] text-slate-400">Associé</label>
+                <input
+                  value={settings.associateName}
+                  onChange={(e) => setSettings((prev) => ({ ...prev, associateName: e.target.value }))}
+                  placeholder="Nom"
+                  className="mt-2 w-full min-w-[220px] rounded-xl border border-white/10 bg-slate-900/80 px-3 py-2 text-sm text-white outline-none ring-0"
+                />
+              </div>
             </div>
           </div>
         </header>
 
-        <section className="grid gap-4 md:grid-cols-4">
+        <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           {[
-            { label: 'En stock', value: stats.active, accent: 'text-emerald-300' },
-            { label: 'Vendus', value: stats.sold, accent: 'text-sky-300' },
-            { label: 'Expirés', value: stats.expired, accent: 'text-rose-300' },
-            { label: 'Marge totale', value: `${stats.totalMargin} €`, accent: 'text-amber-300' },
+            { label: 'En stock', value: stats.active, accent: 'text-emerald-300', glow: 'from-emerald-500/15 to-emerald-400/5' },
+            { label: 'Vendus', value: stats.sold, accent: 'text-sky-300', glow: 'from-sky-500/15 to-sky-400/5' },
+            { label: 'Expirés', value: stats.expired, accent: 'text-rose-300', glow: 'from-rose-500/15 to-rose-400/5' },
+            { label: 'Marge totale', value: `${stats.totalMargin} €`, accent: 'text-amber-300', glow: 'from-amber-500/15 to-amber-400/5' },
           ].map((card) => (
-            <div key={card.label} className="rounded-2xl border border-slate-800/80 bg-slate-900/70 p-4 shadow-[0_4px_14px_rgba(0,0,0,0.2)]">
+            <div key={card.label} className={`rounded-3xl border border-white/10 bg-gradient-to-br ${card.glow} p-4 shadow-[0_12px_35px_rgba(0,0,0,0.2)]`}>
               <p className="text-sm text-slate-400">{card.label}</p>
-              <p className={`mt-2 text-2xl font-semibold ${card.accent}`}>{card.value}</p>
+              <p className={`mt-3 text-3xl font-semibold ${card.accent}`}>{card.value}</p>
             </div>
           ))}
         </section>
 
-        <section className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
-          <div className="rounded-3xl border border-slate-800/80 bg-slate-900/70 p-5 shadow-[0_6px_18px_rgba(0,0,0,0.2)]">
+        <section className="grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
+          <div className="rounded-[28px] border border-white/10 bg-slate-900/70 p-5 shadow-[0_16px_50px_rgba(0,0,0,0.24)] backdrop-blur-xl">
             <div className="mb-4 flex items-center justify-between">
-              <h2 className="text-xl font-semibold text-white">Tickets en stock</h2>
-              <span className="text-sm text-slate-400">{filteredTickets.length} visibles</span>
+              <div>
+                <h2 className="text-xl font-semibold text-white">Tickets en stock</h2>
+                <p className="mt-1 text-sm text-slate-400">{filteredTickets.length} visibles • suivi actif</p>
+              </div>
+              <div className="rounded-full border border-emerald-400/20 bg-emerald-500/10 px-3 py-1 text-sm text-emerald-300">
+                Live
+              </div>
             </div>
+
             <div className="space-y-3">
               {filteredTickets.map((ticket) => (
-                <article key={ticket.id} className="rounded-2xl border border-slate-800/70 bg-slate-800/70 p-4 shadow-[0_4px_12px_rgba(0,0,0,0.18)]">
-                  <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+                <article key={ticket.id} className="rounded-2xl border border-white/10 bg-slate-800/70 p-4 shadow-inner shadow-black/10">
+                  <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                     <div>
-                      <div className="flex items-center gap-2">
+                      <div className="flex flex-wrap items-center gap-2">
                         <h3 className="font-semibold text-white">{ticket.event}</h3>
-                        <span className="rounded-full border border-slate-700 bg-slate-700/80 px-2 py-0.5 text-xs text-slate-300">{ticket.section}</span>
+                        <span className="rounded-full border border-white/10 bg-white/10 px-2.5 py-1 text-[11px] uppercase tracking-[0.25em] text-slate-300">
+                          {ticket.section}
+                        </span>
                       </div>
-                      <p className="mt-1 text-sm text-slate-400">Sièges {ticket.seats}</p>
-                      <p className="mt-2 text-sm text-slate-300">Prix d’achat : {ticket.price} € • Prix de vente : {ticket.salePrice} €</p>
+                      <p className="mt-2 text-sm text-slate-400">Sièges {ticket.seats}</p>
+                      <p className="mt-2 text-sm text-slate-300">
+                        Achat {ticket.price} € • Vente {ticket.salePrice} €
+                      </p>
                       {ticket.notes ? <p className="mt-2 text-sm text-slate-400">{ticket.notes}</p> : null}
                     </div>
+
                     <div className="flex flex-wrap gap-2">
-                      <button onClick={() => updateTicketStatus(ticket.id, 'En stock')} className="rounded-lg border border-emerald-500/20 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-300">En stock</button>
-                      <button onClick={() => updateTicketStatus(ticket.id, 'Vendu')} className="rounded-lg border border-sky-500/20 bg-sky-500/10 px-3 py-2 text-sm text-sky-300">Vendu</button>
-                      <button onClick={() => updateTicketStatus(ticket.id, 'Expiré')} className="rounded-lg border border-rose-500/20 bg-rose-500/10 px-3 py-2 text-sm text-rose-300">Expiré</button>
-                      <button onClick={() => removeTicket(ticket.id)} className="rounded-lg border border-slate-700 bg-slate-700/80 px-3 py-2 text-sm text-slate-200">Supprimer</button>
+                      <button onClick={() => updateTicketStatus(ticket.id, 'En stock')} className="rounded-xl border border-emerald-500/20 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-300 transition hover:bg-emerald-500/20">En stock</button>
+                      <button onClick={() => updateTicketStatus(ticket.id, 'Vendu')} className="rounded-xl border border-sky-500/20 bg-sky-500/10 px-3 py-2 text-sm text-sky-300 transition hover:bg-sky-500/20">Vendu</button>
+                      <button onClick={() => updateTicketStatus(ticket.id, 'Expiré')} className="rounded-xl border border-rose-500/20 bg-rose-500/10 px-3 py-2 text-sm text-rose-300 transition hover:bg-rose-500/20">Expiré</button>
+                      <button onClick={() => removeTicket(ticket.id)} className="rounded-xl border border-white/10 bg-slate-700/80 px-3 py-2 text-sm text-slate-200 transition hover:bg-slate-600/80">Supprimer</button>
                     </div>
                   </div>
                 </article>
@@ -174,25 +192,25 @@ export default function HomePage() {
           </div>
 
           <div className="space-y-6">
-            <form onSubmit={addTicket} className="rounded-3xl border border-slate-800/80 bg-slate-900/70 p-5 shadow-[0_6px_18px_rgba(0,0,0,0.2)]">
+            <form onSubmit={addTicket} className="rounded-[28px] border border-white/10 bg-slate-900/70 p-5 shadow-[0_16px_50px_rgba(0,0,0,0.24)] backdrop-blur-xl">
               <h2 className="text-xl font-semibold text-white">Ajouter un ticket</h2>
               <div className="mt-4 grid gap-3 md:grid-cols-2">
-                <input value={form.event} onChange={(e) => setForm((prev) => ({ ...prev, event: e.target.value }))} placeholder="Événement" className="rounded-xl border border-cyan-400/20 bg-slate-900 px-3 py-2 text-sm text-white outline-none" />
-                <input value={form.section} onChange={(e) => setForm((prev) => ({ ...prev, section: e.target.value }))} placeholder="Section" className="rounded-xl border border-cyan-400/20 bg-slate-900 px-3 py-2 text-sm text-white outline-none" />
-                <input value={form.seats} onChange={(e) => setForm((prev) => ({ ...prev, seats: e.target.value }))} placeholder="Sièges" className="rounded-xl border border-cyan-400/20 bg-slate-900 px-3 py-2 text-sm text-white outline-none" />
-                <input type="number" value={form.price} onChange={(e) => setForm((prev) => ({ ...prev, price: e.target.value }))} placeholder="Prix d’achat" className="rounded-xl border border-cyan-400/20 bg-slate-900 px-3 py-2 text-sm text-white outline-none" />
-                <input type="number" value={form.salePrice} onChange={(e) => setForm((prev) => ({ ...prev, salePrice: e.target.value }))} placeholder="Prix de vente" className="rounded-xl border border-cyan-400/20 bg-slate-900 px-3 py-2 text-sm text-white outline-none" />
-                <input value={form.notes} onChange={(e) => setForm((prev) => ({ ...prev, notes: e.target.value }))} placeholder="Notes" className="rounded-xl border border-cyan-400/20 bg-slate-900 px-3 py-2 text-sm text-white outline-none" />
+                <input value={form.event} onChange={(e) => setForm((prev) => ({ ...prev, event: e.target.value }))} placeholder="Événement" className="rounded-2xl border border-white/10 bg-slate-950/80 px-3 py-2.5 text-sm text-white outline-none" />
+                <input value={form.section} onChange={(e) => setForm((prev) => ({ ...prev, section: e.target.value }))} placeholder="Section" className="rounded-2xl border border-white/10 bg-slate-950/80 px-3 py-2.5 text-sm text-white outline-none" />
+                <input value={form.seats} onChange={(e) => setForm((prev) => ({ ...prev, seats: e.target.value }))} placeholder="Sièges" className="rounded-2xl border border-white/10 bg-slate-950/80 px-3 py-2.5 text-sm text-white outline-none" />
+                <input type="number" value={form.price} onChange={(e) => setForm((prev) => ({ ...prev, price: e.target.value }))} placeholder="Prix d’achat" className="rounded-2xl border border-white/10 bg-slate-950/80 px-3 py-2.5 text-sm text-white outline-none" />
+                <input type="number" value={form.salePrice} onChange={(e) => setForm((prev) => ({ ...prev, salePrice: e.target.value }))} placeholder="Prix de vente" className="rounded-2xl border border-white/10 bg-slate-950/80 px-3 py-2.5 text-sm text-white outline-none" />
+                <input value={form.notes} onChange={(e) => setForm((prev) => ({ ...prev, notes: e.target.value }))} placeholder="Notes" className="rounded-2xl border border-white/10 bg-slate-950/80 px-3 py-2.5 text-sm text-white outline-none" />
               </div>
-              <button type="submit" className="mt-4 rounded-xl bg-slate-100 px-4 py-2 font-semibold text-slate-950">Ajouter</button>
+              <button type="submit" className="mt-4 rounded-2xl bg-white px-4 py-2.5 font-semibold text-slate-950 transition hover:bg-slate-100">Ajouter</button>
             </form>
 
-            <div className="rounded-3xl border border-slate-800/80 bg-slate-900/70 p-5 shadow-[0_6px_18px_rgba(0,0,0,0.2)]">
+            <div className="rounded-[28px] border border-white/10 bg-slate-900/70 p-5 shadow-[0_16px_50px_rgba(0,0,0,0.24)] backdrop-blur-xl">
               <h2 className="text-xl font-semibold text-white">Résumé</h2>
               <ul className="mt-4 space-y-2 text-sm text-slate-300">
-                <li>• Les données restent sauvegardées localement dans le navigateur.</li>
-                <li>• Le dashboard est isolé du bot Viagogo pour une utilisation plus simple.</li>
-                <li>• Le projet peut être lancé depuis le dossier dashboard.</li>
+                <li>• Données enregistrées localement dans le navigateur.</li>
+                <li>• Interface pensée pour un usage rapide et propre.</li>
+                <li>• À utiliser comme centre de suivi quotidien.</li>
               </ul>
             </div>
           </div>
