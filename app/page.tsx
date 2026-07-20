@@ -179,6 +179,7 @@ export default function HomePage() {
   });
   const [eventFilter, setEventFilter] = useState('all');
   const [timeFilter, setTimeFilter] = useState<'all' | 'past' | 'upcoming'>('all');
+  const [purchaserFilter, setPurchaserFilter] = useState('all');
   const [events, setEvents] = useState<string[]>([]);
   const [newEventName, setNewEventName] = useState('');
   const [editingId, setEditingId] = useState<number | null>(null);
@@ -294,12 +295,13 @@ export default function HomePage() {
 
     return tickets
       .filter((ticket) => eventFilter === 'all' || ticket.event === eventFilter)
+      .filter((ticket) => purchaserFilter === 'all' || ticket.purchasedBy === purchaserFilter)
       .filter((ticket) => {
         if (timeFilter === 'all') return true;
         const isPast = new Date(ticket.eventDate) < startOfToday;
         return timeFilter === 'past' ? isPast : !isPast;
       });
-  }, [tickets, eventFilter, timeFilter]);
+  }, [tickets, eventFilter, timeFilter, purchaserFilter]);
 
   const byEvent = useMemo(() => {
     const map: Record<string, { event: string; achat: number; revente: number; qty: number; profit: number }> = {};
@@ -570,6 +572,19 @@ export default function HomePage() {
                 <option value="all" style={optionStyle}>Tous</option>
                 <option value="upcoming" style={optionStyle}>Événements à venir</option>
                 <option value="past" style={optionStyle}>Événements passés</option>
+              </select>
+            </label>
+            <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, color: COLORS.textMuted }}>
+              Filtrer par acheteur
+              <select
+                value={purchaserFilter}
+                onChange={(event) => setPurchaserFilter(event.target.value)}
+                style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${COLORS.line}`, color: COLORS.text, borderRadius: 8, padding: '6px 10px', fontSize: 12, outline: 'none' }}
+              >
+                <option value="all" style={optionStyle}>Tous les acheteurs</option>
+                {purchaserOptions.map((name) => (
+                  <option key={name} value={name} style={optionStyle}>{name}</option>
+                ))}
               </select>
             </label>
           </div>
