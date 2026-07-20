@@ -34,3 +34,21 @@ create policy "public delete access" on public.tickets
 -- Active le suivi en temps réel (pour que les 2 comptes voient les mêmes
 -- données se mettre à jour sans recharger la page).
 alter publication supabase_realtime add table public.tickets;
+
+-- Liste des événements disponibles dans le menu déroulant du formulaire
+-- d'ajout. Un événement peut être créé ici avant même d'avoir un billet.
+create table if not exists public.events (
+  id bigint generated always as identity primary key,
+  name text not null unique,
+  created_at timestamptz not null default now()
+);
+
+alter table public.events enable row level security;
+
+create policy "public read access" on public.events
+  for select using (true);
+
+create policy "public insert access" on public.events
+  for insert with check (true);
+
+alter publication supabase_realtime add table public.events;

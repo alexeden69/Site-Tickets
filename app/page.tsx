@@ -142,6 +142,8 @@ export default function HomePage() {
     purchasedBy: '',
   });
   const [eventFilter, setEventFilter] = useState('all');
+  const [events, setEvents] = useState<string[]>([]);
+  const [newEventName, setNewEventName] = useState('');
 
   useEffect(() => {
     let isMounted = true;
@@ -161,12 +163,22 @@ export default function HomePage() {
       setLoading(false);
     };
 
+    const loadEvents = async () => {
+      const { data, error } = await supabase.from('events').select('name').order('name', { ascending: true });
+      if (!isMounted) return;
+      if (!error) setEvents((data as { name: string }[]).map((row) => row.name));
+    };
+
     loadTickets();
+    loadEvents();
 
     const channel = supabase
       .channel('tickets-changes')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'tickets' }, () => {
         loadTickets();
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'events' }, () => {
+        loadEvents();
       })
       .subscribe();
 
@@ -177,8 +189,8 @@ export default function HomePage() {
   }, []);
 
   const eventOptions = useMemo(
-    () => Array.from(new Set(tickets.map((ticket) => ticket.event))).sort((a, b) => a.localeCompare(b)),
-    [tickets]
+    () => Array.from(new Set([...events, ...tickets.map((ticket) => ticket.event)])).sort((a, b) => a.localeCompare(b)),
+    [events, tickets]
   );
 
   const filteredTickets = useMemo(
@@ -258,6 +270,18 @@ export default function HomePage() {
     setForm({ event: '', eventDate: '', qty: '', buyUsd: '', sellUsd: '', purchasedBy: '' });
   };
 
+  const addEvent = async () => {
+    const name = newEventName.trim();
+    if (!name) return;
+    const { error } = await supabase.from('events').upsert({ name }, { onConflict: 'name', ignoreDuplicates: true });
+    if (error) {
+      setErrorMessage(error.message);
+      return;
+    }
+    setForm((prev) => ({ ...prev, event: name }));
+    setNewEventName('');
+  };
+
   const updateTicketStatus = async (id: number, status: TicketStatus) => {
     const { error } = await supabase.from('tickets').update({ status }).eq('id', id);
     if (error) setErrorMessage(error.message);
@@ -325,19 +349,32 @@ export default function HomePage() {
         <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', marginBottom: 28 }}>
           <Panel title="Ajout / suivi" subtitle="Créer un nouveau lot et gérer son état">
             <form onSubmit={addTicket} style={{ display: 'grid', gap: 10 }}>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: 10 }}>
+              <div style={{ display: 'flex', gap: 8 }}>
                 <input
-                  list="event-list"
+                  value={newEventName}
+                  onChange={(event) => setNewEventName(event.target.value)}
+                  placeholder="Nouvel événement"
+                  style={{ ...inputStyle, flex: 1 }}
+                />
+                <button
+                  type="button"
+                  onClick={addEvent}
+                  style={{ padding: '0 14px', borderRadius: 8, background: 'rgba(255,255,255,0.06)', color: COLORS.text, border: `1px solid ${COLORS.line}`, cursor: 'pointer', fontSize: 12 }}
+                >
+                  Ajouter
+                </button>
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: 10 }}>
+                <select
                   value={form.event}
                   onChange={(event) => setForm((prev) => ({ ...prev, event: event.target.value }))}
-                  placeholder="Événement (choisir ou en taper un nouveau)"
                   style={inputStyle}
-                />
-                <datalist id="event-list">
+                >
+                  <option value="">-- Choisir un événement --</option>
                   {eventOptions.map((eventName) => (
-                    <option key={eventName} value={eventName} />
+                    <option key={eventName} value={eventName}>{eventName}</option>
                   ))}
-                </datalist>
+                </select>
                 <input type="date" value={form.eventDate} onChange={(event) => setForm((prev) => ({ ...prev, eventDate: event.target.value }))} style={inputStyle} />
                 <input type="number" min="1" value={form.qty} onChange={(event) => setForm((prev) => ({ ...prev, qty: event.target.value }))} placeholder="Qté" style={inputStyle} />
                 <input type="number" min="0" value={form.buyUsd} onChange={(event) => setForm((prev) => ({ ...prev, buyUsd: event.target.value }))} placeholder="Achat / u." style={inputStyle} />
