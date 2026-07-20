@@ -144,6 +144,15 @@ export default function HomePage() {
   const [eventFilter, setEventFilter] = useState('all');
   const [events, setEvents] = useState<string[]>([]);
   const [newEventName, setNewEventName] = useState('');
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [editForm, setEditForm] = useState({
+    event: '',
+    eventDate: '',
+    qty: '',
+    buyUsd: '',
+    sellUsd: '',
+    purchasedBy: '',
+  });
 
   useEffect(() => {
     let isMounted = true;
@@ -290,6 +299,44 @@ export default function HomePage() {
   const removeTicket = async (id: number) => {
     const { error } = await supabase.from('tickets').delete().eq('id', id);
     if (error) setErrorMessage(error.message);
+  };
+
+  const startEdit = (ticket: Ticket) => {
+    setEditingId(ticket.id);
+    setEditForm({
+      event: ticket.event,
+      eventDate: ticket.eventDate,
+      qty: String(ticket.qty),
+      buyUsd: String(ticket.buyUsd),
+      sellUsd: String(ticket.sellUsd),
+      purchasedBy: ticket.purchasedBy,
+    });
+  };
+
+  const cancelEdit = () => setEditingId(null);
+
+  const saveEdit = async (id: number) => {
+    const qty = Number(editForm.qty);
+    const buyUsd = Number(editForm.buyUsd);
+    const sellUsd = Number(editForm.sellUsd);
+    if (!editForm.event || !editForm.eventDate || Number.isNaN(qty) || Number.isNaN(buyUsd)) return;
+
+    const { error } = await supabase
+      .from('tickets')
+      .update({
+        event: editForm.event,
+        event_date: editForm.eventDate,
+        qty,
+        buy_usd: buyUsd,
+        sell_usd: Number.isNaN(sellUsd) ? 0 : sellUsd,
+        purchased_by: editForm.purchasedBy || 'commun',
+      })
+      .eq('id', id);
+    if (error) {
+      setErrorMessage(error.message);
+      return;
+    }
+    setEditingId(null);
   };
 
   return (
@@ -449,7 +496,7 @@ export default function HomePage() {
           <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
             <thead>
               <tr>
-                {['Événement', 'Date', 'Qté', 'Achat/u.', 'Revente/u.', 'Coût total', 'Recette', 'Bénéfice net', 'Statut', 'Actions'].map((header) => (
+                {['Événement', 'Date', 'Qté', 'Achat/u.', 'Revente/u.', 'Coût total', 'Recette', 'Bénéfice net', 'Acheteur', 'Statut', 'Actions'].map((header) => (
                   <th key={header} style={{ textAlign: 'left', padding: '10px 14px', fontFamily: 'IBM Plex Mono, monospace', fontSize: 10, letterSpacing: '0.05em', textTransform: 'uppercase', color: COLORS.textMuted, borderBottom: `1px solid ${COLORS.line}` }}>{header}</th>
                 ))}
               </tr>
@@ -459,6 +506,46 @@ export default function HomePage() {
                 const costTotal = ticket.qty * ticket.buyUsd;
                 const revenue = ticket.qty * (ticket.sellUsd || 0);
                 const profit = SOLD_STATUSES.includes(ticket.status) ? revenue - costTotal : null;
+
+                if (editingId === ticket.id) {
+                  return (
+                    <tr key={ticket.id}>
+                      <td style={cellStyle}>
+                        <select value={editForm.event} onChange={(event) => setEditForm((prev) => ({ ...prev, event: event.target.value }))} style={editInputStyle}>
+                          {eventOptions.map((eventName) => (
+                            <option key={eventName} value={eventName} style={optionStyle}>{eventName}</option>
+                          ))}
+                        </select>
+                      </td>
+                      <td style={cellStyle}>
+                        <input type="date" value={editForm.eventDate} onChange={(event) => setEditForm((prev) => ({ ...prev, eventDate: event.target.value }))} style={editInputStyle} />
+                      </td>
+                      <td style={cellStyle}>
+                        <input type="number" min="1" value={editForm.qty} onChange={(event) => setEditForm((prev) => ({ ...prev, qty: event.target.value }))} style={{ ...editInputStyle, width: 60 }} />
+                      </td>
+                      <td style={cellStyle}>
+                        <input type="number" min="0" value={editForm.buyUsd} onChange={(event) => setEditForm((prev) => ({ ...prev, buyUsd: event.target.value }))} style={{ ...editInputStyle, width: 80 }} />
+                      </td>
+                      <td style={cellStyle}>
+                        <input type="number" min="0" value={editForm.sellUsd} onChange={(event) => setEditForm((prev) => ({ ...prev, sellUsd: event.target.value }))} style={{ ...editInputStyle, width: 80 }} />
+                      </td>
+                      <td style={{ ...cellStyle, fontFamily: 'IBM Plex Mono, monospace', color: COLORS.textMuted }}>{fmtUSD(costTotal)}</td>
+                      <td style={{ ...cellStyle, fontFamily: 'IBM Plex Mono, monospace', color: COLORS.textMuted }}>{revenue ? fmtUSD(revenue) : '—'}</td>
+                      <td style={{ ...cellStyle, color: COLORS.textMuted }}>—</td>
+                      <td style={cellStyle}>
+                        <input value={editForm.purchasedBy} onChange={(event) => setEditForm((prev) => ({ ...prev, purchasedBy: event.target.value }))} style={{ ...editInputStyle, width: 80 }} />
+                      </td>
+                      <td style={cellStyle}><StatusBadge status={ticket.status} /></td>
+                      <td style={cellStyle}>
+                        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                          <button onClick={() => saveEdit(ticket.id)} style={{ ...actionButtonStyle, background: COLORS.amber, color: '#1a1206', border: 'none', fontWeight: 700 }}>Enregistrer</button>
+                          <button onClick={cancelEdit} style={actionButtonStyle}>Annuler</button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                }
+
                 return (
                   <tr key={ticket.id}>
                     <td style={cellStyle}>{ticket.event}</td>
@@ -469,9 +556,11 @@ export default function HomePage() {
                     <td style={{ ...cellStyle, fontFamily: 'IBM Plex Mono, monospace' }}>{fmtUSD(costTotal)}</td>
                     <td style={{ ...cellStyle, fontFamily: 'IBM Plex Mono, monospace' }}>{revenue ? fmtUSD(revenue) : '—'}</td>
                     <td style={{ ...cellStyle, fontFamily: 'IBM Plex Mono, monospace', color: profit == null ? COLORS.textMuted : profit >= 0 ? COLORS.green : COLORS.red }}>{profit == null ? '—' : `${profit >= 0 ? '+' : ''}${fmtUSD(profit)}`}</td>
+                    <td style={cellStyle}>{ticket.purchasedBy}</td>
                     <td style={cellStyle}><StatusBadge status={ticket.status} /></td>
                     <td style={cellStyle}>
                       <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                        <button onClick={() => startEdit(ticket)} style={actionButtonStyle}>Modifier</button>
                         <button onClick={() => updateTicketStatus(ticket.id, 'achete')} style={actionButtonStyle}>Acheté</button>
                         <button onClick={() => updateTicketStatus(ticket.id, 'listed')} style={actionButtonStyle}>Listé</button>
                         <button onClick={() => updateTicketStatus(ticket.id, 'vendu')} style={actionButtonStyle}>Vendu</button>
@@ -500,6 +589,16 @@ const inputStyle: React.CSSProperties = {
   color: COLORS.text,
   borderRadius: 8,
   padding: '10px 12px',
+  fontSize: 12,
+  outline: 'none',
+};
+
+const editInputStyle: React.CSSProperties = {
+  background: 'rgba(255,255,255,0.06)',
+  border: `1px solid ${COLORS.line}`,
+  color: COLORS.text,
+  borderRadius: 6,
+  padding: '5px 8px',
   fontSize: 12,
   outline: 'none',
 };
