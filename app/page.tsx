@@ -166,40 +166,85 @@ function StatusBadge({ status }: { status: TicketStatus }) {
   );
 }
 
+type AcoStatus = 'paye' | 'en_attente';
+
 type AcoTransaction = {
   id: number;
-  description: string;
+  event: string;
+  category: string;
+  bloc: string;
+  rang: string;
+  seats: string;
+  qty: number;
+  discordHandle: string;
   transactionDate: string;
   amount: number;
   purchasedBy: string;
+  status: AcoStatus;
   notes: string;
 };
 
 type AcoRow = {
   id: number;
-  description: string;
+  event: string;
+  category: string | null;
+  bloc: string | null;
+  rang: string | null;
+  seats: string | null;
+  qty: number;
+  discord_handle: string | null;
   transaction_date: string;
   amount: number;
   purchased_by: string;
+  status: AcoStatus;
   notes: string | null;
 };
 
 const fromAcoRow = (row: AcoRow): AcoTransaction => ({
   id: row.id,
-  description: row.description,
+  event: row.event,
+  category: row.category || '',
+  bloc: row.bloc || '',
+  rang: row.rang || '',
+  seats: row.seats || '',
+  qty: row.qty,
+  discordHandle: row.discord_handle || '',
   transactionDate: row.transaction_date,
   amount: row.amount,
   purchasedBy: row.purchased_by,
+  status: row.status,
   notes: row.notes || '',
 });
 
-function AcoTab() {
+const ACO_PURCHASER_OPTIONS = [...PURCHASER_OPTIONS, 'Profit Split'];
+
+const ACO_STATUS_LABELS: Record<AcoStatus, { label: string; color: string }> = {
+  paye: { label: 'Payé', color: COLORS.green },
+  en_attente: { label: 'En attente de paiement', color: COLORS.amber },
+};
+
+const emptyAcoForm = {
+  event: '',
+  category: '',
+  bloc: '',
+  rang: '',
+  seats: '',
+  qty: '1',
+  discordHandle: '',
+  transactionDate: '',
+  amount: '',
+  purchasedBy: 'Commun',
+  status: 'en_attente' as AcoStatus,
+  notes: '',
+};
+
+function AcoTab({ eventOptions }: { eventOptions: string[] }) {
   const [transactions, setTransactions] = useState<AcoTransaction[]>([]);
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [form, setForm] = useState({ description: '', transactionDate: '', amount: '', purchasedBy: 'Commun', notes: '' });
+  const [form, setForm] = useState(emptyAcoForm);
   const [editingId, setEditingId] = useState<number | null>(null);
-  const [editForm, setEditForm] = useState({ description: '', transactionDate: '', amount: '', purchasedBy: 'Commun', notes: '' });
+  const [editForm, setEditForm] = useState(emptyAcoForm);
 
   useEffect(() => {
     let isMounted = true;
@@ -207,7 +252,7 @@ function AcoTab() {
     const load = async () => {
       const { data, error } = await supabase
         .from('aco_transactions')
-        .select('id, description, transaction_date, amount, purchased_by, notes')
+        .select('id, event, category, bloc, rang, seats, qty, discord_handle, transaction_date, amount, purchased_by, status, notes')
         .order('transaction_date', { ascending: false });
       if (!isMounted) return;
       if (error) {
@@ -235,25 +280,35 @@ function AcoTab() {
   const stats = useMemo(() => {
     const total = transactions.reduce((sum, t) => sum + t.amount, 0);
     const count = transactions.length;
-    return { total, count, avg: count > 0 ? total / count : 0 };
+    const paid = transactions.filter((t) => t.status === 'paye').reduce((sum, t) => sum + t.amount, 0);
+    const pending = transactions.filter((t) => t.status === 'en_attente').reduce((sum, t) => sum + t.amount, 0);
+    return { total, count, avg: count > 0 ? total / count : 0, paid, pending };
   }, [transactions]);
 
   const addTransaction = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const amount = Number(form.amount);
-    if (!form.description || !form.transactionDate || Number.isNaN(amount)) return;
+    const qty = Number(form.qty);
+    if (!form.event || !form.transactionDate || Number.isNaN(amount) || Number.isNaN(qty)) return;
     const { error } = await supabase.from('aco_transactions').insert({
-      description: form.description,
+      event: form.event,
+      category: form.category || null,
+      bloc: form.bloc || null,
+      rang: form.rang || null,
+      seats: form.seats || null,
+      qty,
+      discord_handle: form.discordHandle || null,
       transaction_date: form.transactionDate,
       amount,
       purchased_by: form.purchasedBy,
+      status: form.status,
       notes: form.notes || null,
     });
     if (error) {
       setErrorMessage(error.message);
       return;
     }
-    setForm({ description: '', transactionDate: '', amount: '', purchasedBy: 'Commun', notes: '' });
+    setForm(emptyAcoForm);
   };
 
   const removeTransaction = async (id: number) => {
@@ -264,10 +319,17 @@ function AcoTab() {
   const startEdit = (t: AcoTransaction) => {
     setEditingId(t.id);
     setEditForm({
-      description: t.description,
+      event: t.event,
+      category: t.category,
+      bloc: t.bloc,
+      rang: t.rang,
+      seats: t.seats,
+      qty: String(t.qty),
+      discordHandle: t.discordHandle,
       transactionDate: t.transactionDate,
       amount: String(t.amount),
       purchasedBy: t.purchasedBy,
+      status: t.status,
       notes: t.notes,
     });
   };
@@ -276,14 +338,22 @@ function AcoTab() {
 
   const saveEdit = async (id: number) => {
     const amount = Number(editForm.amount);
-    if (!editForm.description || !editForm.transactionDate || Number.isNaN(amount)) return;
+    const qty = Number(editForm.qty);
+    if (!editForm.event || !editForm.transactionDate || Number.isNaN(amount) || Number.isNaN(qty)) return;
     const { error } = await supabase
       .from('aco_transactions')
       .update({
-        description: editForm.description,
+        event: editForm.event,
+        category: editForm.category || null,
+        bloc: editForm.bloc || null,
+        rang: editForm.rang || null,
+        seats: editForm.seats || null,
+        qty,
+        discord_handle: editForm.discordHandle || null,
         transaction_date: editForm.transactionDate,
         amount,
         purchased_by: editForm.purchasedBy,
+        status: editForm.status,
         notes: editForm.notes || null,
       })
       .eq('id', id);
@@ -314,22 +384,45 @@ function AcoTab() {
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 14, marginBottom: 28 }}>
         <StatCard icon="🧺" label="Transactions" value={String(stats.count)} accent={COLORS.amber} />
         <StatCard icon="💰" label="Gain total" value={fmtUSD(stats.total)} accent={COLORS.green} />
+        <StatCard icon="✅" label="Payé" value={fmtUSD(stats.paid)} accent={COLORS.green} />
+        <StatCard icon="⏳" label="En attente" value={fmtUSD(stats.pending)} accent={COLORS.amber} />
         <StatCard icon="📊" label="Gain moyen" value={fmtUSD(stats.avg)} accent={COLORS.blue} sub="Par transaction" />
       </div>
 
       <Panel title="Ajouter une transaction ACO" subtitle="Pas d'achat, pas de trésorerie sortie : juste le supplément encaissé">
         <form onSubmit={addTransaction} style={{ display: 'grid', gap: 10 }}>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: 10 }}>
-            <input value={form.description} onChange={(event) => setForm((prev) => ({ ...prev, description: event.target.value }))} placeholder="Description" style={inputStyle} />
+            <select value={form.event} onChange={(event) => setForm((prev) => ({ ...prev, event: event.target.value }))} style={inputStyle}>
+              <option value="" style={optionStyle}>-- Choisir un événement --</option>
+              {eventOptions.map((eventName) => (
+                <option key={eventName} value={eventName} style={optionStyle}>{eventName}</option>
+              ))}
+            </select>
             <input type="date" value={form.transactionDate} onChange={(event) => setForm((prev) => ({ ...prev, transactionDate: event.target.value }))} style={inputStyle} />
+            <input type="number" min="1" value={form.qty} onChange={(event) => setForm((prev) => ({ ...prev, qty: event.target.value }))} placeholder="Qté" style={inputStyle} />
             <input type="number" min="0" value={form.amount} onChange={(event) => setForm((prev) => ({ ...prev, amount: event.target.value }))} placeholder="Montant gagné ($)" style={inputStyle} />
             <select value={form.purchasedBy} onChange={(event) => setForm((prev) => ({ ...prev, purchasedBy: event.target.value }))} style={inputStyle}>
-              {PURCHASER_OPTIONS.map((name) => (
+              {ACO_PURCHASER_OPTIONS.map((name) => (
                 <option key={name} value={name} style={optionStyle}>{name}</option>
               ))}
             </select>
-            <input value={form.notes} onChange={(event) => setForm((prev) => ({ ...prev, notes: event.target.value }))} placeholder="Note (optionnel)" style={inputStyle} />
+            <select value={form.status} onChange={(event) => setForm((prev) => ({ ...prev, status: event.target.value as AcoStatus }))} style={inputStyle}>
+              <option value="en_attente" style={optionStyle}>En attente de paiement</option>
+              <option value="paye" style={optionStyle}>Payé</option>
+            </select>
           </div>
+
+          <div style={{ fontSize: 11, color: COLORS.textMuted, marginTop: 4 }}>Détails billet (optionnel)</div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(110px, 1fr))', gap: 10 }}>
+            <input value={form.category} onChange={(event) => setForm((prev) => ({ ...prev, category: event.target.value }))} placeholder="Catégorie" style={inputStyle} />
+            <input value={form.bloc} onChange={(event) => setForm((prev) => ({ ...prev, bloc: event.target.value }))} placeholder="Bloc" style={inputStyle} />
+            <input value={form.rang} onChange={(event) => setForm((prev) => ({ ...prev, rang: event.target.value }))} placeholder="Rangée" style={inputStyle} />
+            <input value={form.seats} onChange={(event) => setForm((prev) => ({ ...prev, seats: event.target.value }))} placeholder="Siège" style={inputStyle} />
+            <input value={form.discordHandle} onChange={(event) => setForm((prev) => ({ ...prev, discordHandle: event.target.value }))} placeholder="Pseudonyme Discord" style={inputStyle} />
+          </div>
+
+          <input value={form.notes} onChange={(event) => setForm((prev) => ({ ...prev, notes: event.target.value }))} placeholder="Note (optionnel)" style={inputStyle} />
+
           <button type="submit" style={{ padding: '10px 14px', borderRadius: 8, background: COLORS.amber, color: '#1a1206', fontWeight: 700, border: 'none', cursor: 'pointer' }}>Ajouter</button>
         </form>
       </Panel>
@@ -339,7 +432,7 @@ function AcoTab() {
         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
           <thead>
             <tr>
-              {['Description', 'Date', 'Montant', 'Associé', 'Note', 'Actions'].map((header) => (
+              {['Événement', 'Date', 'Qté', 'Montant', 'Placement', 'Discord', 'Associé', 'Statut', 'Note', 'Actions'].map((header) => (
                 <th key={header} style={{ textAlign: 'left', padding: '10px 14px', fontFamily: 'IBM Plex Mono, monospace', fontSize: 10, letterSpacing: '0.05em', textTransform: 'uppercase', color: COLORS.textMuted, borderBottom: `1px solid ${COLORS.line}` }}>{header}</th>
               ))}
             </tr>
@@ -350,23 +443,47 @@ function AcoTab() {
                 return (
                   <tr key={t.id}>
                     <td style={cellStyle}>
-                      <input value={editForm.description} onChange={(event) => setEditForm((prev) => ({ ...prev, description: event.target.value }))} style={{ ...editInputStyle, width: 140 }} />
+                      <select value={editForm.event} onChange={(event) => setEditForm((prev) => ({ ...prev, event: event.target.value }))} style={editInputStyle}>
+                        {eventOptions.map((eventName) => (
+                          <option key={eventName} value={eventName} style={optionStyle}>{eventName}</option>
+                        ))}
+                      </select>
                     </td>
                     <td style={cellStyle}>
                       <input type="date" value={editForm.transactionDate} onChange={(event) => setEditForm((prev) => ({ ...prev, transactionDate: event.target.value }))} style={editInputStyle} />
                     </td>
                     <td style={cellStyle}>
+                      <input type="number" min="1" value={editForm.qty} onChange={(event) => setEditForm((prev) => ({ ...prev, qty: event.target.value }))} style={{ ...editInputStyle, width: 60 }} />
+                    </td>
+                    <td style={cellStyle}>
                       <input type="number" min="0" value={editForm.amount} onChange={(event) => setEditForm((prev) => ({ ...prev, amount: event.target.value }))} style={{ ...editInputStyle, width: 80 }} />
                     </td>
                     <td style={cellStyle}>
-                      <select value={editForm.purchasedBy} onChange={(event) => setEditForm((prev) => ({ ...prev, purchasedBy: event.target.value }))} style={{ ...editInputStyle, width: 90 }}>
-                        {PURCHASER_OPTIONS.map((name) => (
+                      <div style={{ display: 'grid', gap: 4 }}>
+                        <input value={editForm.category} onChange={(event) => setEditForm((prev) => ({ ...prev, category: event.target.value }))} placeholder="Catégorie" style={{ ...editInputStyle, width: 100 }} />
+                        <input value={editForm.bloc} onChange={(event) => setEditForm((prev) => ({ ...prev, bloc: event.target.value }))} placeholder="Bloc" style={{ ...editInputStyle, width: 100 }} />
+                        <input value={editForm.rang} onChange={(event) => setEditForm((prev) => ({ ...prev, rang: event.target.value }))} placeholder="Rangée" style={{ ...editInputStyle, width: 100 }} />
+                        <input value={editForm.seats} onChange={(event) => setEditForm((prev) => ({ ...prev, seats: event.target.value }))} placeholder="Siège" style={{ ...editInputStyle, width: 100 }} />
+                      </div>
+                    </td>
+                    <td style={cellStyle}>
+                      <input value={editForm.discordHandle} onChange={(event) => setEditForm((prev) => ({ ...prev, discordHandle: event.target.value }))} style={{ ...editInputStyle, width: 110 }} />
+                    </td>
+                    <td style={cellStyle}>
+                      <select value={editForm.purchasedBy} onChange={(event) => setEditForm((prev) => ({ ...prev, purchasedBy: event.target.value }))} style={{ ...editInputStyle, width: 100 }}>
+                        {ACO_PURCHASER_OPTIONS.map((name) => (
                           <option key={name} value={name} style={optionStyle}>{name}</option>
                         ))}
                       </select>
                     </td>
                     <td style={cellStyle}>
-                      <input value={editForm.notes} onChange={(event) => setEditForm((prev) => ({ ...prev, notes: event.target.value }))} style={{ ...editInputStyle, width: 140 }} />
+                      <select value={editForm.status} onChange={(event) => setEditForm((prev) => ({ ...prev, status: event.target.value as AcoStatus }))} style={{ ...editInputStyle, width: 130 }}>
+                        <option value="en_attente" style={optionStyle}>En attente</option>
+                        <option value="paye" style={optionStyle}>Payé</option>
+                      </select>
+                    </td>
+                    <td style={cellStyle}>
+                      <input value={editForm.notes} onChange={(event) => setEditForm((prev) => ({ ...prev, notes: event.target.value }))} style={{ ...editInputStyle, width: 120 }} />
                     </td>
                     <td style={cellStyle}>
                       <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
@@ -377,16 +494,38 @@ function AcoTab() {
                   </tr>
                 );
               }
+              const statusInfo = ACO_STATUS_LABELS[t.status] || ACO_STATUS_LABELS.en_attente;
               return (
                 <tr key={t.id}>
-                  <td style={cellStyle}>{t.description}</td>
+                  <td style={cellStyle}>{t.event}</td>
                   <td style={cellStyle}>{new Date(t.transactionDate).toLocaleDateString('fr-FR')}</td>
+                  <td style={{ ...cellStyle, fontFamily: 'IBM Plex Mono, monospace' }}>{t.qty}</td>
                   <td style={{ ...cellStyle, fontFamily: 'IBM Plex Mono, monospace', color: COLORS.green }}>{fmtUSD(t.amount)}</td>
+                  <td style={{ ...cellStyle, fontSize: 12, color: COLORS.textMuted }}>
+                    {[t.category, t.bloc && `Bloc ${t.bloc}`, t.rang && `Rangée ${t.rang}`, t.seats && `Siège ${t.seats}`].filter(Boolean).join(' · ') || '—'}
+                  </td>
+                  <td style={cellStyle}>{t.discordHandle || '—'}</td>
                   <td style={cellStyle}>{t.purchasedBy}</td>
+                  <td style={cellStyle}>
+                    <span style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 10, textTransform: 'uppercase', padding: '3px 9px', borderRadius: 20, border: `1px solid ${statusInfo.color}55`, color: statusInfo.color }}>
+                      {statusInfo.label}
+                    </span>
+                  </td>
                   <td style={{ ...cellStyle, color: COLORS.textMuted }}>{t.notes || '—'}</td>
                   <td style={cellStyle}>
                     <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
                       <button onClick={() => startEdit(t)} style={actionButtonStyle}>Modifier</button>
+                      {t.status === 'en_attente' ? (
+                        <button
+                          onClick={async () => {
+                            const { error } = await supabase.from('aco_transactions').update({ status: 'paye' }).eq('id', t.id);
+                            if (error) setErrorMessage(error.message);
+                          }}
+                          style={actionButtonStyle}
+                        >
+                          Marquer payé
+                        </button>
+                      ) : null}
                       <button onClick={() => removeTransaction(t.id)} style={{ ...actionButtonStyle, border: `1px solid ${COLORS.line}` }}>Suppr.</button>
                     </div>
                   </td>
@@ -860,7 +999,7 @@ export default function HomePage() {
         </div>
 
         {activeTab === 'aco' ? (
-          <AcoTab />
+          <AcoTab eventOptions={eventOptions} />
         ) : loading ? (
           <div style={{ padding: '40px 0', textAlign: 'center', color: COLORS.textMuted, fontSize: 13 }}>
             Chargement des billets…

@@ -68,10 +68,17 @@ alter publication supabase_realtime add table public.events;
 -- Aucune trésorerie n'est engagée ici, seul le supplément encaissé compte.
 create table if not exists public.aco_transactions (
   id bigint generated always as identity primary key,
-  description text not null,
+  event text not null,
+  category text,
+  bloc text,
+  rang text,
+  seats text,
+  qty integer not null default 1,
+  discord_handle text,
   transaction_date date not null,
   amount numeric not null default 0,
   purchased_by text not null default 'Commun',
+  status text not null default 'en_attente' check (status in ('paye', 'en_attente')),
   notes text,
   created_at timestamptz not null default now()
 );
