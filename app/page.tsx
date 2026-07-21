@@ -89,11 +89,11 @@ const COLORS = {
   line: 'rgba(255,255,255,0.09)',
   text: '#ffffff',
   textMuted: '#9a9aa8',
-  amber: '#b026ff',
-  green: '#00ff9d',
-  red: '#ff2fd6',
-  blue: '#00e5ff',
-  yellow: '#ffe135',
+  amber: '#f59e0b',
+  green: '#22c55e',
+  red: '#ef4444',
+  blue: '#3b82f6',
+  yellow: '#eab308',
 };
 
 const fmtUSD = (value: number) =>
@@ -541,7 +541,7 @@ export default function HomePage() {
       <div style={{ maxWidth: 1400, margin: '0 auto' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 24, flexWrap: 'wrap', gap: 12 }}>
           <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
-            <div style={{ width: 40, height: 40, borderRadius: 10, background: COLORS.amber, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Oswald, sans-serif', fontWeight: 700, color: '#ffffff', fontSize: 18 }}>G</div>
+            <div style={{ width: 40, height: 40, borderRadius: 10, background: COLORS.amber, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Oswald, sans-serif', fontWeight: 700, color: '#1a1206', fontSize: 18 }}>G</div>
             <div>
               <div style={{ fontFamily: 'Oswald, sans-serif', fontWeight: 700, fontSize: 20, letterSpacing: '0.01em' }}>Guichet</div>
               <div style={{ fontSize: 12, color: COLORS.textMuted }}>Tableau de bord opérationnel</div>
@@ -590,7 +590,7 @@ export default function HomePage() {
               <button
                 type="submit"
                 disabled={loggingIn}
-                style={{ padding: '10px 14px', borderRadius: 8, background: COLORS.amber, color: '#ffffff', fontWeight: 700, border: 'none', cursor: 'pointer', opacity: loggingIn ? 0.6 : 1 }}
+                style={{ padding: '10px 14px', borderRadius: 8, background: COLORS.amber, color: '#1a1206', fontWeight: 700, border: 'none', cursor: 'pointer', opacity: loggingIn ? 0.6 : 1 }}
               >
                 {loggingIn ? 'Connexion…' : 'Se connecter'}
               </button>
@@ -716,7 +716,7 @@ export default function HomePage() {
                 <input type="password" value={form.accountPassword} onChange={(event) => setForm((prev) => ({ ...prev, accountPassword: event.target.value }))} placeholder="Mot de passe" style={inputStyle} />
               </div>
 
-              <button type="submit" style={{ padding: '10px 14px', borderRadius: 8, background: COLORS.amber, color: '#ffffff', fontWeight: 700, border: 'none', cursor: 'pointer' }}>Ajouter le lot</button>
+              <button type="submit" style={{ padding: '10px 14px', borderRadius: 8, background: COLORS.amber, color: '#1a1206', fontWeight: 700, border: 'none', cursor: 'pointer' }}>Ajouter le lot</button>
             </form>
           </Panel>
 
@@ -854,7 +854,7 @@ export default function HomePage() {
                       <td style={cellStyle}><StatusBadge status={ticket.status} /></td>
                       <td style={cellStyle}>
                         <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-                          <button onClick={() => saveEdit(ticket.id)} style={{ ...actionButtonStyle, background: COLORS.amber, color: '#ffffff', border: 'none', fontWeight: 700 }}>Enregistrer</button>
+                          <button onClick={() => saveEdit(ticket.id)} style={{ ...actionButtonStyle, background: COLORS.amber, color: '#1a1206', border: 'none', fontWeight: 700 }}>Enregistrer</button>
                           <button onClick={cancelEdit} style={actionButtonStyle}>Annuler</button>
                         </div>
                       </td>
