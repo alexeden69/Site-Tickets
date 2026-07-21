@@ -383,10 +383,10 @@ function AcoTab({ eventOptions }: { eventOptions: string[] }) {
       <div style={{ marginBottom: 10, fontFamily: 'IBM Plex Mono, monospace', fontSize: 11, letterSpacing: '0.1em', color: COLORS.textMuted, textTransform: 'uppercase' }}>Synthèse ACO</div>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 14, marginBottom: 28 }}>
         <StatCard icon="🧺" label="Transactions" value={String(stats.count)} accent={COLORS.amber} />
-        <StatCard icon="💰" label="Gain total" value={fmtUSD(stats.total)} accent={COLORS.green} />
-        <StatCard icon="✅" label="Payé" value={fmtUSD(stats.paid)} accent={COLORS.green} />
-        <StatCard icon="⏳" label="En attente" value={fmtUSD(stats.pending)} accent={COLORS.amber} />
-        <StatCard icon="📊" label="Gain moyen" value={fmtUSD(stats.avg)} accent={COLORS.blue} sub="Par transaction" />
+        <StatCard icon="💰" label="Total PAS" value={fmtLocal(stats.total, 'EUR')} accent={COLORS.green} />
+        <StatCard icon="✅" label="Payé" value={fmtLocal(stats.paid, 'EUR')} accent={COLORS.green} />
+        <StatCard icon="⏳" label="En attente" value={fmtLocal(stats.pending, 'EUR')} accent={COLORS.amber} />
+        <StatCard icon="📊" label="Moyenne" value={fmtLocal(stats.avg, 'EUR')} accent={COLORS.blue} sub="Par transaction" />
       </div>
 
       <Panel title="Ajouter une transaction ACO" subtitle="Pas d'achat, pas de trésorerie sortie : juste le supplément encaissé">
@@ -400,7 +400,7 @@ function AcoTab({ eventOptions }: { eventOptions: string[] }) {
             </select>
             <input type="date" value={form.transactionDate} onChange={(event) => setForm((prev) => ({ ...prev, transactionDate: event.target.value }))} style={inputStyle} />
             <input type="number" min="1" value={form.qty} onChange={(event) => setForm((prev) => ({ ...prev, qty: event.target.value }))} placeholder="Qté" style={inputStyle} />
-            <input type="number" min="0" value={form.amount} onChange={(event) => setForm((prev) => ({ ...prev, amount: event.target.value }))} placeholder="Montant gagné ($)" style={inputStyle} />
+            <input type="number" min="0" value={form.amount} onChange={(event) => setForm((prev) => ({ ...prev, amount: event.target.value }))} placeholder="Prix du PAS (€)" style={inputStyle} />
             <select value={form.purchasedBy} onChange={(event) => setForm((prev) => ({ ...prev, purchasedBy: event.target.value }))} style={inputStyle}>
               {ACO_PURCHASER_OPTIONS.map((name) => (
                 <option key={name} value={name} style={optionStyle}>{name}</option>
@@ -432,7 +432,7 @@ function AcoTab({ eventOptions }: { eventOptions: string[] }) {
         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
           <thead>
             <tr>
-              {['Événement', 'Date', 'Qté', 'Montant', 'Placement', 'Discord', 'Associé', 'Statut', 'Note', 'Actions'].map((header) => (
+              {['Événement', 'Date', 'Qté', 'Prix du PAS', 'Placement', 'Discord', 'Associé', 'Statut', 'Note', 'Actions'].map((header) => (
                 <th key={header} style={{ textAlign: 'left', padding: '10px 14px', fontFamily: 'IBM Plex Mono, monospace', fontSize: 10, letterSpacing: '0.05em', textTransform: 'uppercase', color: COLORS.textMuted, borderBottom: `1px solid ${COLORS.line}` }}>{header}</th>
               ))}
             </tr>
@@ -500,7 +500,7 @@ function AcoTab({ eventOptions }: { eventOptions: string[] }) {
                   <td style={cellStyle}>{t.event}</td>
                   <td style={cellStyle}>{new Date(t.transactionDate).toLocaleDateString('fr-FR')}</td>
                   <td style={{ ...cellStyle, fontFamily: 'IBM Plex Mono, monospace' }}>{t.qty}</td>
-                  <td style={{ ...cellStyle, fontFamily: 'IBM Plex Mono, monospace', color: COLORS.green }}>{fmtUSD(t.amount)}</td>
+                  <td style={{ ...cellStyle, fontFamily: 'IBM Plex Mono, monospace', color: COLORS.green }}>{fmtLocal(t.amount, 'EUR')}</td>
                   <td style={{ ...cellStyle, fontSize: 12, color: COLORS.textMuted }}>
                     {[t.category, t.bloc && `Bloc ${t.bloc}`, t.rang && `Rangée ${t.rang}`, t.seats && `Siège ${t.seats}`].filter(Boolean).join(' · ') || '—'}
                   </td>
