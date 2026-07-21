@@ -247,6 +247,8 @@ function AcoTab({ eventOptions }: { eventOptions: string[] }) {
   const [form, setForm] = useState(emptyAcoForm);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editForm, setEditForm] = useState(emptyAcoForm);
+  const [eventFilter, setEventFilter] = useState('all');
+  const [timeFilter, setTimeFilter] = useState<'all' | 'past' | 'upcoming'>('all');
 
   useEffect(() => {
     let isMounted = true;
@@ -279,16 +281,29 @@ function AcoTab({ eventOptions }: { eventOptions: string[] }) {
     };
   }, []);
 
+  const filteredTransactions = useMemo(() => {
+    const startOfToday = new Date();
+    startOfToday.setHours(0, 0, 0, 0);
+
+    return transactions
+      .filter((t) => eventFilter === 'all' || t.event === eventFilter)
+      .filter((t) => {
+        if (timeFilter === 'all') return true;
+        const isPast = new Date(t.transactionDate) < startOfToday;
+        return timeFilter === 'past' ? isPast : !isPast;
+      });
+  }, [transactions, eventFilter, timeFilter]);
+
   const stats = useMemo(() => {
-    const count = transactions.length;
-    const paidTransactions = transactions.filter((t) => t.status === 'paye');
+    const count = filteredTransactions.length;
+    const paidTransactions = filteredTransactions.filter((t) => t.status === 'paye');
     const pnl = paidTransactions.reduce((sum, t) => sum + t.amount, 0);
-    const pending = transactions.filter((t) => t.status === 'en_attente').reduce((sum, t) => sum + t.amount, 0);
-    return { count, pnl, pending, avg: paidTransactions.length > 0 ? pnl / paidTransactions.length : 0 };
-  }, [transactions]);
+    const pending = filteredTransactions.filter((t) => t.status === 'en_attente').reduce((sum, t) => sum + t.amount, 0);
+    return { count, pnl, pending, pnlFictif: pnl + pending, avg: paidTransactions.length > 0 ? pnl / paidTransactions.length : 0 };
+  }, [filteredTransactions]);
 
   const pnlOverTime = useMemo(() => {
-    const paid = transactions
+    const paid = filteredTransactions
       .filter((t) => t.status === 'paye')
       .slice()
       .sort((a, b) => a.transactionDate.localeCompare(b.transactionDate));
@@ -297,7 +312,7 @@ function AcoTab({ eventOptions }: { eventOptions: string[] }) {
       running += t.amount;
       return { date: new Date(t.transactionDate).toLocaleDateString('fr-FR'), pnl: running };
     });
-  }, [transactions]);
+  }, [filteredTransactions]);
 
   const addTransaction = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -394,11 +409,41 @@ function AcoTab({ eventOptions }: { eventOptions: string[] }) {
         </div>
       ) : null}
 
-      <div style={{ marginBottom: 10, fontFamily: 'IBM Plex Mono, monospace', fontSize: 11, letterSpacing: '0.1em', color: COLORS.textMuted, textTransform: 'uppercase' }}>Synthèse ACO</div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10, flexWrap: 'wrap', gap: 10 }}>
+        <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 11, letterSpacing: '0.1em', color: COLORS.textMuted, textTransform: 'uppercase' }}>Synthèse ACO</div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
+          <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, color: COLORS.textMuted }}>
+            Filtrer par événement
+            <select
+              value={eventFilter}
+              onChange={(event) => setEventFilter(event.target.value)}
+              style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${COLORS.line}`, color: COLORS.text, borderRadius: 8, padding: '6px 10px', fontSize: 12, outline: 'none' }}
+            >
+              <option value="all" style={optionStyle}>Tous les événements</option>
+              {eventOptions.map((eventName) => (
+                <option key={eventName} value={eventName} style={optionStyle}>{eventName}</option>
+              ))}
+            </select>
+          </label>
+          <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, color: COLORS.textMuted }}>
+            Période
+            <select
+              value={timeFilter}
+              onChange={(event) => setTimeFilter(event.target.value as 'all' | 'past' | 'upcoming')}
+              style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${COLORS.line}`, color: COLORS.text, borderRadius: 8, padding: '6px 10px', fontSize: 12, outline: 'none' }}
+            >
+              <option value="all" style={optionStyle}>Tous</option>
+              <option value="upcoming" style={optionStyle}>À venir</option>
+              <option value="past" style={optionStyle}>Passés</option>
+            </select>
+          </label>
+        </div>
+      </div>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 14, marginBottom: 28 }}>
         <StatCard icon="🧺" label="Transactions" value={String(stats.count)} accent={COLORS.amber} />
         <StatCard icon="💰" label="PNL" value={fmtLocal(stats.pnl, 'EUR')} accent={COLORS.green} sub="Transactions payées uniquement" />
         <StatCard icon="⏳" label="En attente" value={fmtLocal(stats.pending, 'EUR')} accent={COLORS.amber} sub="Non compté dans le PNL" />
+        <StatCard icon="🔮" label="PNL fictif" value={fmtLocal(stats.pnlFictif, 'EUR')} accent={COLORS.blue} sub="Payé + en attente" />
         <StatCard icon="📊" label="Moyenne" value={fmtLocal(stats.avg, 'EUR')} accent={COLORS.blue} sub="Par transaction payée" />
       </div>
 
@@ -467,7 +512,7 @@ function AcoTab({ eventOptions }: { eventOptions: string[] }) {
             </tr>
           </thead>
           <tbody>
-            {transactions.map((t) => {
+            {filteredTransactions.map((t) => {
               if (editingId === t.id) {
                 return (
                   <tr key={t.id}>
