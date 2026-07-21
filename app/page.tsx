@@ -169,6 +169,7 @@ function StatusBadge({ status }: { status: TicketStatus }) {
 }
 
 type AcoStatus = 'paye' | 'en_attente';
+type AcoDealType = 'aco' | 'profit_split';
 
 type AcoTransaction = {
   id: number;
@@ -182,7 +183,10 @@ type AcoTransaction = {
   transactionDate: string;
   amount: number;
   purchasedBy: string;
+  dealType: AcoDealType;
   status: AcoStatus;
+  accountEmail: string;
+  accountPassword: string;
   notes: string;
 };
 
@@ -198,7 +202,10 @@ type AcoRow = {
   transaction_date: string;
   amount: number;
   purchased_by: string;
+  deal_type: AcoDealType;
   status: AcoStatus;
+  account_email: string | null;
+  account_password: string | null;
   notes: string | null;
 };
 
@@ -214,11 +221,17 @@ const fromAcoRow = (row: AcoRow): AcoTransaction => ({
   transactionDate: row.transaction_date,
   amount: row.amount,
   purchasedBy: row.purchased_by,
+  dealType: row.deal_type,
   status: row.status,
+  accountEmail: row.account_email || '',
+  accountPassword: row.account_password || '',
   notes: row.notes || '',
 });
 
-const ACO_PURCHASER_OPTIONS = [...PURCHASER_OPTIONS, 'Profit Split'];
+const ACO_DEAL_TYPE_LABELS: Record<AcoDealType, string> = {
+  aco: 'ACO',
+  profit_split: 'Profit Split',
+};
 
 const ACO_STATUS_LABELS: Record<AcoStatus, { label: string; color: string }> = {
   paye: { label: 'Payé', color: COLORS.green },
@@ -236,7 +249,10 @@ const emptyAcoForm = {
   transactionDate: '',
   amount: '',
   purchasedBy: 'Commun',
+  dealType: 'aco' as AcoDealType,
   status: 'en_attente' as AcoStatus,
+  accountEmail: '',
+  accountPassword: '',
   notes: '',
 };
 
@@ -249,6 +265,16 @@ function AcoTab({ eventOptions }: { eventOptions: string[] }) {
   const [editForm, setEditForm] = useState(emptyAcoForm);
   const [eventFilter, setEventFilter] = useState('all');
   const [timeFilter, setTimeFilter] = useState<'all' | 'past' | 'upcoming'>('all');
+  const [revealedPasswords, setRevealedPasswords] = useState<Set<number>>(new Set());
+
+  const togglePasswordReveal = (id: number) => {
+    setRevealedPasswords((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
 
   useEffect(() => {
     let isMounted = true;
@@ -256,7 +282,7 @@ function AcoTab({ eventOptions }: { eventOptions: string[] }) {
     const load = async () => {
       const { data, error } = await supabase
         .from('aco_transactions')
-        .select('id, event, category, bloc, rang, seats, qty, discord_handle, transaction_date, amount, purchased_by, status, notes')
+        .select('id, event, category, bloc, rang, seats, qty, discord_handle, transaction_date, amount, purchased_by, deal_type, status, account_email, account_password, notes')
         .order('transaction_date', { ascending: false });
       if (!isMounted) return;
       if (error) {
@@ -330,7 +356,10 @@ function AcoTab({ eventOptions }: { eventOptions: string[] }) {
       transaction_date: form.transactionDate,
       amount,
       purchased_by: form.purchasedBy,
+      deal_type: form.dealType,
       status: form.status,
+      account_email: form.accountEmail || null,
+      account_password: form.accountPassword || null,
       notes: form.notes || null,
     });
     if (error) {
@@ -358,7 +387,10 @@ function AcoTab({ eventOptions }: { eventOptions: string[] }) {
       transactionDate: t.transactionDate,
       amount: String(t.amount),
       purchasedBy: t.purchasedBy,
+      dealType: t.dealType,
       status: t.status,
+      accountEmail: t.accountEmail,
+      accountPassword: t.accountPassword,
       notes: t.notes,
     });
   };
@@ -382,7 +414,10 @@ function AcoTab({ eventOptions }: { eventOptions: string[] }) {
         transaction_date: editForm.transactionDate,
         amount,
         purchased_by: editForm.purchasedBy,
+        deal_type: editForm.dealType,
         status: editForm.status,
+        account_email: editForm.accountEmail || null,
+        account_password: editForm.accountPassword || null,
         notes: editForm.notes || null,
       })
       .eq('id', id);
@@ -476,9 +511,13 @@ function AcoTab({ eventOptions }: { eventOptions: string[] }) {
             <input type="number" min="1" value={form.qty} onChange={(event) => setForm((prev) => ({ ...prev, qty: event.target.value }))} placeholder="Qté" style={inputStyle} />
             <input type="number" min="0" value={form.amount} onChange={(event) => setForm((prev) => ({ ...prev, amount: event.target.value }))} placeholder="Prix du PAS (€)" style={inputStyle} />
             <select value={form.purchasedBy} onChange={(event) => setForm((prev) => ({ ...prev, purchasedBy: event.target.value }))} style={inputStyle}>
-              {ACO_PURCHASER_OPTIONS.map((name) => (
+              {PURCHASER_OPTIONS.map((name) => (
                 <option key={name} value={name} style={optionStyle}>{name}</option>
               ))}
+            </select>
+            <select value={form.dealType} onChange={(event) => setForm((prev) => ({ ...prev, dealType: event.target.value as AcoDealType }))} style={inputStyle}>
+              <option value="aco" style={optionStyle}>ACO</option>
+              <option value="profit_split" style={optionStyle}>Profit Split</option>
             </select>
             <select value={form.status} onChange={(event) => setForm((prev) => ({ ...prev, status: event.target.value as AcoStatus }))} style={inputStyle}>
               <option value="en_attente" style={optionStyle}>En attente de paiement</option>
@@ -495,6 +534,12 @@ function AcoTab({ eventOptions }: { eventOptions: string[] }) {
             <input value={form.discordHandle} onChange={(event) => setForm((prev) => ({ ...prev, discordHandle: event.target.value }))} placeholder="Pseudonyme Discord" style={inputStyle} />
           </div>
 
+          <div style={{ fontSize: 11, color: COLORS.textMuted, marginTop: 4 }}>Compte plateforme (optionnel)</div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: 10 }}>
+            <input type="email" value={form.accountEmail} onChange={(event) => setForm((prev) => ({ ...prev, accountEmail: event.target.value }))} placeholder="Email du compte" style={inputStyle} />
+            <input type="password" value={form.accountPassword} onChange={(event) => setForm((prev) => ({ ...prev, accountPassword: event.target.value }))} placeholder="Mot de passe" style={inputStyle} />
+          </div>
+
           <input value={form.notes} onChange={(event) => setForm((prev) => ({ ...prev, notes: event.target.value }))} placeholder="Note (optionnel)" style={inputStyle} />
 
           <button type="submit" style={{ padding: '10px 14px', borderRadius: 8, background: COLORS.amber, color: '#ffffff', fontWeight: 700, border: 'none', cursor: 'pointer' }}>Ajouter</button>
@@ -506,7 +551,7 @@ function AcoTab({ eventOptions }: { eventOptions: string[] }) {
         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
           <thead>
             <tr>
-              {['Événement', 'Date', 'Qté', 'Prix du PAS', 'Placement', 'Discord', 'Associé', 'Statut', 'Note', 'Actions'].map((header) => (
+              {['Événement', 'Date', 'Qté', 'Prix du PAS', 'Placement', 'Discord', 'Associé', 'Type', 'Compte', 'Statut', 'Note', 'Actions'].map((header) => (
                 <th key={header} style={{ textAlign: 'left', padding: '10px 14px', fontFamily: 'IBM Plex Mono, monospace', fontSize: 10, letterSpacing: '0.05em', textTransform: 'uppercase', color: COLORS.textMuted, borderBottom: `1px solid ${COLORS.line}` }}>{header}</th>
               ))}
             </tr>
@@ -545,10 +590,22 @@ function AcoTab({ eventOptions }: { eventOptions: string[] }) {
                     </td>
                     <td style={cellStyle}>
                       <select value={editForm.purchasedBy} onChange={(event) => setEditForm((prev) => ({ ...prev, purchasedBy: event.target.value }))} style={{ ...editInputStyle, width: 100 }}>
-                        {ACO_PURCHASER_OPTIONS.map((name) => (
+                        {PURCHASER_OPTIONS.map((name) => (
                           <option key={name} value={name} style={optionStyle}>{name}</option>
                         ))}
                       </select>
+                    </td>
+                    <td style={cellStyle}>
+                      <select value={editForm.dealType} onChange={(event) => setEditForm((prev) => ({ ...prev, dealType: event.target.value as AcoDealType }))} style={{ ...editInputStyle, width: 100 }}>
+                        <option value="aco" style={optionStyle}>ACO</option>
+                        <option value="profit_split" style={optionStyle}>Profit Split</option>
+                      </select>
+                    </td>
+                    <td style={cellStyle}>
+                      <div style={{ display: 'grid', gap: 4 }}>
+                        <input type="email" value={editForm.accountEmail} onChange={(event) => setEditForm((prev) => ({ ...prev, accountEmail: event.target.value }))} placeholder="Email" style={{ ...editInputStyle, width: 130 }} />
+                        <input type="password" value={editForm.accountPassword} onChange={(event) => setEditForm((prev) => ({ ...prev, accountPassword: event.target.value }))} placeholder="Mot de passe" style={{ ...editInputStyle, width: 130 }} />
+                      </div>
                     </td>
                     <td style={cellStyle}>
                       <select value={editForm.status} onChange={(event) => setEditForm((prev) => ({ ...prev, status: event.target.value as AcoStatus }))} style={{ ...editInputStyle, width: 130 }}>
@@ -580,6 +637,24 @@ function AcoTab({ eventOptions }: { eventOptions: string[] }) {
                   </td>
                   <td style={cellStyle}>{t.discordHandle || '—'}</td>
                   <td style={cellStyle}>{t.purchasedBy}</td>
+                  <td style={cellStyle}>{ACO_DEAL_TYPE_LABELS[t.dealType] || ACO_DEAL_TYPE_LABELS.aco}</td>
+                  <td style={cellStyle}>
+                    {t.accountEmail || t.accountPassword ? (
+                      <div style={{ fontSize: 12 }}>
+                        <div>{t.accountEmail || '—'}</div>
+                        <div style={{ color: COLORS.textMuted, display: 'flex', alignItems: 'center', gap: 6 }}>
+                          <span style={{ fontFamily: 'IBM Plex Mono, monospace' }}>
+                            {revealedPasswords.has(t.id) ? (t.accountPassword || '—') : '••••••••'}
+                          </span>
+                          {t.accountPassword ? (
+                            <button onClick={() => togglePasswordReveal(t.id)} style={{ ...actionButtonStyle, padding: '2px 6px' }}>
+                              {revealedPasswords.has(t.id) ? 'Cacher' : 'Voir'}
+                            </button>
+                          ) : null}
+                        </div>
+                      </div>
+                    ) : '—'}
+                  </td>
                   <td style={cellStyle}>
                     <span style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 10, textTransform: 'uppercase', padding: '3px 9px', borderRadius: 20, border: `1px solid ${statusInfo.color}55`, color: statusInfo.color }}>
                       {statusInfo.label}
