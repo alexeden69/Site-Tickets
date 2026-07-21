@@ -166,6 +166,240 @@ function StatusBadge({ status }: { status: TicketStatus }) {
   );
 }
 
+type AcoTransaction = {
+  id: number;
+  description: string;
+  transactionDate: string;
+  amount: number;
+  purchasedBy: string;
+  notes: string;
+};
+
+type AcoRow = {
+  id: number;
+  description: string;
+  transaction_date: string;
+  amount: number;
+  purchased_by: string;
+  notes: string | null;
+};
+
+const fromAcoRow = (row: AcoRow): AcoTransaction => ({
+  id: row.id,
+  description: row.description,
+  transactionDate: row.transaction_date,
+  amount: row.amount,
+  purchasedBy: row.purchased_by,
+  notes: row.notes || '',
+});
+
+function AcoTab() {
+  const [transactions, setTransactions] = useState<AcoTransaction[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [form, setForm] = useState({ description: '', transactionDate: '', amount: '', purchasedBy: 'Commun', notes: '' });
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [editForm, setEditForm] = useState({ description: '', transactionDate: '', amount: '', purchasedBy: 'Commun', notes: '' });
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const load = async () => {
+      const { data, error } = await supabase
+        .from('aco_transactions')
+        .select('id, description, transaction_date, amount, purchased_by, notes')
+        .order('transaction_date', { ascending: false });
+      if (!isMounted) return;
+      if (error) {
+        setErrorMessage(error.message);
+      } else {
+        setTransactions((data as AcoRow[]).map(fromAcoRow));
+        setErrorMessage(null);
+      }
+      setLoading(false);
+    };
+
+    load();
+
+    const channel = supabase
+      .channel('aco-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'aco_transactions' }, () => load())
+      .subscribe();
+
+    return () => {
+      isMounted = false;
+      supabase.removeChannel(channel);
+    };
+  }, []);
+
+  const stats = useMemo(() => {
+    const total = transactions.reduce((sum, t) => sum + t.amount, 0);
+    const count = transactions.length;
+    return { total, count, avg: count > 0 ? total / count : 0 };
+  }, [transactions]);
+
+  const addTransaction = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const amount = Number(form.amount);
+    if (!form.description || !form.transactionDate || Number.isNaN(amount)) return;
+    const { error } = await supabase.from('aco_transactions').insert({
+      description: form.description,
+      transaction_date: form.transactionDate,
+      amount,
+      purchased_by: form.purchasedBy,
+      notes: form.notes || null,
+    });
+    if (error) {
+      setErrorMessage(error.message);
+      return;
+    }
+    setForm({ description: '', transactionDate: '', amount: '', purchasedBy: 'Commun', notes: '' });
+  };
+
+  const removeTransaction = async (id: number) => {
+    const { error } = await supabase.from('aco_transactions').delete().eq('id', id);
+    if (error) setErrorMessage(error.message);
+  };
+
+  const startEdit = (t: AcoTransaction) => {
+    setEditingId(t.id);
+    setEditForm({
+      description: t.description,
+      transactionDate: t.transactionDate,
+      amount: String(t.amount),
+      purchasedBy: t.purchasedBy,
+      notes: t.notes,
+    });
+  };
+
+  const cancelEdit = () => setEditingId(null);
+
+  const saveEdit = async (id: number) => {
+    const amount = Number(editForm.amount);
+    if (!editForm.description || !editForm.transactionDate || Number.isNaN(amount)) return;
+    const { error } = await supabase
+      .from('aco_transactions')
+      .update({
+        description: editForm.description,
+        transaction_date: editForm.transactionDate,
+        amount,
+        purchased_by: editForm.purchasedBy,
+        notes: editForm.notes || null,
+      })
+      .eq('id', id);
+    if (error) {
+      setErrorMessage(error.message);
+      return;
+    }
+    setEditingId(null);
+  };
+
+  if (loading) {
+    return (
+      <div style={{ padding: '40px 0', textAlign: 'center', color: COLORS.textMuted, fontSize: 13 }}>
+        Chargement ACO…
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      {errorMessage ? (
+        <div style={{ marginBottom: 20, padding: '12px 16px', borderRadius: 8, background: 'rgba(217,95,74,0.12)', border: `1px solid ${COLORS.red}55`, color: COLORS.red, fontSize: 13 }}>
+          Erreur : {errorMessage}
+        </div>
+      ) : null}
+
+      <div style={{ marginBottom: 10, fontFamily: 'IBM Plex Mono, monospace', fontSize: 11, letterSpacing: '0.1em', color: COLORS.textMuted, textTransform: 'uppercase' }}>Synthèse ACO</div>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 14, marginBottom: 28 }}>
+        <StatCard icon="🧺" label="Transactions" value={String(stats.count)} accent={COLORS.amber} />
+        <StatCard icon="💰" label="Gain total" value={fmtUSD(stats.total)} accent={COLORS.green} />
+        <StatCard icon="📊" label="Gain moyen" value={fmtUSD(stats.avg)} accent={COLORS.blue} sub="Par transaction" />
+      </div>
+
+      <Panel title="Ajouter une transaction ACO" subtitle="Pas d'achat, pas de trésorerie sortie : juste le supplément encaissé">
+        <form onSubmit={addTransaction} style={{ display: 'grid', gap: 10 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: 10 }}>
+            <input value={form.description} onChange={(event) => setForm((prev) => ({ ...prev, description: event.target.value }))} placeholder="Description" style={inputStyle} />
+            <input type="date" value={form.transactionDate} onChange={(event) => setForm((prev) => ({ ...prev, transactionDate: event.target.value }))} style={inputStyle} />
+            <input type="number" min="0" value={form.amount} onChange={(event) => setForm((prev) => ({ ...prev, amount: event.target.value }))} placeholder="Montant gagné ($)" style={inputStyle} />
+            <select value={form.purchasedBy} onChange={(event) => setForm((prev) => ({ ...prev, purchasedBy: event.target.value }))} style={inputStyle}>
+              {PURCHASER_OPTIONS.map((name) => (
+                <option key={name} value={name} style={optionStyle}>{name}</option>
+              ))}
+            </select>
+            <input value={form.notes} onChange={(event) => setForm((prev) => ({ ...prev, notes: event.target.value }))} placeholder="Note (optionnel)" style={inputStyle} />
+          </div>
+          <button type="submit" style={{ padding: '10px 14px', borderRadius: 8, background: COLORS.amber, color: '#1a1206', fontWeight: 700, border: 'none', cursor: 'pointer' }}>Ajouter</button>
+        </form>
+      </Panel>
+
+      <div style={{ marginTop: 28, marginBottom: 10, fontFamily: 'IBM Plex Mono, monospace', fontSize: 11, letterSpacing: '0.1em', color: COLORS.textMuted, textTransform: 'uppercase' }}>Détail ACO</div>
+      <div style={{ background: COLORS.panel, borderRadius: 10, overflowX: 'auto' }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
+          <thead>
+            <tr>
+              {['Description', 'Date', 'Montant', 'Associé', 'Note', 'Actions'].map((header) => (
+                <th key={header} style={{ textAlign: 'left', padding: '10px 14px', fontFamily: 'IBM Plex Mono, monospace', fontSize: 10, letterSpacing: '0.05em', textTransform: 'uppercase', color: COLORS.textMuted, borderBottom: `1px solid ${COLORS.line}` }}>{header}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {transactions.map((t) => {
+              if (editingId === t.id) {
+                return (
+                  <tr key={t.id}>
+                    <td style={cellStyle}>
+                      <input value={editForm.description} onChange={(event) => setEditForm((prev) => ({ ...prev, description: event.target.value }))} style={{ ...editInputStyle, width: 140 }} />
+                    </td>
+                    <td style={cellStyle}>
+                      <input type="date" value={editForm.transactionDate} onChange={(event) => setEditForm((prev) => ({ ...prev, transactionDate: event.target.value }))} style={editInputStyle} />
+                    </td>
+                    <td style={cellStyle}>
+                      <input type="number" min="0" value={editForm.amount} onChange={(event) => setEditForm((prev) => ({ ...prev, amount: event.target.value }))} style={{ ...editInputStyle, width: 80 }} />
+                    </td>
+                    <td style={cellStyle}>
+                      <select value={editForm.purchasedBy} onChange={(event) => setEditForm((prev) => ({ ...prev, purchasedBy: event.target.value }))} style={{ ...editInputStyle, width: 90 }}>
+                        {PURCHASER_OPTIONS.map((name) => (
+                          <option key={name} value={name} style={optionStyle}>{name}</option>
+                        ))}
+                      </select>
+                    </td>
+                    <td style={cellStyle}>
+                      <input value={editForm.notes} onChange={(event) => setEditForm((prev) => ({ ...prev, notes: event.target.value }))} style={{ ...editInputStyle, width: 140 }} />
+                    </td>
+                    <td style={cellStyle}>
+                      <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                        <button onClick={() => saveEdit(t.id)} style={{ ...actionButtonStyle, background: COLORS.amber, color: '#1a1206', border: 'none', fontWeight: 700 }}>Enregistrer</button>
+                        <button onClick={cancelEdit} style={actionButtonStyle}>Annuler</button>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              }
+              return (
+                <tr key={t.id}>
+                  <td style={cellStyle}>{t.description}</td>
+                  <td style={cellStyle}>{new Date(t.transactionDate).toLocaleDateString('fr-FR')}</td>
+                  <td style={{ ...cellStyle, fontFamily: 'IBM Plex Mono, monospace', color: COLORS.green }}>{fmtUSD(t.amount)}</td>
+                  <td style={cellStyle}>{t.purchasedBy}</td>
+                  <td style={{ ...cellStyle, color: COLORS.textMuted }}>{t.notes || '—'}</td>
+                  <td style={cellStyle}>
+                    <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                      <button onClick={() => startEdit(t)} style={actionButtonStyle}>Modifier</button>
+                      <button onClick={() => removeTransaction(t.id)} style={{ ...actionButtonStyle, border: `1px solid ${COLORS.line}` }}>Suppr.</button>
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
 export default function HomePage() {
   const [session, setSession] = useState<Session | null>(null);
   const [authChecked, setAuthChecked] = useState(false);
@@ -217,6 +451,7 @@ export default function HomePage() {
     localBuyAmount: '',
   });
   const [revealedPasswords, setRevealedPasswords] = useState<Set<number>>(new Set());
+  const [activeTab, setActiveTab] = useState<'tickets' | 'aco'>('tickets');
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
@@ -596,6 +831,36 @@ export default function HomePage() {
               </button>
             </form>
           </div>
+        ) : (
+        <>
+
+        <div style={{ display: 'flex', gap: 8, marginBottom: 20 }}>
+          <button
+            onClick={() => setActiveTab('tickets')}
+            style={{
+              padding: '8px 16px', borderRadius: 8, fontSize: 12, fontWeight: 700, cursor: 'pointer',
+              border: `1px solid ${activeTab === 'tickets' ? COLORS.amber : COLORS.line}`,
+              background: activeTab === 'tickets' ? 'rgba(245,158,11,0.15)' : 'transparent',
+              color: activeTab === 'tickets' ? COLORS.amber : COLORS.textMuted,
+            }}
+          >
+            Billets
+          </button>
+          <button
+            onClick={() => setActiveTab('aco')}
+            style={{
+              padding: '8px 16px', borderRadius: 8, fontSize: 12, fontWeight: 700, cursor: 'pointer',
+              border: `1px solid ${activeTab === 'aco' ? COLORS.amber : COLORS.line}`,
+              background: activeTab === 'aco' ? 'rgba(245,158,11,0.15)' : 'transparent',
+              color: activeTab === 'aco' ? COLORS.amber : COLORS.textMuted,
+            }}
+          >
+            ACO
+          </button>
+        </div>
+
+        {activeTab === 'aco' ? (
+          <AcoTab />
         ) : loading ? (
           <div style={{ padding: '40px 0', textAlign: 'center', color: COLORS.textMuted, fontSize: 13 }}>
             Chargement des billets…
@@ -917,6 +1182,8 @@ export default function HomePage() {
             </tbody>
           </table>
         </div>
+        </>
+        )}
         </>
         )}
       </div>

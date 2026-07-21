@@ -63,3 +63,31 @@ create policy "authenticated insert access" on public.events
   for insert with check (auth.role() = 'authenticated');
 
 alter publication supabase_realtime add table public.events;
+
+-- Activité "ACO" (paniers) : suivi séparé du flip de billets.
+-- Aucune trésorerie n'est engagée ici, seul le supplément encaissé compte.
+create table if not exists public.aco_transactions (
+  id bigint generated always as identity primary key,
+  description text not null,
+  transaction_date date not null,
+  amount numeric not null default 0,
+  purchased_by text not null default 'Commun',
+  notes text,
+  created_at timestamptz not null default now()
+);
+
+alter table public.aco_transactions enable row level security;
+
+create policy "authenticated read access" on public.aco_transactions
+  for select using (auth.role() = 'authenticated');
+
+create policy "authenticated insert access" on public.aco_transactions
+  for insert with check (auth.role() = 'authenticated');
+
+create policy "authenticated update access" on public.aco_transactions
+  for update using (auth.role() = 'authenticated') with check (auth.role() = 'authenticated');
+
+create policy "authenticated delete access" on public.aco_transactions
+  for delete using (auth.role() = 'authenticated');
+
+alter publication supabase_realtime add table public.aco_transactions;
