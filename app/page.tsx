@@ -35,6 +35,8 @@ type Ticket = {
   listingNumber: string;
   accountEmail: string;
   accountPassword: string;
+  localCurrency: string;
+  localBuyAmount: number | null;
 };
 
 type TicketRow = {
@@ -53,6 +55,8 @@ type TicketRow = {
   listing_number: string | null;
   account_email: string | null;
   account_password: string | null;
+  local_currency: string | null;
+  local_buy_amount: number | null;
 };
 
 const fromRow = (row: TicketRow): Ticket => ({
@@ -71,6 +75,8 @@ const fromRow = (row: TicketRow): Ticket => ({
   listingNumber: row.listing_number || '',
   accountEmail: row.account_email || '',
   accountPassword: row.account_password || '',
+  localCurrency: row.local_currency || '',
+  localBuyAmount: row.local_buy_amount,
 });
 
 const STOCK_STATUSES: TicketStatus[] = ['achete', 'listed'];
@@ -92,6 +98,14 @@ const COLORS = {
 
 const fmtUSD = (value: number) =>
   (value || 0).toLocaleString('fr-FR', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
+
+const fmtLocal = (value: number, currency: string) => {
+  try {
+    return value.toLocaleString('fr-FR', { style: 'currency', currency, maximumFractionDigits: 0 });
+  } catch {
+    return `${value} ${currency}`;
+  }
+};
 
 function StatCard({ label, value, sub, accent, icon }: { label: string; value: string; sub?: string; accent: string; icon: string }) {
   return (
@@ -176,6 +190,8 @@ export default function HomePage() {
     listingNumber: '',
     accountEmail: '',
     accountPassword: '',
+    localCurrency: '',
+    localBuyAmount: '',
   });
   const [eventFilter, setEventFilter] = useState('all');
   const [timeFilter, setTimeFilter] = useState<'all' | 'past' | 'upcoming'>('all');
@@ -197,6 +213,8 @@ export default function HomePage() {
     listingNumber: '',
     accountEmail: '',
     accountPassword: '',
+    localCurrency: '',
+    localBuyAmount: '',
   });
   const [revealedPasswords, setRevealedPasswords] = useState<Set<number>>(new Set());
 
@@ -242,7 +260,7 @@ export default function HomePage() {
     const loadTickets = async () => {
       const { data, error } = await supabase
         .from('tickets')
-        .select('id, event, event_date, qty, buy_usd, sell_usd, status, purchased_by, category, bloc, rang, seats, listing_number, account_email, account_password')
+        .select('id, event, event_date, qty, buy_usd, sell_usd, status, purchased_by, category, bloc, rang, seats, listing_number, account_email, account_password, local_currency, local_buy_amount')
         .order('event_date', { ascending: true });
       if (!isMounted) return;
       if (error) {
@@ -374,6 +392,8 @@ export default function HomePage() {
       listing_number: form.listingNumber || null,
       account_email: form.accountEmail || null,
       account_password: form.accountPassword || null,
+      local_currency: form.localCurrency || null,
+      local_buy_amount: form.localBuyAmount ? Number(form.localBuyAmount) : null,
     });
     if (error) {
       setErrorMessage(error.message);
@@ -393,6 +413,8 @@ export default function HomePage() {
       listingNumber: '',
       accountEmail: '',
       accountPassword: '',
+      localCurrency: '',
+      localBuyAmount: '',
     });
   };
 
@@ -434,6 +456,8 @@ export default function HomePage() {
       listingNumber: ticket.listingNumber,
       accountEmail: ticket.accountEmail,
       accountPassword: ticket.accountPassword,
+      localCurrency: ticket.localCurrency,
+      localBuyAmount: ticket.localBuyAmount != null ? String(ticket.localBuyAmount) : '',
     });
   };
 
@@ -461,6 +485,8 @@ export default function HomePage() {
         listing_number: editForm.listingNumber || null,
         account_email: editForm.accountEmail || null,
         account_password: editForm.accountPassword || null,
+        local_currency: editForm.localCurrency || null,
+        local_buy_amount: editForm.localBuyAmount ? Number(editForm.localBuyAmount) : null,
       })
       .eq('id', id);
     if (error) {
@@ -477,6 +503,37 @@ export default function HomePage() {
       else next.add(id);
       return next;
     });
+  };
+
+  const exportCsv = () => {
+    const headers = [
+      'Événement', 'Date', 'Qté', 'Achat/u. (USD)', 'Revente/u. (USD)', 'Devise locale', 'Montant local achat',
+      'Coût total', 'Recette', 'Bénéfice net', 'Acheteur', 'Catégorie', 'Bloc', 'Rang', 'Sièges', 'N° Listing',
+      'Email compte', 'Statut',
+    ];
+    const rows = filteredTickets.map((ticket) => {
+      const costTotal = ticket.qty * ticket.buyUsd;
+      const revenue = ticket.qty * (ticket.sellUsd || 0);
+      const profit = SOLD_STATUSES.includes(ticket.status) ? revenue - costTotal : '';
+      return [
+        ticket.event, ticket.eventDate, ticket.qty, ticket.buyUsd, ticket.sellUsd || '',
+        ticket.localCurrency, ticket.localBuyAmount ?? '', costTotal, revenue || '', profit,
+        ticket.purchasedBy, ticket.category, ticket.bloc, ticket.rang, ticket.seats, ticket.listingNumber,
+        ticket.accountEmail, ticket.status,
+      ];
+    });
+    const escapeCell = (value: unknown) => {
+      const str = String(value ?? '');
+      return /[",;\n]/.test(str) ? `"${str.replace(/"/g, '""')}"` : str;
+    };
+    const csv = [headers, ...rows].map((row) => row.map(escapeCell).join(';')).join('\n');
+    const blob = new Blob([String.fromCharCode(0xfeff) + csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `billets-${new Date().toISOString().slice(0, 10)}.csv`;
+    link.click();
+    URL.revokeObjectURL(url);
   };
 
   return (
@@ -647,6 +704,12 @@ export default function HomePage() {
                 <input value={form.listingNumber} onChange={(event) => setForm((prev) => ({ ...prev, listingNumber: event.target.value }))} placeholder="N° Listing" style={inputStyle} />
               </div>
 
+              <div style={{ fontSize: 11, color: COLORS.textMuted, marginTop: 4 }}>Prix en monnaie locale (optionnel — tu payes en $US mais le billet était affiché ailleurs)</div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(110px, 1fr))', gap: 10 }}>
+                <input value={form.localCurrency} onChange={(event) => setForm((prev) => ({ ...prev, localCurrency: event.target.value.toUpperCase() }))} placeholder="Devise (EUR, GBP…)" maxLength={3} style={inputStyle} />
+                <input type="number" min="0" value={form.localBuyAmount} onChange={(event) => setForm((prev) => ({ ...prev, localBuyAmount: event.target.value }))} placeholder="Prix d'achat local" style={inputStyle} />
+              </div>
+
               <div style={{ fontSize: 11, color: COLORS.textMuted, marginTop: 4 }}>Compte plateforme (optionnel)</div>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: 10 }}>
                 <input type="email" value={form.accountEmail} onChange={(event) => setForm((prev) => ({ ...prev, accountEmail: event.target.value }))} placeholder="Email du compte" style={inputStyle} />
@@ -716,7 +779,10 @@ export default function HomePage() {
           </Panel>
         </div>
 
-        <div style={{ marginBottom: 10, fontFamily: 'IBM Plex Mono, monospace', fontSize: 11, letterSpacing: '0.1em', color: COLORS.textMuted, textTransform: 'uppercase' }}>Détail des opérations</div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10, flexWrap: 'wrap', gap: 10 }}>
+          <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 11, letterSpacing: '0.1em', color: COLORS.textMuted, textTransform: 'uppercase' }}>Détail des opérations</div>
+          <button onClick={exportCsv} style={{ ...actionButtonStyle, padding: '6px 12px' }}>Exporter CSV</button>
+        </div>
         <div style={{ background: COLORS.panel, borderRadius: 10, overflowX: 'auto' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
             <thead>
@@ -749,7 +815,13 @@ export default function HomePage() {
                         <input type="number" min="1" value={editForm.qty} onChange={(event) => setEditForm((prev) => ({ ...prev, qty: event.target.value }))} style={{ ...editInputStyle, width: 60 }} />
                       </td>
                       <td style={cellStyle}>
-                        <input type="number" min="0" value={editForm.buyUsd} onChange={(event) => setEditForm((prev) => ({ ...prev, buyUsd: event.target.value }))} style={{ ...editInputStyle, width: 80 }} />
+                        <div style={{ display: 'grid', gap: 4 }}>
+                          <input type="number" min="0" value={editForm.buyUsd} onChange={(event) => setEditForm((prev) => ({ ...prev, buyUsd: event.target.value }))} style={{ ...editInputStyle, width: 80 }} />
+                          <div style={{ display: 'flex', gap: 4 }}>
+                            <input value={editForm.localCurrency} onChange={(event) => setEditForm((prev) => ({ ...prev, localCurrency: event.target.value.toUpperCase() }))} placeholder="Dev." maxLength={3} style={{ ...editInputStyle, width: 40 }} />
+                            <input type="number" min="0" value={editForm.localBuyAmount} onChange={(event) => setEditForm((prev) => ({ ...prev, localBuyAmount: event.target.value }))} placeholder="Montant" style={{ ...editInputStyle, width: 70 }} />
+                          </div>
+                        </div>
                       </td>
                       <td style={cellStyle}>
                         <input type="number" min="0" value={editForm.sellUsd} onChange={(event) => setEditForm((prev) => ({ ...prev, sellUsd: event.target.value }))} style={{ ...editInputStyle, width: 80 }} />
@@ -795,7 +867,12 @@ export default function HomePage() {
                     <td style={cellStyle}>{ticket.event}</td>
                     <td style={cellStyle}>{new Date(ticket.eventDate).toLocaleDateString('fr-FR')}</td>
                     <td style={{ ...cellStyle, fontFamily: 'IBM Plex Mono, monospace' }}>{ticket.qty}</td>
-                    <td style={{ ...cellStyle, fontFamily: 'IBM Plex Mono, monospace' }}>{fmtUSD(ticket.buyUsd)}</td>
+                    <td style={{ ...cellStyle, fontFamily: 'IBM Plex Mono, monospace' }}>
+                      {fmtUSD(ticket.buyUsd)}
+                      {ticket.localBuyAmount && ticket.localCurrency ? (
+                        <div style={{ color: COLORS.textMuted, fontSize: 11, marginTop: 2 }}>{fmtLocal(ticket.localBuyAmount, ticket.localCurrency)}</div>
+                      ) : null}
+                    </td>
                     <td style={{ ...cellStyle, fontFamily: 'IBM Plex Mono, monospace' }}>{ticket.sellUsd ? fmtUSD(ticket.sellUsd) : '—'}</td>
                     <td style={{ ...cellStyle, fontFamily: 'IBM Plex Mono, monospace' }}>{fmtUSD(costTotal)}</td>
                     <td style={{ ...cellStyle, fontFamily: 'IBM Plex Mono, monospace' }}>{revenue ? fmtUSD(revenue) : '—'}</td>

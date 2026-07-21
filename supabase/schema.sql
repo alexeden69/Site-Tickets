@@ -19,6 +19,8 @@ create table if not exists public.tickets (
   listing_number text,
   account_email text,
   account_password text,
+  local_currency text,
+  local_buy_amount numeric,
   created_at timestamptz not null default now()
 );
 
