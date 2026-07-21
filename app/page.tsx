@@ -7,6 +7,8 @@ import {
   CartesianGrid,
   Cell,
   Legend,
+  Line,
+  LineChart,
   Pie,
   PieChart,
   ResponsiveContainer,
@@ -93,7 +95,7 @@ const COLORS = {
   green: '#22c55e',
   red: '#ef4444',
   blue: '#06b6d4',
-  yellow: '#eab308',
+  yellow: '#ffffff',
 };
 
 const fmtUSD = (value: number) =>
@@ -278,11 +280,23 @@ function AcoTab({ eventOptions }: { eventOptions: string[] }) {
   }, []);
 
   const stats = useMemo(() => {
-    const total = transactions.reduce((sum, t) => sum + t.amount, 0);
     const count = transactions.length;
-    const paid = transactions.filter((t) => t.status === 'paye').reduce((sum, t) => sum + t.amount, 0);
+    const paidTransactions = transactions.filter((t) => t.status === 'paye');
+    const pnl = paidTransactions.reduce((sum, t) => sum + t.amount, 0);
     const pending = transactions.filter((t) => t.status === 'en_attente').reduce((sum, t) => sum + t.amount, 0);
-    return { total, count, avg: count > 0 ? total / count : 0, paid, pending };
+    return { count, pnl, pending, avg: paidTransactions.length > 0 ? pnl / paidTransactions.length : 0 };
+  }, [transactions]);
+
+  const pnlOverTime = useMemo(() => {
+    const paid = transactions
+      .filter((t) => t.status === 'paye')
+      .slice()
+      .sort((a, b) => a.transactionDate.localeCompare(b.transactionDate));
+    let running = 0;
+    return paid.map((t) => {
+      running += t.amount;
+      return { date: new Date(t.transactionDate).toLocaleDateString('fr-FR'), pnl: running };
+    });
   }, [transactions]);
 
   const addTransaction = async (event: FormEvent<HTMLFormElement>) => {
@@ -383,11 +397,26 @@ function AcoTab({ eventOptions }: { eventOptions: string[] }) {
       <div style={{ marginBottom: 10, fontFamily: 'IBM Plex Mono, monospace', fontSize: 11, letterSpacing: '0.1em', color: COLORS.textMuted, textTransform: 'uppercase' }}>Synthèse ACO</div>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 14, marginBottom: 28 }}>
         <StatCard icon="🧺" label="Transactions" value={String(stats.count)} accent={COLORS.amber} />
-        <StatCard icon="💰" label="Total PAS" value={fmtLocal(stats.total, 'EUR')} accent={COLORS.green} />
-        <StatCard icon="✅" label="Payé" value={fmtLocal(stats.paid, 'EUR')} accent={COLORS.green} />
-        <StatCard icon="⏳" label="En attente" value={fmtLocal(stats.pending, 'EUR')} accent={COLORS.amber} />
-        <StatCard icon="📊" label="Moyenne" value={fmtLocal(stats.avg, 'EUR')} accent={COLORS.blue} sub="Par transaction" />
+        <StatCard icon="💰" label="PNL" value={fmtLocal(stats.pnl, 'EUR')} accent={COLORS.green} sub="Transactions payées uniquement" />
+        <StatCard icon="⏳" label="En attente" value={fmtLocal(stats.pending, 'EUR')} accent={COLORS.amber} sub="Non compté dans le PNL" />
+        <StatCard icon="📊" label="Moyenne" value={fmtLocal(stats.avg, 'EUR')} accent={COLORS.blue} sub="Par transaction payée" />
       </div>
+
+      {pnlOverTime.length > 1 ? (
+        <div style={{ marginBottom: 28 }}>
+          <Panel title="PNL dans le temps" subtitle="Cumul des transactions payées, dans l'ordre chronologique">
+            <ResponsiveContainer width="100%" height={220}>
+              <LineChart data={pnlOverTime}>
+                <CartesianGrid stroke={COLORS.line} vertical={false} />
+                <XAxis dataKey="date" tick={{ fill: COLORS.textMuted, fontSize: 10 }} axisLine={{ stroke: COLORS.line }} tickLine={false} />
+                <YAxis tick={{ fill: COLORS.textMuted, fontSize: 10 }} axisLine={{ stroke: COLORS.line }} tickLine={false} />
+                <Tooltip contentStyle={{ background: COLORS.bg, border: `1px solid ${COLORS.line}`, fontSize: 12 }} />
+                <Line type="monotone" dataKey="pnl" name="PNL cumulé (€)" stroke={COLORS.green} strokeWidth={2} dot={{ r: 3 }} />
+              </LineChart>
+            </ResponsiveContainer>
+          </Panel>
+        </div>
+      ) : null}
 
       <Panel title="Ajouter une transaction ACO" subtitle="Pas d'achat, pas de trésorerie sortie : juste le supplément encaissé">
         <form onSubmit={addTransaction} style={{ display: 'grid', gap: 10 }}>
