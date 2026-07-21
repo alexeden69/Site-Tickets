@@ -510,11 +510,6 @@ function AcoTab({ eventOptions }: { eventOptions: string[] }) {
             <input type="date" value={form.transactionDate} onChange={(event) => setForm((prev) => ({ ...prev, transactionDate: event.target.value }))} style={inputStyle} />
             <input type="number" min="1" value={form.qty} onChange={(event) => setForm((prev) => ({ ...prev, qty: event.target.value }))} placeholder="Qté" style={inputStyle} />
             <input type="number" min="0" value={form.amount} onChange={(event) => setForm((prev) => ({ ...prev, amount: event.target.value }))} placeholder="Prix du PAS (€)" style={inputStyle} />
-            <select value={form.purchasedBy} onChange={(event) => setForm((prev) => ({ ...prev, purchasedBy: event.target.value }))} style={inputStyle}>
-              {PURCHASER_OPTIONS.map((name) => (
-                <option key={name} value={name} style={optionStyle}>{name}</option>
-              ))}
-            </select>
             <select value={form.dealType} onChange={(event) => setForm((prev) => ({ ...prev, dealType: event.target.value as AcoDealType }))} style={inputStyle}>
               <option value="aco" style={optionStyle}>ACO</option>
               <option value="profit_split" style={optionStyle}>Profit Split</option>
@@ -551,7 +546,7 @@ function AcoTab({ eventOptions }: { eventOptions: string[] }) {
         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
           <thead>
             <tr>
-              {['Événement', 'Date', 'Qté', 'Prix du PAS', 'Placement', 'Discord', 'Associé', 'Type', 'Compte', 'Statut', 'Note', 'Actions'].map((header) => (
+              {['Événement', 'Date', 'Qté', 'Prix du PAS', 'Placement', 'Discord', 'Type', 'Compte', 'Statut', 'Note', 'Actions'].map((header) => (
                 <th key={header} style={{ textAlign: 'left', padding: '10px 14px', fontFamily: 'IBM Plex Mono, monospace', fontSize: 10, letterSpacing: '0.05em', textTransform: 'uppercase', color: COLORS.textMuted, borderBottom: `1px solid ${COLORS.line}` }}>{header}</th>
               ))}
             </tr>
@@ -587,13 +582,6 @@ function AcoTab({ eventOptions }: { eventOptions: string[] }) {
                     </td>
                     <td style={cellStyle}>
                       <input value={editForm.discordHandle} onChange={(event) => setEditForm((prev) => ({ ...prev, discordHandle: event.target.value }))} style={{ ...editInputStyle, width: 110 }} />
-                    </td>
-                    <td style={cellStyle}>
-                      <select value={editForm.purchasedBy} onChange={(event) => setEditForm((prev) => ({ ...prev, purchasedBy: event.target.value }))} style={{ ...editInputStyle, width: 100 }}>
-                        {PURCHASER_OPTIONS.map((name) => (
-                          <option key={name} value={name} style={optionStyle}>{name}</option>
-                        ))}
-                      </select>
                     </td>
                     <td style={cellStyle}>
                       <select value={editForm.dealType} onChange={(event) => setEditForm((prev) => ({ ...prev, dealType: event.target.value as AcoDealType }))} style={{ ...editInputStyle, width: 100 }}>
@@ -636,7 +624,6 @@ function AcoTab({ eventOptions }: { eventOptions: string[] }) {
                     {[t.category, t.bloc && `Bloc ${t.bloc}`, t.rang && `Rangée ${t.rang}`, t.seats && `Siège ${t.seats}`].filter(Boolean).join(' · ') || '—'}
                   </td>
                   <td style={cellStyle}>{t.discordHandle || '—'}</td>
-                  <td style={cellStyle}>{t.purchasedBy}</td>
                   <td style={cellStyle}>{ACO_DEAL_TYPE_LABELS[t.dealType] || ACO_DEAL_TYPE_LABELS.aco}</td>
                   <td style={cellStyle}>
                     {t.accountEmail || t.accountPassword ? (
