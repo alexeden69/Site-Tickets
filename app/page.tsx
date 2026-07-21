@@ -760,6 +760,18 @@ export default function HomePage() {
     ].filter((entry) => entry.value > 0);
   }, [filteredTickets]);
 
+  const ticketPnlOverTime = useMemo(() => {
+    const sold = filteredTickets
+      .filter((ticket) => SOLD_STATUSES.includes(ticket.status))
+      .slice()
+      .sort((a, b) => a.eventDate.localeCompare(b.eventDate));
+    let running = 0;
+    return sold.map((ticket) => {
+      running += ticket.qty * ((ticket.sellUsd || 0) - ticket.buyUsd);
+      return { date: new Date(ticket.eventDate).toLocaleDateString('fr-FR'), pnl: running };
+    });
+  }, [filteredTickets]);
+
   const alerts = useMemo(() => {
     const now = new Date();
     return tickets
@@ -1211,6 +1223,22 @@ export default function HomePage() {
             </ResponsiveContainer>
           </Panel>
         </div>
+
+        {ticketPnlOverTime.length > 1 ? (
+          <div style={{ marginBottom: 28 }}>
+            <Panel title="PNL dans le temps" subtitle="Cumul du bénéfice net des billets vendus/livrés, par date d'événement">
+              <ResponsiveContainer width="100%" height={220}>
+                <LineChart data={ticketPnlOverTime}>
+                  <CartesianGrid stroke={COLORS.line} vertical={false} />
+                  <XAxis dataKey="date" tick={{ fill: COLORS.textMuted, fontSize: 10 }} axisLine={{ stroke: COLORS.line }} tickLine={false} />
+                  <YAxis tick={{ fill: COLORS.textMuted, fontSize: 10 }} axisLine={{ stroke: COLORS.line }} tickLine={false} />
+                  <Tooltip contentStyle={{ background: COLORS.bg, border: `1px solid ${COLORS.line}`, fontSize: 12 }} />
+                  <Line type="monotone" dataKey="pnl" name="Bénéfice cumulé ($)" stroke={COLORS.green} strokeWidth={2} dot={{ r: 3 }} />
+                </LineChart>
+              </ResponsiveContainer>
+            </Panel>
+          </div>
+        ) : null}
 
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10, flexWrap: 'wrap', gap: 10 }}>
           <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 11, letterSpacing: '0.1em', color: COLORS.textMuted, textTransform: 'uppercase' }}>Détail des opérations</div>
