@@ -325,7 +325,7 @@ function AcoTab({ eventOptions }: { eventOptions: string[] }) {
     const paidTransactions = filteredTransactions.filter((t) => t.status === 'paye');
     const pnl = paidTransactions.reduce((sum, t) => sum + t.amount, 0);
     const pending = filteredTransactions.filter((t) => t.status === 'en_attente').reduce((sum, t) => sum + t.amount, 0);
-    return { count, pnl, pending, pnlFictif: pnl + pending, avg: paidTransactions.length > 0 ? pnl / paidTransactions.length : 0 };
+    return { count, pnl, pending, pnlLatent: pnl + pending, avg: paidTransactions.length > 0 ? pnl / paidTransactions.length : 0 };
   }, [filteredTransactions]);
 
   const pnlOverTime = useMemo(() => {
@@ -476,15 +476,15 @@ function AcoTab({ eventOptions }: { eventOptions: string[] }) {
       </div>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 14, marginBottom: 28 }}>
         <StatCard icon="🧺" label="Transactions" value={String(stats.count)} accent={COLORS.amber} />
-        <StatCard icon="💰" label="PNL" value={fmtLocal(stats.pnl, 'EUR')} accent={COLORS.green} sub="Transactions payées uniquement" />
-        <StatCard icon="⏳" label="En attente" value={fmtLocal(stats.pending, 'EUR')} accent={COLORS.amber} sub="Non compté dans le PNL" />
-        <StatCard icon="🔮" label="PNL fictif" value={fmtLocal(stats.pnlFictif, 'EUR')} accent={COLORS.blue} sub="Payé + en attente" />
-        <StatCard icon="📊" label="Moyenne" value={fmtLocal(stats.avg, 'EUR')} accent={COLORS.blue} sub="Par transaction payée" />
+        <StatCard icon="💰" label="PNL" value={fmtLocal(stats.pnl, 'EUR')} accent={COLORS.green} />
+        <StatCard icon="⏳" label="En attente" value={fmtLocal(stats.pending, 'EUR')} accent={COLORS.amber} />
+        <StatCard icon="🔮" label="PNL latent" value={fmtLocal(stats.pnlLatent, 'EUR')} accent={COLORS.blue} />
+        <StatCard icon="📊" label="Moyenne" value={fmtLocal(stats.avg, 'EUR')} accent={COLORS.blue} />
       </div>
 
       {pnlOverTime.length > 1 ? (
         <div style={{ marginBottom: 28 }}>
-          <Panel title="PNL dans le temps" subtitle="Cumul des transactions payées, dans l'ordre chronologique">
+          <Panel title="PNL dans le temps">
             <ResponsiveContainer width="100%" height={220}>
               <LineChart data={pnlOverTime}>
                 <CartesianGrid stroke={COLORS.line} vertical={false} />
@@ -498,7 +498,7 @@ function AcoTab({ eventOptions }: { eventOptions: string[] }) {
         </div>
       ) : null}
 
-      <Panel title="Ajouter une transaction ACO" subtitle="Pas d'achat, pas de trésorerie sortie : juste le supplément encaissé">
+      <Panel title="Ajouter une transaction ACO">
         <form onSubmit={addTransaction} style={{ display: 'grid', gap: 10 }}>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: 10 }}>
             <select value={form.event} onChange={(event) => setForm((prev) => ({ ...prev, event: event.target.value }))} style={inputStyle}>
