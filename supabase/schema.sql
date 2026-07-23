@@ -78,7 +78,7 @@ create table if not exists public.aco_transactions (
   transaction_date date not null,
   amount numeric not null default 0,
   purchased_by text not null default 'Commun',
-  deal_type text not null default 'aco' check (deal_type in ('aco', 'profit_split')),
+  deal_type text not null default 'aco' check (deal_type in ('aco', 'profit_split', 'sign_up')),
   status text not null default 'en_attente' check (status in ('paye', 'en_attente')),
   account_email text,
   account_password text,

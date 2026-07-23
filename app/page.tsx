@@ -169,7 +169,7 @@ function StatusBadge({ status }: { status: TicketStatus }) {
 }
 
 type AcoStatus = 'paye' | 'en_attente';
-type AcoDealType = 'aco' | 'profit_split';
+type AcoDealType = 'aco' | 'profit_split' | 'sign_up';
 
 type AcoTransaction = {
   id: number;
@@ -231,6 +231,7 @@ const fromAcoRow = (row: AcoRow): AcoTransaction => ({
 const ACO_DEAL_TYPE_LABELS: Record<AcoDealType, string> = {
   aco: 'ACO',
   profit_split: 'Profit Split',
+  sign_up: 'Sign-up',
 };
 
 const ACO_STATUS_LABELS: Record<AcoStatus, { label: string; color: string }> = {
@@ -513,6 +514,7 @@ function AcoTab({ eventOptions }: { eventOptions: string[] }) {
             <select value={form.dealType} onChange={(event) => setForm((prev) => ({ ...prev, dealType: event.target.value as AcoDealType }))} style={inputStyle}>
               <option value="aco" style={optionStyle}>ACO</option>
               <option value="profit_split" style={optionStyle}>Profit Split</option>
+              <option value="sign_up" style={optionStyle}>Sign-up</option>
             </select>
             <select value={form.status} onChange={(event) => setForm((prev) => ({ ...prev, status: event.target.value as AcoStatus }))} style={inputStyle}>
               <option value="en_attente" style={optionStyle}>En attente de paiement</option>
@@ -587,6 +589,7 @@ function AcoTab({ eventOptions }: { eventOptions: string[] }) {
                       <select value={editForm.dealType} onChange={(event) => setEditForm((prev) => ({ ...prev, dealType: event.target.value as AcoDealType }))} style={{ ...editInputStyle, width: 100 }}>
                         <option value="aco" style={optionStyle}>ACO</option>
                         <option value="profit_split" style={optionStyle}>Profit Split</option>
+                        <option value="sign_up" style={optionStyle}>Sign-up</option>
                       </select>
                     </td>
                     <td style={cellStyle}>
