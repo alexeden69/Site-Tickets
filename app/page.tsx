@@ -610,7 +610,7 @@ function AcoTab({ eventOptions }: { eventOptions: string[] }) {
           <thead>
             <tr>
               {['Événement', 'Date', 'Qté', 'Prix du PAS', 'Placement', 'Discord', 'Type', 'Compte', 'Code vendu', 'Statut', 'Payé à', 'Note', 'Actions'].map((header) => (
-                <th key={header} style={{ textAlign: 'left', padding: '10px 14px', fontFamily: 'IBM Plex Mono, monospace', fontSize: 10, letterSpacing: '0.05em', textTransform: 'uppercase', color: COLORS.textMuted, borderBottom: `1px solid ${COLORS.line}` }}>{header}</th>
+                <th key={header} style={{ textAlign: 'left', padding: '10px 14px', fontFamily: 'IBM Plex Mono, monospace', fontSize: 10, letterSpacing: '0.05em', textTransform: 'uppercase', color: COLORS.textMuted, borderBottom: `1px solid ${COLORS.line}`, ...(header === 'Actions' ? { position: 'sticky' as const, right: 0, background: COLORS.panel } : {}) }}>{header}</th>
               ))}
             </tr>
           </thead>
@@ -681,7 +681,7 @@ function AcoTab({ eventOptions }: { eventOptions: string[] }) {
                     <td style={cellStyle}>
                       <input value={editForm.notes} onChange={(event) => setEditForm((prev) => ({ ...prev, notes: event.target.value }))} style={{ ...editInputStyle, width: 120 }} />
                     </td>
-                    <td style={cellStyle}>
+                    <td style={{ ...cellStyle, position: 'sticky', right: 0, background: COLORS.panel }}>
                       <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
                         <button onClick={() => saveEdit(t.id)} style={{ ...actionButtonStyle, background: COLORS.amber, color: '#ffffff', border: 'none', fontWeight: 700 }}>Enregistrer</button>
                         <button onClick={cancelEdit} style={actionButtonStyle}>Annuler</button>
@@ -734,7 +734,7 @@ function AcoTab({ eventOptions }: { eventOptions: string[] }) {
                   </td>
                   <td style={cellStyle}>{t.paidTo || '—'}</td>
                   <td style={{ ...cellStyle, color: COLORS.textMuted }}>{t.notes || '—'}</td>
-                  <td style={cellStyle}>
+                  <td style={{ ...cellStyle, position: 'sticky', right: 0, background: COLORS.panel }}>
                     <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
                       <button onClick={() => startEdit(t)} style={actionButtonStyle}>Modifier</button>
                       {t.status === 'en_attente' ? (
