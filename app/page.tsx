@@ -609,7 +609,7 @@ function AcoTab({ eventOptions }: { eventOptions: string[] }) {
         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
           <thead>
             <tr>
-              {['Événement', 'Date', 'Qté', 'Prix du PAS', 'Placement', 'Discord', 'Type', 'Compte', 'Code vendu', 'Statut', 'Payé à', 'Note', 'Actions'].map((header) => (
+              {['Événement', 'Date', 'Qté', 'Prix du PAS', 'Placement', 'Discord', 'Type', 'Compte', 'Code vendu', 'Statut', 'Note', 'Actions'].map((header) => (
                 <th key={header} style={{ textAlign: 'left', padding: '10px 14px', fontFamily: 'IBM Plex Mono, monospace', fontSize: 10, letterSpacing: '0.05em', textTransform: 'uppercase', color: COLORS.textMuted, borderBottom: `1px solid ${COLORS.line}`, ...(header === 'Actions' ? { position: 'sticky' as const, right: 0, background: COLORS.panel } : {}) }}>{header}</th>
               ))}
             </tr>
@@ -666,17 +666,17 @@ function AcoTab({ eventOptions }: { eventOptions: string[] }) {
                       </div>
                     </td>
                     <td style={cellStyle}>
-                      <select value={editForm.status} onChange={(event) => setEditForm((prev) => ({ ...prev, status: event.target.value as AcoStatus }))} style={{ ...editInputStyle, width: 130 }}>
-                        <option value="en_attente" style={optionStyle}>En attente</option>
-                        <option value="paye" style={optionStyle}>Payé</option>
-                      </select>
-                    </td>
-                    <td style={cellStyle}>
-                      <select value={editForm.paidTo} onChange={(event) => setEditForm((prev) => ({ ...prev, paidTo: event.target.value }))} style={{ ...editInputStyle, width: 100 }}>
-                        <option value="" style={optionStyle}>—</option>
-                        <option value="Charles" style={optionStyle}>Charles</option>
-                        <option value="Alexandre" style={optionStyle}>Alexandre</option>
-                      </select>
+                      <div style={{ display: 'grid', gap: 4 }}>
+                        <select value={editForm.status} onChange={(event) => setEditForm((prev) => ({ ...prev, status: event.target.value as AcoStatus }))} style={{ ...editInputStyle, width: 130 }}>
+                          <option value="en_attente" style={optionStyle}>En attente</option>
+                          <option value="paye" style={optionStyle}>Payé</option>
+                        </select>
+                        <select value={editForm.paidTo} onChange={(event) => setEditForm((prev) => ({ ...prev, paidTo: event.target.value }))} style={{ ...editInputStyle, width: 130 }}>
+                          <option value="" style={optionStyle}>Payé à —</option>
+                          <option value="Charles" style={optionStyle}>Payé à Charles</option>
+                          <option value="Alexandre" style={optionStyle}>Payé à Alexandre</option>
+                        </select>
+                      </div>
                     </td>
                     <td style={cellStyle}>
                       <input value={editForm.notes} onChange={(event) => setEditForm((prev) => ({ ...prev, notes: event.target.value }))} style={{ ...editInputStyle, width: 120 }} />
@@ -731,8 +731,8 @@ function AcoTab({ eventOptions }: { eventOptions: string[] }) {
                     <span style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 10, textTransform: 'uppercase', padding: '3px 9px', borderRadius: 20, border: `1px solid ${statusInfo.color}55`, color: statusInfo.color }}>
                       {statusInfo.label}
                     </span>
+                    {t.paidTo ? <div style={{ fontSize: 11, color: COLORS.textMuted, marginTop: 4 }}>à {t.paidTo}</div> : null}
                   </td>
-                  <td style={cellStyle}>{t.paidTo || '—'}</td>
                   <td style={{ ...cellStyle, color: COLORS.textMuted }}>{t.notes || '—'}</td>
                   <td style={{ ...cellStyle, position: 'sticky', right: 0, background: COLORS.panel }}>
                     <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
