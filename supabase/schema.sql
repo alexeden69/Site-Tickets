@@ -82,6 +82,9 @@ create table if not exists public.aco_transactions (
   status text not null default 'en_attente' check (status in ('paye', 'en_attente')),
   account_email text,
   account_password text,
+  code text,
+  buyer_email text,
+  paid_to text check (paid_to in ('Charles', 'Alexandre')),
   notes text,
   created_at timestamptz not null default now()
 );
